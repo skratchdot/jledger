@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { formatAmount } from '@jledger/core';
-import { matchesAccount, type Row } from '../journal-engine';
+import { matchesPosting, type Row } from '../journal-engine';
 
 export function VirtualRegister({
   count,
@@ -9,6 +9,7 @@ export function VirtualRegister({
   filterKey,
   currency,
   account,
+  month,
   onRange,
   onAccount,
   onInspect,
@@ -18,10 +19,12 @@ export function VirtualRegister({
   filterKey: string;
   currency: string;
   account: string;
+  month: string;
   onRange: (range: { start: number; end: number }) => void;
   onAccount: (name: string) => void;
   onInspect: (id: number) => void;
 }) {
+  const filters = { commodity: currency, account, month };
   const scroll = useRef<HTMLDivElement>(null);
   const virtualizer = useVirtualizer({
     count,
@@ -46,7 +49,7 @@ export function VirtualRegister({
       <table aria-rowcount={count + 1}>
         <thead>
           <tr>
-            <th>Date</th>
+            <th>Transaction date</th>
             <th>Description</th>
             <th>Accounts</th>
             <th className="align-right">Posting amounts</th>
@@ -72,10 +75,8 @@ export function VirtualRegister({
                   </td>
                 </tr>
               );
-            const postings = tx.postings.filter(
-              (p) =>
-                p.amount.commodity === currency &&
-                matchesAccount(p.account, account),
+            const postings = tx.postings.filter((p) =>
+              matchesPosting(p, tx.date, filters),
             );
             return (
               <tr
@@ -126,7 +127,10 @@ export function VirtualRegister({
                 </td>
                 <td className="posting-amounts">
                   {postings.slice(0, 3).map((p, i) => (
-                    <div key={i}>{formatAmount(p.amount)}</div>
+                    <div key={i}>
+                      {formatAmount(p.amount)}
+                      {p.date && <small> posted {p.date}</small>}
+                    </div>
                   ))}
                 </td>
               </tr>

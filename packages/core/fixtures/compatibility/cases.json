@@ -21,7 +21,7 @@
   },
   {
     "id": "posting-date",
-    "supported": false
+    "supported": true
   },
   {
     "id": "unbalanced",
@@ -114,5 +114,55 @@
     "id": "assertion-includes",
     "supported": true,
     "sources": ["assertion-includes.journal", "parts/asserted-child.journal"]
+  },
+  {
+    "id": "posting-date-assertion",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "posting-date-assertion-split",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "posting-date-partial",
+    "supported": false
+  },
+  {
+    "id": "posting-date-secondary",
+    "supported": false
+  },
+  {
+    "id": "posting-date-continuation",
+    "supported": false
+  },
+  {
+    "id": "posting-date-tie-failure",
+    "supported": false
+  },
+  {
+    "id": "posting-date-tag",
+    "supported": true,
+    "ledgerUsesTransactionDates": true
+  },
+  {
+    "id": "posting-date-invalid",
+    "supported": false
+  },
+  {
+    "id": "posting-date-duplicate",
+    "supported": false
+  },
+  {
+    "id": "posting-date-includes",
+    "supported": true,
+    "sources": ["posting-date-includes.journal", "parts/dated-child.journal"]
   }
 ]

@@ -1,0 +1,4 @@
+2026-01-01 Split
+  assets:cash  10 USD ; [2026-01-03]
+  assets:cash  -1 USD = -1 USD ; [2026-01-02]
+  equity:opening  -9 USD

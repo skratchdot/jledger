@@ -1,5 +1,7 @@
 import {
   add,
+  effectivePostingDate,
+  type Posting,
   balances,
   parseJournal,
   type Balance,
@@ -40,6 +42,15 @@ export interface Detail extends Row {
 }
 export const matchesAccount = (account: string, filter: string) =>
   !filter || account === filter || account.startsWith(`${filter}:`);
+export const matchesPosting = (
+  posting: Posting,
+  transactionDate: string,
+  filters: Pick<Filters, 'account' | 'commodity' | 'month'>,
+) =>
+  posting.amount.commodity === filters.commodity &&
+  matchesAccount(posting.account, filters.account) &&
+  (!filters.month ||
+    effectivePostingDate(posting, transactionDate).startsWith(filters.month));
 const pause = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
 
 /** Lives exclusively in the worker in production; the UI receives summaries and visible rows. */
@@ -73,22 +84,21 @@ export class JournalEngine {
             ),
           )
       : [];
+    const commodities = new Set<string>(),
+      months = new Set<string>();
+    for (const transaction of this.journal.transactions)
+      for (const posting of transaction.postings) {
+        commodities.add(posting.amount.commodity);
+        months.add(effectivePostingDate(posting, transaction.date).slice(0, 7));
+      }
     this.summary = {
       names: sources.map((s) => s.name),
       diagnostics: this.journal.diagnostics.slice(0, 200),
       diagnosticCount: this.journal.diagnostics.length,
       transactionCount: this.journal.transactions.length,
       accounts: valid ? balances(this.journal) : [],
-      commodities: [
-        ...new Set(
-          this.journal.transactions.flatMap((t) =>
-            t.postings.map((p) => p.amount.commodity),
-          ),
-        ),
-      ].sort(),
-      months: [
-        ...new Set(this.journal.transactions.map((t) => t.date.slice(0, 7))),
-      ].sort(),
+      commodities: [...commodities].sort(),
+      months: [...months].sort(),
     };
     return this.summary;
   }
@@ -111,33 +121,21 @@ export class JournalEngine {
       const entry = this.index[i]!,
         t = this.journal.transactions[entry.id]!;
       if (
-        (filters.month && !t.date.startsWith(filters.month)) ||
         (filters.status !== 'all' && t.status !== filters.status) ||
         !entry.text.includes(query)
       )
         continue;
-      if (
-        !t.postings.some(
-          (p) =>
-            matchesAccount(p.account, filters.account) &&
-            p.amount.commodity === filters.commodity,
-        )
-      )
-        continue;
+      if (!t.postings.some((p) => matchesPosting(p, t.date, filters))) continue;
       matches.push(entry.id);
       for (const p of t.postings) {
-        if (
-          p.amount.commodity !== filters.commodity ||
-          !matchesAccount(p.account, filters.account)
-        )
-          continue;
+        if (!matchesPosting(p, t.date, filters)) continue;
         if (/^expenses(?::|$)/i.test(p.account)) {
           spending = add(spending, p.amount.quantity);
           categories.set(
             p.account,
             add(categories.get(p.account) ?? '0', p.amount.quantity),
           );
-          const month = t.date.slice(0, 7);
+          const month = effectivePostingDate(p, t.date).slice(0, 7);
           monthly.set(month, add(monthly.get(month) ?? '0', p.amount.quantity));
         }
         if (/^(?:income|revenue)(?::|$)/i.test(p.account))

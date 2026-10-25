@@ -261,7 +261,7 @@ test('monthly include bundle preserves exact totals, comment context and source 
     const purchases = Array.from({ length: 1999 }, (_, item) => {
       const number = item + 1;
       const quantity = number % 2 ? '10.01' : '-1.23';
-      return `2026-${month}-02 month ${month} item ${number} ; synthetic:yes\n  expenses:food  ${quantity} USD ; café 🍵\n  assets:bank\n\n`;
+      return `2026-${month}-02 month ${month} item ${number} ; synthetic:yes\n  expenses:food  ${quantity} USD ; café 🍵${number % 2 ? ` [2026-${month}-03]` : ''}\n  assets:bank\n\n`;
     }).join('');
     const text = prefix + salary + purchases;
     return {
@@ -414,5 +414,62 @@ test('balance assertions are checked in date order and failures pause every repo
       name: 'Reports paused to keep your totals honest.',
     }),
   ).toBeVisible();
+  await expect(page.getByRole('table')).toHaveCount(0);
+});
+
+test('posting dates drive month totals while register rows retain transaction context', async ({
+  page,
+}) => {
+  const text =
+    '2026-01-01 Pending\n  expenses:food  2 USD ; [2026-02-01]\n  assets:cash\n';
+  await page.goto('./');
+  await page.getByLabel('Import journal files').setInputFiles({
+    name: 'dated.journal',
+    mimeType: 'text/plain',
+    buffer: Buffer.from(text),
+  });
+  await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '2');
+  await page.getByRole('button', { name: 'Filter month 2026-02' }).click();
+  await expect(page.getByLabel('Filtered totals')).toContainText('2 USD');
+  await expect(page.getByRole('table')).toContainText('2026-01-01');
+  await expect(page.getByRole('table')).toContainText('posted 2026-02-01');
+  await expect(page.getByRole('table')).not.toContainText('assets:cash');
+  await page.getByRole('button', { name: '· Pending', exact: true }).click();
+  await expect(page.getByRole('dialog')).toContainText(
+    'Transaction date 2026-01-01',
+  );
+  await expect(page.getByRole('dialog')).toContainText('posted 2026-02-01');
+  await expect(page.getByRole('dialog')).toContainText('dated.journal:1');
+  await page.getByRole('button', { name: 'Close', exact: true }).click();
+  await page.getByLabel('Month', { exact: true }).selectOption('2026-01');
+  await expect(page.getByLabel('Filtered totals')).toContainText('0 USD');
+  await expect(page.getByRole('table')).toContainText('assets:cash');
+  await expect(page.getByRole('table')).not.toContainText('expenses:food');
+  await page.getByRole('button', { name: /Accounts/ }).click();
+  await page
+    .getByRole('button', { name: 'expenses:food 2 USD', exact: true })
+    .click();
+  await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '1');
+  await page.getByRole('button', { name: /Overview/ }).click();
+  await page.getByLabel('Month', { exact: true }).selectOption('2026-02');
+  await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '2');
+  await expect(page.getByLabel('Filtered totals')).toContainText('2 USD');
+});
+
+test('unsupported secondary posting dates are diagnostics rather than inert comments', async ({
+  page,
+}) => {
+  await page.goto('./');
+  await page.getByLabel('Import journal files').setInputFiles({
+    name: 'secondary.journal',
+    mimeType: 'text/plain',
+    buffer: Buffer.from(
+      '2026-01-01 Secondary\n  expenses:food  2 USD ; [=2026-02-01]\n  assets:cash\n',
+    ),
+  });
+  await expect(page.getByRole('alert')).toContainText('secondary.journal:2');
+  await expect(page.getByRole('alert')).toContainText(
+    'Secondary posting dates are not supported',
+  );
   await expect(page.getByRole('table')).toHaveCount(0);
 });

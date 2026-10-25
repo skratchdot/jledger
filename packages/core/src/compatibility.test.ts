@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import cases from '../fixtures/compatibility/cases.json';
 import hledger from '../fixtures/compatibility/hledger-1.json';
 import ledger from '../fixtures/compatibility/ledger-1.json';
-import { add, balances, parseJournal } from './index.js';
+import { add, balances, effectivePostingDate, parseJournal } from './index.js';
 
 const canonical = (value: string) => {
   const exact = add('0', value);
@@ -34,16 +34,21 @@ describe('compatibility corpus v1 (captured hledger 1.52 / Ledger 3.3.2)', () =>
         return;
       }
       expect(journal.diagnostics).toEqual([]);
-      const postings = journal.transactions.flatMap((t) =>
-        t.postings.map((p) => ({
-          date: t.date,
-          description: t.description,
-          account: p.account,
-          commodity: p.amount.commodity,
-          quantity: canonical(p.amount.quantity),
-        })),
-      );
-      postings.sort((a, b) => a.date.localeCompare(b.date));
+      const projection = (transactionDatesOnly = false) =>
+        journal.transactions
+          .flatMap((t) =>
+            t.postings.map((p) => ({
+              date: transactionDatesOnly
+                ? t.date
+                : effectivePostingDate(p, t.date),
+              description: t.description,
+              account: p.account,
+              commodity: p.amount.commodity,
+              quantity: canonical(p.amount.quantity),
+            })),
+          )
+          .sort((a, b) => a.date.localeCompare(b.date));
+      const postings = projection();
       const report = balances(journal).flatMap((b) =>
         b.amounts.map((a) => ({
           account: b.account,
@@ -61,9 +66,11 @@ describe('compatibility corpus v1 (captured hledger 1.52 / Ledger 3.3.2)', () =>
           continue;
         }
         expect(expected.accepted).toBe(true);
-        expect(postings).toEqual(
-          'postings' in expected ? expected.postings : undefined,
-        );
+        expect(
+          tool === 'ledger' && fixture.ledgerUsesTransactionDates
+            ? projection(true)
+            : postings,
+        ).toEqual('postings' in expected ? expected.postings : undefined);
         expect(report).toEqual(
           'balances' in expected ? expected.balances : undefined,
         );

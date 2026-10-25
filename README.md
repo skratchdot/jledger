@@ -88,6 +88,8 @@ installation is a later milestone.
 - Interactive expense categories and monthly charts, plus date, status, commodity,
   account, and text filters. Income/spending classification currently uses English
   `income`/`revenue`/`expenses` account prefixes, case-insensitively.
+- [Primary posting dates](docs/posting-dates.md) for month filters, monthly charts,
+  and assertion checks; transaction and posting dates remain visible in drill-down.
 - A transaction register with posting amounts and source references, transaction
   details, inferred amounts, and original source snippets.
 - A direct account-balance view. These are full-journal balances, independent of

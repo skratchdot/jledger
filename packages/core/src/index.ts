@@ -2,6 +2,12 @@ import { add, isZero, negate } from './decimal.js';
 import { scanJournalLines } from './syntax.js';
 import { resolveIncludes } from './includes.js';
 import { checkBalanceAssertions } from './assertions.js';
+import {
+  hasPostingDateSyntax,
+  parseFullDate,
+  parsePostingDateComment,
+} from './dates.js';
+export { effectivePostingDate } from './dates.js';
 export {
   resolveIncludes,
   MAX_INCLUDE_DEPTH,
@@ -35,6 +41,8 @@ export interface Amount {
 export type Status = '' | '*' | '!';
 export interface Posting {
   account: string;
+  /** Explicit primary posting date; absent means the transaction date. */
+  date?: string;
   amount: Amount;
   inferred: boolean;
   /** A single-commodity, direct-account plain = assertion; consult diagnostics for validity. */
@@ -76,18 +84,6 @@ export function parseAmount(text: string): Amount | null {
   );
   return suffix
     ? { quantity: add('0', suffix[1]!), commodity: suffix[2] ?? '' }
-    : null;
-}
-
-function dateValue(text: string): string | null {
-  const match = text.match(/^(\d{4})([-/.])(\d{1,2})\2(\d{1,2})$/);
-  if (!match) return null;
-  const [, year, , month, day] = match;
-  const iso = `${year}-${month!.padStart(2, '0')}-${day!.padStart(2, '0')}`;
-  const date = new Date(`${iso}T00:00:00Z`);
-  return !Number.isNaN(date.valueOf()) &&
-    date.toISOString().slice(0, 10) === iso
-    ? iso
     : null;
 }
 
@@ -184,14 +180,26 @@ export function parseJournal(sources: Source[]): Journal {
         blockComment = true;
         continue;
       }
-      // Posting date comments change accounting semantics: reject them until implemented.
-      if (tx && /^\s/.test(raw) && /;.*(?:\bdate2?:|\[\d)/i.test(raw)) {
-        error(
-          location,
-          'posting-date',
-          'Posting date overrides are not supported yet.',
-        );
-        continue;
+      let postingDate: string | undefined;
+      const semicolon = raw.indexOf(';');
+      if (tx && /^\s/.test(raw) && semicolon >= 0) {
+        const comment = raw.slice(semicolon + 1);
+        if (hasPostingDateSyntax(comment)) {
+          if (node.kind === 'comment') {
+            error(
+              location,
+              'posting-date',
+              'Posting dates on continuation comment lines are not supported. Put one full primary date inline on the posting.',
+            );
+            continue;
+          }
+          const parsed = parsePostingDateComment(comment);
+          if (parsed.error) {
+            error(location, 'posting-date', parsed.error);
+            continue;
+          }
+          postingDate = parsed.date;
+        }
       }
       if (node.kind === 'blank') {
         finish();
@@ -218,7 +226,7 @@ export function parseJournal(sources: Source[]): Journal {
           );
           continue;
         }
-        const date = dateValue(header[1]!);
+        const date = parseFullDate(header[1]!);
         if (!date) {
           error(location, 'date', 'Invalid calendar date.');
           continue;
@@ -322,6 +330,7 @@ export function parseJournal(sources: Source[]): Journal {
         if (balanceAssertion) hasAssertions = true;
         tx.postings.push({
           ...(balanceAssertion ? { balanceAssertion } : {}),
+          ...(postingDate ? { date: postingDate } : {}),
           account,
           amount,
           status,

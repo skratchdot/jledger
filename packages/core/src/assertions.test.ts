@@ -97,7 +97,7 @@ describe('plain balance assertions', () => {
         line: 6,
         code: 'balance-assertion',
         message:
-          'Balance assertion failed for assets:cash: expected 8 USD, calculated 9.00 USD. Checks the direct account after this posting in date order.',
+          'Balance assertion failed for assets:cash: expected 8 USD, calculated 9.00 USD. Checks the direct account after this posting in effective posting-date order.',
       },
     ]);
   });

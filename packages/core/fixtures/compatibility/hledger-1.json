@@ -198,7 +198,35 @@
     "accepted": true
   },
   "posting-date": {
-    "accepted": true
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Pending",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "date": "2026-01-02",
+        "description": "Pending",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "2"
+      }
+    ]
   },
   "unbalanced": {
     "accepted": false
@@ -674,6 +702,188 @@
         "account": "expenses:food",
         "commodity": "USD",
         "quantity": "1"
+      }
+    ]
+  },
+  "posting-date-assertion": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Future",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-10"
+      },
+      {
+        "date": "2026-01-02",
+        "description": "Current",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-02",
+        "description": "Current",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2026-02-01",
+        "description": "Future",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "10"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "11"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-11"
+      }
+    ]
+  },
+  "posting-date-assertion-split": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Split",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-9"
+      },
+      {
+        "date": "2026-01-02",
+        "description": "Split",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2026-01-03",
+        "description": "Split",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "10"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "9"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-9"
+      }
+    ]
+  },
+  "posting-date-partial": {
+    "accepted": true
+  },
+  "posting-date-secondary": {
+    "accepted": true
+  },
+  "posting-date-continuation": {
+    "accepted": true
+  },
+  "posting-date-tie-failure": {
+    "accepted": false
+  },
+  "posting-date-tag": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Tag date",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "date": "2026-02-01",
+        "description": "Tag date",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "2"
+      }
+    ]
+  },
+  "posting-date-invalid": {
+    "accepted": false
+  },
+  "posting-date-duplicate": {
+    "accepted": true
+  },
+  "posting-date-includes": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Opening",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-10"
+      },
+      {
+        "date": "2026-01-02",
+        "description": "Spend",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "date": "2026-02-01",
+        "description": "Opening",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "date": "2026-03-01",
+        "description": "Spend",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "8"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-10"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "2"
       }
     ]
   }

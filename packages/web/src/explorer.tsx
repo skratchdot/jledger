@@ -348,7 +348,7 @@ export function Explorer() {
                         value={month}
                         onChange={(e) => setMonth(e.target.value)}
                       >
-                        <option value="">All dates</option>
+                        <option value="">All posting dates</option>
                         {months.map((m) => (
                           <option key={m}>{m}</option>
                         ))}
@@ -544,6 +544,7 @@ export function Explorer() {
                       window={engine.window}
                       filterKey={JSON.stringify(filters)}
                       currency={currency}
+                      month={month}
                       account={account}
                       onRange={setRange}
                       onAccount={setAccount}
@@ -555,8 +556,9 @@ export function Explorer() {
                       </p>
                     )}
                     <p className="chart-hint">
-                      Virtualized register · all {report.count.toLocaleString()}{' '}
-                      matches are browsable. Totals include every match.
+                      Grouped by transaction · month filters posting dates · all{' '}
+                      {report.count.toLocaleString()} matches are browsable.
+                      Totals include every match.
                     </p>
                   </section>
                 </>
@@ -588,8 +590,14 @@ export function Explorer() {
           <div className="eyebrow">TRANSACTION DETAILS</div>
           <h2>{selected.description || '(no description)'}</h2>
           <p>
-            {selected.date} · {selected.source.file}:{selected.source.line}
+            Transaction date {selected.date} · {selected.source.file}:
+            {selected.source.line}
           </p>
+          {selected.postings.some((p) => p.date) && (
+            <p className="muted">
+              Postings without their own date use the transaction date.
+            </p>
+          )}
           <dl>
             {selected.postings.map((p, i) => (
               <div key={i}>
@@ -597,6 +605,7 @@ export function Explorer() {
                 <dd>
                   {formatAmount(p.amount)}
                   {p.inferred && <small> inferred</small>}
+                  {p.date && <small> · posted {p.date}</small>}
                   {p.balanceAssertion && (
                     <small>
                       {' '}
