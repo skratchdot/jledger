@@ -8,6 +8,8 @@ parsing or aggregation acceptable.
 
 - A dedicated module worker owns source text, the parsed journal, a normalized
   search index, sorted transaction IDs, and the current filtered result IDs.
+- Core streams source-span line nodes while parsing, without retaining an extra
+  syntax tree or split-line array. Explicit syntax inspection can opt into a tree.
 - File decoding, local API fetching/JSON decoding, parsing, direct balances,
   substring searching, and exact filtered totals run in that worker.
 - React receives a summary and report aggregates, not the entire transaction set.
@@ -41,6 +43,16 @@ Metrics are written to the current run's ignored `test-results/**/metrics.json` 
 attached to the Playwright result. Test both the root build and the `/jledger/`
 static deployment. A synthetic repeated transaction is a useful regression, not
 a substitute for diverse real-world journals or a cross-device benchmark.
+
+## Multi-file regression
+
+The browser suite also imports a synthetic 12-file monthly bundle with 24,000
+transactions: salary, alternating purchases/refunds, inline Unicode comments,
+block comments containing include-shaped text, and mixed LF/CRLF/BOM inputs.
+It checks exact full-year and monthly totals, bounded register rows, and a final
+transaction's original file, line number, and source excerpt. The files are
+independently selected; this is not include resolution. Like the larger scenario,
+it is a regression case, not a memory budget or a device-wide performance promise.
 
 ## Next improvements
 

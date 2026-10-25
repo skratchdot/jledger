@@ -243,3 +243,53 @@ test('200,000 transactions import off-thread, search stays responsive, and every
     contentType: 'application/json',
   });
 });
+
+test('monthly file bundle preserves exact totals, comment context and source drill-down', async ({
+  page,
+}) => {
+  const files = Array.from({ length: 12 }, (_, index) => {
+    const month = String(index + 1).padStart(2, '0');
+    const prefix =
+      '; synthetic monthly export\ncomment\ninclude not-a-real-file.journal\nend comment\n\n';
+    const salary = `2026-${month}-01 Salary month ${month}\n  assets:bank  3000.00 USD\n  income:salary\n\n`;
+    const purchases = Array.from({ length: 1999 }, (_, item) => {
+      const number = item + 1;
+      const quantity = number % 2 ? '10.01' : '-1.23';
+      return `2026-${month}-02 month ${month} item ${number} ; synthetic:yes\n  expenses:food  ${quantity} USD ; café 🍵\n  assets:bank\n\n`;
+    }).join('');
+    const text = prefix + salary + purchases;
+    return {
+      name: `2026-${month}.journal`,
+      mimeType: 'text/plain',
+      buffer: Buffer.from(
+        index % 2 ? `\uFEFF${text.replaceAll('\n', '\r\n')}` : text,
+      ),
+    };
+  });
+  await page.goto('./');
+  await page.getByLabel('Import journal files').setInputFiles(files);
+  await expect(page.getByRole('table')).toHaveAttribute(
+    'aria-rowcount',
+    '24001',
+  );
+  await expect(page.getByLabel('Filtered totals')).toContainText(
+    '105374.76 USD',
+  );
+  await expect(page.getByLabel('Filtered totals')).toContainText(
+    '36000.00 USD',
+  );
+  expect(await page.locator('tbody tr').count()).toBeLessThan(50);
+  await page.getByLabel('Month', { exact: true }).selectOption('2026-12');
+  await expect(page.getByRole('table')).toHaveAttribute(
+    'aria-rowcount',
+    '2001',
+  );
+  await expect(page.getByLabel('Filtered totals')).toContainText('8781.23 USD');
+  await page.getByLabel('Search transactions').fill('month 12 item 1999');
+  await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '2');
+  await page.getByRole('button', { name: /month 12 item 1999/ }).click();
+  await expect(page.getByRole('dialog')).toContainText('2026-12.journal:8002');
+  await expect(page.getByRole('dialog')).toContainText('synthetic:yes');
+  await expect(page.getByRole('dialog')).toContainText('café 🍵');
+  await expect(page.getByRole('dialog')).toContainText('-10.01 USD');
+});
