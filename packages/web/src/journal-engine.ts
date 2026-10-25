@@ -1,7 +1,6 @@
 import {
   add,
   effectivePostingDate,
-  type Posting,
   balances,
   parseJournal,
   type Balance,
@@ -11,13 +10,13 @@ import {
   type Transaction,
 } from '@jledger/core';
 
-export interface Filters {
-  query: string;
-  account: string;
-  month: string;
-  commodity: string;
-  status: string;
-}
+import {
+  dateRangeError,
+  InvalidDateRangeError,
+  matchesPosting,
+  type Filters,
+} from './report-filters';
+export type { Filters } from './report-filters';
 export interface Summary {
   names: string[];
   diagnostics: Diagnostic[];
@@ -40,17 +39,6 @@ export interface Row extends Transaction {
 export interface Detail extends Row {
   excerpt: string;
 }
-export const matchesAccount = (account: string, filter: string) =>
-  !filter || account === filter || account.startsWith(`${filter}:`);
-export const matchesPosting = (
-  posting: Posting,
-  transactionDate: string,
-  filters: Pick<Filters, 'account' | 'commodity' | 'month'>,
-) =>
-  posting.amount.commodity === filters.commodity &&
-  matchesAccount(posting.account, filters.account) &&
-  (!filters.month ||
-    effectivePostingDate(posting, transactionDate).startsWith(filters.month));
 const pause = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
 
 /** Lives exclusively in the worker in production; the UI receives summaries and visible rows. */
@@ -107,6 +95,11 @@ export class JournalEngine {
     filters: Filters,
     cancelled = () => false,
   ): Promise<Report | null> {
+    const invalidRange = dateRangeError(filters.dateFrom, filters.dateTo);
+    if (invalidRange) {
+      this.matches = [];
+      throw new InvalidDateRangeError(invalidRange);
+    }
     const matches: number[] = [],
       categories = new Map<string, string>(),
       monthly = new Map<string, string>();
@@ -149,10 +142,14 @@ export class JournalEngine {
       income: add('0', income.startsWith('-') ? income.slice(1) : `-${income}`),
       spending,
       categories: [...categories].sort((a, b) => Number(b[1]) - Number(a[1])),
-      monthly: this.summary.months.map((month) => ({
-        month,
-        value: monthly.get(month) ?? '0',
-      })),
+      monthly: this.summary.months
+        .filter(
+          (month) =>
+            (!filters.month || month === filters.month) &&
+            (!filters.dateFrom || month >= filters.dateFrom.slice(0, 7)) &&
+            (!filters.dateTo || month <= filters.dateTo.slice(0, 7)),
+        )
+        .map((month) => ({ month, value: monthly.get(month) ?? '0' })),
     };
   }
 

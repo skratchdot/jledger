@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { formatAmount, type Source } from '@jledger/core';
 import demo from '@jledger/examples/demo.journal?raw';
 import { useJournal } from './use-journal';
+import { dateRangeError, monthBounds } from './report-filters';
 import { VirtualRegister } from './components/virtual-register';
 import { VirtualAccounts } from './components/virtual-accounts';
 import { Button } from './components/ui/button';
@@ -17,6 +18,8 @@ export function Explorer() {
   const [query, setQuery] = useState(''),
     [account, setAccount] = useState(''),
     [month, setMonth] = useState(''),
+    [dateFrom, setDateFrom] = useState(''),
+    [dateTo, setDateTo] = useState(''),
     [commodity, setCommodity] = useState(''),
     [status, setStatus] = useState('all');
   const [view, setView] = useState<'overview' | 'accounts'>('overview');
@@ -32,7 +35,16 @@ export function Explorer() {
       ),
     [],
   );
-  const filters = { query, account, month, commodity, status };
+  const filters = {
+    query,
+    account,
+    month,
+    dateFrom,
+    dateTo,
+    commodity,
+    status,
+  };
+  const invalidDateRange = dateRangeError(dateFrom, dateTo);
   const engine = useJournal(filters, range);
   const {
     summary,
@@ -63,7 +75,22 @@ export function Explorer() {
     setQuery('');
     setAccount('');
     setMonth('');
+    setDateFrom('');
+    setDateTo('');
     setStatus('all');
+    setSelected(null);
+  }
+  function selectMonth(next: string) {
+    setMonth(next);
+    const bounds = next ? monthBounds(next) : { dateFrom: '', dateTo: '' };
+    setDateFrom(bounds.dateFrom);
+    setDateTo(bounds.dateTo);
+    setSelected(null);
+  }
+  function changeDate(which: 'from' | 'through', value: string) {
+    setMonth('');
+    if (which === 'from') setDateFrom(value);
+    else setDateTo(value);
     setSelected(null);
   }
   function replaceSources(next: Source[]) {
@@ -246,7 +273,7 @@ export function Explorer() {
               explorer.
             </div>
           )}
-          {message && (
+          {message && !invalidDateRange && (
             <div className="notice" role="alert">
               {message}
             </div>
@@ -346,14 +373,63 @@ export function Explorer() {
                       <select
                         aria-label="Month"
                         value={month}
-                        onChange={(e) => setMonth(e.target.value)}
+                        onChange={(e) => selectMonth(e.target.value)}
                       >
-                        <option value="">All posting dates</option>
+                        <option value="">All dates / custom range</option>
                         {months.map((m) => (
                           <option key={m}>{m}</option>
                         ))}
                       </select>
                     </label>
+                    <fieldset className="date-range">
+                      <legend className="sr-only">Posting date range</legend>
+                      <label>
+                        <span>From</span>
+                        <input
+                          type="date"
+                          autoComplete="off"
+                          aria-label="From date"
+                          value={dateFrom}
+                          min="0001-01-01"
+                          max="9999-12-31"
+                          aria-invalid={Boolean(invalidDateRange)}
+                          aria-describedby={
+                            invalidDateRange
+                              ? 'date-range-help date-range-error'
+                              : 'date-range-help'
+                          }
+                          onChange={(e) => changeDate('from', e.target.value)}
+                        />
+                      </label>
+                      <label>
+                        <span>Through</span>
+                        <input
+                          type="date"
+                          autoComplete="off"
+                          aria-label="Through date"
+                          value={dateTo}
+                          min="0001-01-01"
+                          max="9999-12-31"
+                          aria-invalid={Boolean(invalidDateRange)}
+                          aria-describedby={
+                            invalidDateRange
+                              ? 'date-range-help date-range-error'
+                              : 'date-range-help'
+                          }
+                          onChange={(e) =>
+                            changeDate('through', e.target.value)
+                          }
+                        />
+                      </label>
+                    </fieldset>
+                    {(dateFrom || dateTo) && (
+                      <Button
+                        className="text-button"
+                        onClick={() => selectMonth('')}
+                      >
+                        Clear dates
+                      </Button>
+                    )}
                     <label>
                       <span className="sr-only">Commodity</span>
                       <select
@@ -381,186 +457,221 @@ export function Explorer() {
                         <option value="">Unmarked</option>
                       </select>
                     </label>
-                    {(query || month || account || status !== 'all') && (
+                    {(query ||
+                      month ||
+                      dateFrom ||
+                      dateTo ||
+                      account ||
+                      status !== 'all') && (
                       <Button className="text-button" onClick={resetFilters}>
                         Clear filters
                       </Button>
                     )}
                   </section>
-                  {account && (
-                    <div className="account-filter">
-                      Filtering account: <strong>{account}</strong>{' '}
-                      <Button
-                        className="text-button"
-                        aria-label="Clear account filter"
-                        onClick={() => setAccount('')}
-                      >
-                        ×
-                      </Button>
-                    </div>
-                  )}
-                  {view === 'overview' ? (
+                  <p id="date-range-help" className="date-range-help">
+                    From and Through include both boundary dates. Filters use
+                    posting dates.
+                  </p>
+                  {invalidDateRange ? (
+                    <section
+                      className="panel date-range-error"
+                      id="date-range-error"
+                      role="alert"
+                    >
+                      {invalidDateRange}
+                    </section>
+                  ) : (
                     <>
-                      <section className="metrics" aria-label="Filtered totals">
-                        <div className="metric panel">
-                          <span>INCOME</span>
-                          <strong>{metric(report.income, currency)}</strong>
-                          <small>Credits shown as positive</small>
+                      {account && (
+                        <div className="account-filter">
+                          Filtering account: <strong>{account}</strong>{' '}
+                          <Button
+                            className="text-button"
+                            aria-label="Clear account filter"
+                            onClick={() => setAccount('')}
+                          >
+                            ×
+                          </Button>
                         </div>
-                        <div className="metric panel">
-                          <span>SPENDING</span>
-                          <strong>{metric(report.spending, currency)}</strong>
-                          <small>Net expense postings</small>
-                        </div>
-                        <div className="metric panel">
-                          <span>TRANSACTIONS</span>
-                          <strong>{report.count.toLocaleString()}</strong>
-                          <small>Matching your filters</small>
-                        </div>
-                      </section>
-                      <section className="chart-grid">
-                        <div className="panel chart-panel">
-                          <div className="section-title">
-                            <h2>Where it goes</h2>
-                            <span>By expense account</span>
-                          </div>
-                          {categories.length ? (
-                            <div className="bars">
-                              {categories.map(([name, value], i) => (
-                                <Button
-                                  className="bar-row"
-                                  key={name}
-                                  onClick={() => setAccount(name)}
-                                  aria-label={`Filter ${name}`}
-                                >
-                                  <div className="bar-label">
-                                    <span>
-                                      <i
-                                        style={{
-                                          background:
-                                            palette[i % palette.length],
-                                        }}
-                                      />
-                                      {name
-                                        .replace(/^expenses:/i, '')
-                                        .replaceAll(':', ' / ')}
-                                    </span>
-                                    <strong>{metric(value, currency)}</strong>
-                                  </div>
-                                  <div className="bar-track">
-                                    <div
-                                      style={{
-                                        width: `${Math.max(1, (Math.abs(Number(value)) / biggest) * 100)}%`,
-                                        background: palette[i % palette.length],
-                                      }}
-                                    />
-                                  </div>
-                                </Button>
-                              ))}
+                      )}
+                      {view === 'overview' ? (
+                        <>
+                          <section
+                            className="metrics"
+                            aria-label="Filtered totals"
+                          >
+                            <div className="metric panel">
+                              <span>INCOME</span>
+                              <strong>{metric(report.income, currency)}</strong>
+                              <small>Credits shown as positive</small>
                             </div>
-                          ) : (
-                            <p className="empty">
-                              No expense postings match these filters.
-                            </p>
-                          )}
-                          <p className="chart-hint">
-                            Top 30 categories. Select one to explore its
-                            transactions. Bar lengths use absolute values.
-                          </p>
-                        </div>
-                        <div className="panel chart-panel">
+                            <div className="metric panel">
+                              <span>SPENDING</span>
+                              <strong>
+                                {metric(report.spending, currency)}
+                              </strong>
+                              <small>Net expense postings</small>
+                            </div>
+                            <div className="metric panel">
+                              <span>TRANSACTIONS</span>
+                              <strong>{report.count.toLocaleString()}</strong>
+                              <small>Matching your filters</small>
+                            </div>
+                          </section>
+                          <section className="chart-grid">
+                            <div className="panel chart-panel">
+                              <div className="section-title">
+                                <h2>Where it goes</h2>
+                                <span>By expense account</span>
+                              </div>
+                              {categories.length ? (
+                                <div className="bars">
+                                  {categories.map(([name, value], i) => (
+                                    <Button
+                                      className="bar-row"
+                                      key={name}
+                                      onClick={() => setAccount(name)}
+                                      aria-label={`Filter ${name}`}
+                                    >
+                                      <div className="bar-label">
+                                        <span>
+                                          <i
+                                            style={{
+                                              background:
+                                                palette[i % palette.length],
+                                            }}
+                                          />
+                                          {name
+                                            .replace(/^expenses:/i, '')
+                                            .replaceAll(':', ' / ')}
+                                        </span>
+                                        <strong>
+                                          {metric(value, currency)}
+                                        </strong>
+                                      </div>
+                                      <div className="bar-track">
+                                        <div
+                                          style={{
+                                            width: `${Math.max(1, (Math.abs(Number(value)) / biggest) * 100)}%`,
+                                            background:
+                                              palette[i % palette.length],
+                                          }}
+                                        />
+                                      </div>
+                                    </Button>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className="empty">
+                                  No expense postings match these filters.
+                                </p>
+                              )}
+                              <p className="chart-hint">
+                                Top 30 categories. Select one to explore its
+                                transactions. Bar lengths use absolute values.
+                              </p>
+                            </div>
+                            <div className="panel chart-panel">
+                              <div className="section-title">
+                                <h2>Spending over time</h2>
+                                <span>Monthly</span>
+                              </div>
+                              <div className="monthly-chart">
+                                {(() => {
+                                  const data = report.monthly;
+                                  const max = Math.max(
+                                    1,
+                                    ...data.map((d) =>
+                                      Math.abs(Number(d.value)),
+                                    ),
+                                  );
+                                  return data.map((d) => (
+                                    <Button
+                                      key={d.month}
+                                      className={`month-column ${month === d.month ? 'chosen' : ''}`}
+                                      onClick={() =>
+                                        selectMonth(
+                                          month === d.month ? '' : d.month,
+                                        )
+                                      }
+                                      aria-label={`Filter month ${d.month}`}
+                                    >
+                                      <span className="month-value">
+                                        {metric(d.value, currency)}
+                                      </span>
+                                      <div className="column-track">
+                                        <div
+                                          style={{
+                                            height: `${(Math.abs(Number(d.value)) / max) * 100}%`,
+                                          }}
+                                        />
+                                      </div>
+                                      <span>{d.month}</span>
+                                    </Button>
+                                  ));
+                                })()}
+                              </div>
+                              <p className="chart-hint">
+                                Select a month to focus the explorer. No
+                                currency conversion is applied.
+                              </p>
+                            </div>
+                          </section>
+                        </>
+                      ) : (
+                        <section className="panel accounts-panel">
                           <div className="section-title">
-                            <h2>Spending over time</h2>
-                            <span>Monthly</span>
+                            <h2>Account balances</h2>
+                            <span>
+                              All dates · direct balances · click to filter the
+                              register
+                            </span>
                           </div>
-                          <div className="monthly-chart">
-                            {(() => {
-                              const data = report.monthly;
-                              const max = Math.max(
-                                1,
-                                ...data.map((d) => Math.abs(Number(d.value))),
-                              );
-                              return data.map((d) => (
-                                <Button
-                                  key={d.month}
-                                  className={`month-column ${month === d.month ? 'chosen' : ''}`}
-                                  onClick={() =>
-                                    setMonth(month === d.month ? '' : d.month)
-                                  }
-                                  aria-label={`Filter month ${d.month}`}
-                                >
-                                  <span className="month-value">
-                                    {metric(d.value, currency)}
-                                  </span>
-                                  <div className="column-track">
-                                    <div
-                                      style={{
-                                        height: `${(Math.abs(Number(d.value)) / max) * 100}%`,
-                                      }}
-                                    />
-                                  </div>
-                                  <span>{d.month}</span>
-                                </Button>
-                              ));
-                            })()}
-                          </div>
-                          <p className="chart-hint">
-                            Select a month to focus the explorer. No currency
-                            conversion is applied.
+                          <p className="muted">
+                            Balances here use the entire journal, independent of
+                            register filters. Parent accounts do not include
+                            subaccounts yet.
                           </p>
+                          <VirtualAccounts
+                            accounts={allBalances}
+                            onSelect={setAccount}
+                          />
+                        </section>
+                      )}
+                      <section className="panel register" aria-busy={busy}>
+                        <div className="section-title">
+                          <h2>
+                            Transaction register{' '}
+                            <span className="count">{report.count}</span>
+                          </h2>
+                          <span>Newest first · select to inspect</span>
                         </div>
+                        <VirtualRegister
+                          count={report.count}
+                          window={engine.window}
+                          filterKey={JSON.stringify(filters)}
+                          currency={currency}
+                          month={month}
+                          dateFrom={dateFrom}
+                          dateTo={dateTo}
+                          account={account}
+                          onRange={setRange}
+                          onAccount={setAccount}
+                          onInspect={engine.inspect}
+                        />
+                        {!report.count && !busy && (
+                          <p className="empty">
+                            No transactions match your filters.
+                          </p>
+                        )}
+                        <p className="chart-hint">
+                          Grouped by transaction · date filters use posting
+                          dates · all {report.count.toLocaleString()} matches
+                          are browsable. Totals include every match.
+                        </p>
                       </section>
                     </>
-                  ) : (
-                    <section className="panel accounts-panel">
-                      <div className="section-title">
-                        <h2>Account balances</h2>
-                        <span>
-                          All dates · direct balances · click to filter the
-                          register
-                        </span>
-                      </div>
-                      <p className="muted">
-                        Balances here use the entire journal, independent of
-                        register filters. Parent accounts do not include
-                        subaccounts yet.
-                      </p>
-                      <VirtualAccounts
-                        accounts={allBalances}
-                        onSelect={setAccount}
-                      />
-                    </section>
                   )}
-                  <section className="panel register" aria-busy={busy}>
-                    <div className="section-title">
-                      <h2>
-                        Transaction register{' '}
-                        <span className="count">{report.count}</span>
-                      </h2>
-                      <span>Newest first · select to inspect</span>
-                    </div>
-                    <VirtualRegister
-                      count={report.count}
-                      window={engine.window}
-                      filterKey={JSON.stringify(filters)}
-                      currency={currency}
-                      month={month}
-                      account={account}
-                      onRange={setRange}
-                      onAccount={setAccount}
-                      onInspect={engine.inspect}
-                    />
-                    {!report.count && !busy && (
-                      <p className="empty">
-                        No transactions match your filters.
-                      </p>
-                    )}
-                    <p className="chart-hint">
-                      Grouped by transaction · month filters posting dates · all{' '}
-                      {report.count.toLocaleString()} matches are browsable.
-                      Totals include every match.
-                    </p>
-                  </section>
                 </>
               )}
             </>
@@ -571,7 +682,7 @@ export function Explorer() {
           </footer>
         </div>
       </main>
-      {selected && (
+      {selected && !invalidDateRange && (
         <dialog
           className="detail panel"
           aria-label="Transaction details"

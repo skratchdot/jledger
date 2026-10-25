@@ -213,6 +213,15 @@ test('200,000 transactions import off-thread, search stays responsive, and every
     String(count + 1),
   );
   await expect(page.getByLabel('Filtered totals')).toContainText('2000.00 USD');
+  await page.getByLabel('From date', { exact: true }).fill('2024-01-02');
+  await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '1');
+  await page.getByLabel('From date', { exact: true }).fill('2024-01-01');
+  await page.getByLabel('Through date', { exact: true }).fill('2024-01-01');
+  await expect(page.getByRole('table')).toHaveAttribute(
+    'aria-rowcount',
+    String(count + 1),
+  );
+  await expect(page.getByLabel('Filtered totals')).toContainText('2000.00 USD');
   expect(await page.locator('tbody tr').count()).toBeLessThan(50);
   await page.getByLabel('Scrollable transaction register').evaluate((node) => {
     node.scrollTop = node.scrollHeight;
@@ -508,4 +517,133 @@ test('explicit commodity formats normalize exact totals and preserve original so
     'Unsupported amount or grouping',
   );
   await expect(page.getByRole('table')).toHaveCount(0);
+});
+
+test('inclusive ranges share exact chart/register totals and month shortcuts replace bounds', async ({
+  page,
+}) => {
+  const text =
+    '2024-02-28 Start\n  expenses:tea  0.10 USD\n  assets:cash\n\n2024-02-29 Leap\n  expenses:food  0.20 USD\n  assets:cash\n\n2024-03-01 Refund\n  expenses:food  -0.05 USD\n  assets:cash\n\n2024-03-02 Outside\n  expenses:food  99 USD\n  assets:cash\n\n2024-02-01 Shifted\n  expenses:food  1.23 USD ; [2024-02-29]\n  assets:cash\n';
+  await page.goto('./');
+  await page.getByLabel('Import journal files').setInputFiles({
+    name: 'range.journal',
+    mimeType: 'text/plain',
+    buffer: Buffer.from(text),
+  });
+  await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '6');
+  await page.getByLabel('From date', { exact: true }).fill('2024-02-28');
+  await page.getByLabel('Through date', { exact: true }).fill('2024-03-01');
+  await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '5');
+  await expect(page.getByLabel('Filtered totals')).toContainText('1.48 USD');
+  await expect(page.getByRole('table')).toContainText('Shifted');
+  await expect(page.getByRole('table')).not.toContainText('Outside');
+  await page.getByLabel('From date', { exact: true }).fill('2024-02-29');
+  await page.getByLabel('Through date', { exact: true }).fill('2024-02-29');
+  await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '3');
+  await expect(page.getByLabel('Filtered totals')).toContainText('1.43 USD');
+  await page.getByRole('button', { name: '· Shifted', exact: true }).click();
+  await expect(page.getByRole('dialog')).toContainText(
+    'Transaction date 2024-02-01',
+  );
+  await expect(page.getByRole('dialog')).toContainText('posted 2024-02-29');
+  await page.getByRole('button', { name: 'Close', exact: true }).click();
+  await page.getByLabel('Search transactions').fill('shifted');
+  await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '2');
+  await page.getByLabel('From date', { exact: true }).fill('2024-03-01');
+  await page.getByLabel('Through date', { exact: true }).fill('');
+  await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '1');
+  await page.getByRole('button', { name: 'Clear dates', exact: true }).click();
+  await expect(page.getByLabel('Search transactions')).toHaveValue('shifted');
+  await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '2');
+  await expect(page.getByLabel('Filtered totals')).toContainText('1.23 USD');
+  await page
+    .getByRole('button', { name: 'Clear filters', exact: true })
+    .click();
+  await page.getByLabel('Month', { exact: true }).selectOption('2024-02');
+  await expect(page.getByLabel('From date', { exact: true })).toHaveValue(
+    '2024-02-01',
+  );
+  await expect(page.getByLabel('Through date', { exact: true })).toHaveValue(
+    '2024-02-29',
+  );
+  await expect(page.getByLabel('Filtered totals')).toContainText('1.53 USD');
+  await page.getByRole('button', { name: 'Filter month 2024-02' }).click();
+  await expect(page.getByLabel('From date', { exact: true })).toHaveValue('');
+  await expect(page.getByLabel('Through date', { exact: true })).toHaveValue(
+    '',
+  );
+  await expect(page.getByLabel('Filtered totals')).toContainText('100.48 USD');
+});
+
+test('invalid ranges hide reports, recover locally, and imports clear the date scope', async ({
+  page,
+}) => {
+  await page.goto('./');
+  const file = {
+    name: 'dates.journal',
+    mimeType: 'text/plain',
+    buffer: Buffer.from(journal),
+  };
+  await page.getByLabel('Import journal files').setInputFiles(file);
+  await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '3');
+  await page.getByLabel('From date', { exact: true }).fill('2024-03-02');
+  await page.getByLabel('Through date', { exact: true }).fill('2024-03-01');
+  await expect(page.getByRole('alert')).toContainText(
+    'From date must be on or before Through date',
+  );
+  await expect(page.getByLabel('From date', { exact: true })).toHaveAttribute(
+    'aria-invalid',
+    'true',
+  );
+  await expect(page.getByRole('table')).toHaveCount(0);
+  await expect(page.getByLabel('Filtered totals')).toHaveCount(0);
+  await page.getByLabel('Through date', { exact: true }).fill('2024-03-03');
+  await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '1');
+  await expect(page.getByRole('alert')).toHaveCount(0);
+  await page.getByRole('button', { name: 'Clear dates', exact: true }).click();
+  await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '3');
+  await page.getByLabel('Month', { exact: true }).selectOption('2024-02');
+  await page.getByLabel('From date', { exact: true }).fill('2024-02-02');
+  await expect(page.getByLabel('Month', { exact: true })).toHaveValue('');
+  await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '2');
+  await page.getByLabel('Import journal files').setInputFiles(file);
+  await expect(page.getByLabel('From date', { exact: true })).toHaveValue('');
+  await expect(page.getByLabel('Through date', { exact: true })).toHaveValue(
+    '',
+  );
+  await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '3');
+  await page.getByLabel('Import journal files').setInputFiles({
+    name: 'invalid-utf8.journal',
+    mimeType: 'text/plain',
+    buffer: Buffer.from([0xff]),
+  });
+  await expect(page.getByRole('alert')).toBeVisible();
+  const importError = await page.getByRole('alert').textContent();
+  await page.getByLabel('From date', { exact: true }).fill('2024-02-02');
+  await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '2');
+  await expect(page.getByRole('alert')).toHaveText(importError!);
+});
+
+test('date range controls remain labelled and within a narrow viewport', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('./');
+  await page.getByLabel('Import journal files').setInputFiles({
+    name: 'mobile.journal',
+    mimeType: 'text/plain',
+    buffer: Buffer.from(journal),
+  });
+  for (const name of ['From date', 'Through date']) {
+    const input = page.getByLabel(name, { exact: true });
+    await expect(input).toBeVisible();
+    const box = await input.boundingBox();
+    expect(box).not.toBeNull();
+    expect(box!.x).toBeGreaterThanOrEqual(0);
+    expect(box!.x + box!.width).toBeLessThanOrEqual(390);
+  }
+  await page.getByLabel('From date', { exact: true }).fill('2024-02-02');
+  await page.getByLabel('Through date', { exact: true }).fill('2024-02-02');
+  await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '2');
+  await expect(page.getByLabel('Filtered totals')).toContainText('4.25 USD');
 });

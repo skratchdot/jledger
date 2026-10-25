@@ -43,7 +43,9 @@ synthetic two-posting transactions (14,888,890 bytes). It checks that:
 2. Animation frames continue while the import and first search complete.
 3. A known final transaction can be found and the exact total is `2000.00 USD`.
 4. Clearing filters exposes all 200,000 matches, with fewer than 50 mounted table rows.
-5. Scrolling to the end reaches the final transaction, not a truncated first page.
+5. A date range can exclude all rows, then restore the full 200,000-result set
+   with the same exact total and bounded DOM.
+6. Scrolling to the end reaches the final transaction, not a truncated first page.
 
 Metrics are written to the current run's ignored `test-results/**/metrics.json` and
 attached to the Playwright result. Test both the root build and the `/jledger/`

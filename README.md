@@ -87,7 +87,7 @@ installation is a later milestone.
 - [Plain balance assertions](docs/assertions.md) with expected/calculated diagnostics;
   a failed assertion disables every report. Assignments and total/inclusive forms
   remain unsupported.
-- Interactive expense categories and monthly charts, plus date, status, commodity,
+- Interactive expense categories and monthly charts, plus inclusive [date ranges](docs/explorer-filters.md), status, commodity,
   account, and text filters. Income/spending classification currently uses English
   `income`/`revenue`/`expenses` account prefixes, case-insensitively.
 - [Primary posting dates](docs/posting-dates.md) for month filters, monthly charts,
