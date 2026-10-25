@@ -104,10 +104,10 @@ The parser stays inside core initially. See the [roadmap](docs/roadmap.md) and
 ## Validate
 
 ```sh
-pnpm check                   # typecheck, unit/integration cases, production builds
+pnpm check                   # lint, typecheck, unit/integration cases, production builds
 pnpm exec playwright install chromium  # once, if a browser is not installed
 pnpm test:browser            # production imports, filters, details, privacy, offline, server
-pnpm format:check
+pnpm format:check            # oxfmt; pnpm format applies formatting
 ```
 
 To use an installed Chromium, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` to its path.

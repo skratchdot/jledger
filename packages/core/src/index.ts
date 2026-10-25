@@ -239,7 +239,7 @@ export function parseJournal(sources: Source[]): Journal {
         const [account = '', ...amountParts] = body.split(/\t+| {2,}/);
         if (
           !account ||
-          /[\[\]()=]/.test(account) ||
+          /[[\]()=]/.test(account) ||
           account.split(':').some((p) => !p.trim())
         ) {
           error(
