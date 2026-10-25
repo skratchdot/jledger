@@ -1,8 +1,18 @@
-import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import {
+  mkdtemp,
+  mkdir,
+  rm,
+  writeFile,
+  symlink,
+  unlink,
+  truncate,
+} from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { readSources, resolveFiles, selectFiles } from './files.js';
+import { parseJournal, balances } from '@jledger/core';
+import { MAX_BYTES, readSources, resolveFiles, selectFiles } from './files.js';
 let root = '';
 afterEach(async () => {
   if (root) await rm(root, { recursive: true, force: true });
@@ -46,10 +56,67 @@ describe('journal file selection', () => {
     await writeFile(b, 'two');
     await expect(resolveFiles([a, a])).rejects.toThrow('more than once');
     expect((await readSources([a, b])).map((s) => s.name)).toEqual([
-      '1/a.journal',
-      '2/a.journal',
+      'a.journal',
+      'nested/a.journal',
     ]);
     await writeFile(a, Buffer.from([0xff]));
     await expect(readSources([a])).rejects.toThrow();
   });
+  it('maps selected nested paths without discovering unselected include targets', async () => {
+    root = await mkdtemp(join(tmpdir(), 'jledger-includes-'));
+    await mkdir(join(root, 'parts'));
+    const main = join(root, 'main.journal');
+    const child = join(root, 'parts/child.journal');
+    await writeFile(main, 'include parts/child.journal\n');
+    await writeFile(
+      child,
+      '2026-01-01 Included\n  expenses:food  1.23 USD\n  assets:cash\n',
+    );
+    const selected = await resolveFiles([main, child], 'ignored');
+    const sources = await readSources(selected);
+    expect(sources.map((s) => s.name)).toEqual([
+      'main.journal',
+      'parts/child.journal',
+    ]);
+    const journal = parseJournal(sources);
+    expect(journal.diagnostics).toEqual([]);
+    expect(journal.transactions).toHaveLength(1);
+    expect(journal.transactions[0]!.source.file).toBe('parts/child.journal');
+    const missing = parseJournal(await readSources(await resolveFiles([main])));
+    expect(missing.diagnostics[0]!.code).toBe('include-missing');
+    expect(() => balances(missing)).toThrow('reports are disabled');
+  });
+
+  it('rejects selected-path symlink substitution on reread and symlink aliases on selection', async () => {
+    root = await mkdtemp(join(tmpdir(), 'jledger-includes-'));
+    const main = join(root, 'main.journal');
+    const secret = join(root, 'unselected.journal');
+    await writeFile(main, 'selected');
+    await writeFile(secret, 'unselected');
+    const selected = await resolveFiles([main]);
+    await unlink(main);
+    await symlink(secret, main);
+    await expect(readSources(selected)).rejects.toThrow('path changed');
+    await expect(resolveFiles([main, secret])).rejects.toThrow(
+      'more than once',
+    );
+  });
+
+  it('rejects directories and oversized files before decoding', async () => {
+    root = await mkdtemp(join(tmpdir(), 'jledger-includes-'));
+    await expect(readSources([root])).rejects.toThrow();
+    const oversized = join(root, 'oversized.journal');
+    await writeFile(oversized, '');
+    await truncate(oversized, MAX_BYTES + 1);
+    await expect(readSources([oversized])).rejects.toThrow('256 MiB');
+  });
+  it.skipIf(process.platform === 'win32')(
+    'rejects a named pipe without waiting for a writer',
+    async () => {
+      root = await mkdtemp(join(tmpdir(), 'jledger-includes-'));
+      const pipe = join(root, 'pipe.journal');
+      execFileSync('mkfifo', [pipe]);
+      await expect(readSources([pipe])).rejects.toThrow('regular file');
+    },
+  );
 });

@@ -39,14 +39,14 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    balanced postings, and direct balances against hledger 1.52 and a pinned Ledger
    release; document intentional differences. Prioritize representative journals
    before adding many unrelated features.
-   The initial [corpus v1](conformance.md) now covers 11 synthetic cases with
+   The initial [corpus v1](conformance.md) now covers 14 synthetic cases with
    pinned hledger 1.52 / Ledger 3.3.2 captures and a live differential command.
 2. Add a lossless syntax tree and include graph. The initial read-only,
    [source-preserving line tree](syntax.md) now shares a streaming scanner with
-   accounting interpretation; include resolution remains the next slice.
-   Browser imports need explicit relative-path mapping (directory picker where
-   supported, or a clear file bundle workflow), cycle/missing-file diagnostics, and no arbitrary disk/network reads.
-   CLI resolution should use the same graph with an explicit allowed-root policy.
+   accounting interpretation. The [selected-source graph](includes.md) now expands
+   literal relative includes in both adapters, with browser folder mapping, cycle/
+   missing-target diagnostics, and no file discovery. Optional CLI discovery needs
+   an explicit allowed-root policy; broader include syntax and root selection remain.
 3. Implement commodity styles, grouping/decimal marks, balance assertions,
    aliases/default-year rules, and posting/secondary dates with tested semantics.
 4. Make account typing configurable and support account hierarchy rollups.

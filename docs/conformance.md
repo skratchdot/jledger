@@ -16,18 +16,19 @@ Three separate questions are tested:
    account balances. Hierarchical reports, query languages, valuation, text layout,
    status inheritance, and rounding/display precision are outside this comparison.
 
-| Cases                                                                                | jledger                           | hledger 1.52 / Ledger 3.3.2 |
-| ------------------------------------------------------------------------------------ | --------------------------------- | --------------------------- |
-| Salary, groceries, refund; exact decimals; separate currencies; large exact quantity | Posting and direct-balance parity | Accepted                    |
-| Relative include, commodity format, valid assertion, cost, posting date              | Reports disabled                  | Accepted                    |
-| Unbalanced postings, failed assertion                                                | Reports disabled                  | Rejected                    |
+| Cases                                                                                                        | jledger                           | hledger 1.52 / Ledger 3.3.2 |
+| ------------------------------------------------------------------------------------------------------------ | --------------------------------- | --------------------------- |
+| Salary, groceries, refund; exact decimals; separate currencies; large exact quantity; simple/nested includes | Posting and direct-balance parity | Accepted                    |
+| Commodity format, valid assertion, cost, posting date; repeated includes                                     | Reports disabled                  | Accepted                    |
+| Unbalanced postings, failed assertion, missing include                                                       | Reports disabled                  | Rejected                    |
 
 Quantities are canonical decimal strings; scale differences such as `0.30` and
 `0.3` are ignored. hledger JSON mantissas are read as strings before JSON parsing,
 never rounded through JavaScript numbers. Ledger CSV and both flat balance reports
 are decoded separately. The first corpus uses one commodity per account and
 nonzero final balances; mixed-commodity account report formatting, zero omission,
-more date/status variants, and multi-file input remain gaps. Unsupported cases
+and more date/status variants remain gaps. Simple and nested include cases now
+compare selected-source bundles with reference execution of the root journal. Unsupported cases
 record acceptance only, with no suggestion their financial semantics are supported.
 
 ## Reproduce
@@ -57,21 +58,22 @@ same environment variables with `node scripts/compatibility.mjs --capture` after
 building core. Review every capture diff and run both test commands. Capture files
 are evidence from the tools, never generated from jledger's own expected results.
 
-## Next focused milestone: safe include graphs
+## Selected-source includes and remaining scope
 
-The first [source-preserving syntax layer](syntax.md) is implemented: ordered nodes
-for transaction headers, postings, directives, comments, blank lines, and unknown
-syntax, with original text and source spans. Unsupported nodes and errors remain
-visible, and financial interpretation still fails closed. Exact decoded-text round
-trips are tested; a full grammar and safe transformation API are still required
-before exposing any editing feature.
+The [source-preserving syntax layer](syntax.md) and [selected-source include graph](includes.md)
+are implemented. The corpus now contains 14 cases, including posting and direct
+balance parity for simple and nested includes, plus acceptance-only captures for
+missing and repeated includes. Included sources are supplied explicitly in fixture
+metadata; each reference still reads the root journal and follows its real relative
+paths. Ordinary tests supply that named bundle to core.
 
-Then add relative include graph resolution through injected adapters. Core receives
-named sources and explicit entry points; it performs no filesystem or network reads.
-Browser imports must map user-selected relative paths, report ambiguous names and
-missing files, and never fetch includes. CLI resolution needs an explicit allowed
-root and realpath containment, including symlink checks. Both adapters need cycle,
-repeat-include, traversal, depth/size, and source-order tests against these pinned
-references. Define glob and duplicate semantics from reference evidence before
-supporting them. Keep decoding, graph traversal, parsing, and reports in the worker
-for the browser, and extend the large-journal regression with a multi-file scenario.
+Repeated includes are deliberately rejected even though both reference tools accept
+the sample repeated-child case. This is a documented restriction, not parity.
+Cycle, path, ambiguity, and graph-limit tests are jledger safety checks rather than
+claims about every reference edge case.
+
+The first adapters use a selected-file allowlist, which is narrower than automatic
+filesystem traversal under a permitted root. Optional CLI directory discovery would
+need explicit allowed-root authorization and additional containment tests. Globs,
+quoted names, repeat-inclusion semantics, and explicit root selection remain future
+work. No authoring feature is enabled by retaining source text or resolving includes.

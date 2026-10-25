@@ -1,4 +1,5 @@
-import { writeFile } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { expect, test } from '@playwright/test';
 const journal =
   '2024-02-01 * Salary\n  assets:cash  1000 USD\n  income:salary\n\n2024-02-02 ! Coffee\n  expenses:coffee  4.25 USD\n  assets:cash\n';
@@ -244,7 +245,7 @@ test('200,000 transactions import off-thread, search stays responsive, and every
   });
 });
 
-test('monthly file bundle preserves exact totals, comment context and source drill-down', async ({
+test('monthly include bundle preserves exact totals, comment context and source drill-down', async ({
   page,
 }) => {
   const files = Array.from({ length: 12 }, (_, index) => {
@@ -265,6 +266,11 @@ test('monthly file bundle preserves exact totals, comment context and source dri
         index % 2 ? `\uFEFF${text.replaceAll('\n', '\r\n')}` : text,
       ),
     };
+  });
+  files.push({
+    name: 'main.journal',
+    mimeType: 'text/plain',
+    buffer: Buffer.from(files.map((file) => `include ${file.name}\n`).join('')),
   });
   await page.goto('./');
   await page.getByLabel('Import journal files').setInputFiles(files);
@@ -292,4 +298,81 @@ test('monthly file bundle preserves exact totals, comment context and source dri
   await expect(page.getByRole('dialog')).toContainText('synthetic:yes');
   await expect(page.getByRole('dialog')).toContainText('café 🍵');
   await expect(page.getByRole('dialog')).toContainText('-10.01 USD');
+});
+
+test('selected include bundle stays local and missing targets disable reports after replacement', async ({
+  page,
+}) => {
+  const requests: string[] = [];
+  page.on('request', (request) => requests.push(request.url()));
+  await page.goto('./');
+  const main = {
+    name: 'main.journal',
+    mimeType: 'text/plain',
+    buffer: Buffer.from('include child.journal\n'),
+  };
+  await page.getByLabel('Import journal files').setInputFiles([
+    {
+      name: 'child.journal',
+      mimeType: 'text/plain',
+      buffer: Buffer.from(journal),
+    },
+    main,
+  ]);
+  await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '3');
+  await expect(page.getByLabel('Filtered totals')).toContainText('4.25 USD');
+  await page.getByRole('button', { name: '! Coffee', exact: true }).click();
+  await expect(page.getByRole('dialog')).toContainText('child.journal:5');
+  await page.getByRole('button', { name: 'Close', exact: true }).click();
+  await page.getByLabel('Import journal files').setInputFiles(main);
+  await expect(page.getByRole('alert')).toContainText('main.journal:1');
+  await expect(page.getByRole('alert')).toContainText(
+    'Include target is not selected',
+  );
+  await expect(page.getByRole('table')).toHaveCount(0);
+  expect(requests.some((url) => /child\.journal|\/api\//.test(url))).toBe(
+    false,
+  );
+});
+
+test('journal folder maps nested relative paths in the worker and rejects escapes', async ({
+  page,
+}, testInfo) => {
+  const directory = testInfo.outputPath('bundle');
+  await mkdir(join(directory, 'parts'), { recursive: true });
+  await writeFile(
+    join(directory, 'main.journal'),
+    'include parts/child.journal\n',
+  );
+  await writeFile(
+    join(directory, 'parts/child.journal'),
+    '2026-01-01 Nested\n  expenses:food  1.23 USD\n  assets:cash\n\ninclude ../other.journal\n',
+  );
+  await writeFile(
+    join(directory, 'other.journal'),
+    '2026-01-02 Other\n  expenses:food  2.00 USD\n  assets:cash\n',
+  );
+  await page.goto('./');
+  await page
+    .getByLabel('Import journal folder', { exact: true })
+    .setInputFiles(directory);
+  await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '3');
+  await expect(page.getByLabel('Filtered totals')).toContainText('3.23 USD');
+  await page.getByRole('button', { name: '· Nested', exact: true }).click();
+  await expect(page.getByRole('dialog')).toContainText(
+    'bundle/parts/child.journal:1',
+  );
+  await expect(page.getByRole('dialog')).toContainText('-1.23 USD');
+  await page.getByRole('button', { name: 'Close', exact: true }).click();
+  await writeFile(
+    join(directory, 'main.journal'),
+    'include ../../outside.journal\n',
+  );
+  await page
+    .getByLabel('Import journal folder', { exact: true })
+    .setInputFiles(directory);
+  await expect(page.getByRole('alert')).toContainText(
+    'Include path must stay within the selected bundle',
+  );
+  await expect(page.getByRole('table')).toHaveCount(0);
 });

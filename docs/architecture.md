@@ -30,8 +30,9 @@ It streams the [source-preserving syntax layer](syntax.md), whose line nodes ret
 full source spans and distinguish comments, postings, headers, directives, and
 unknown text. Callers can explicitly retain a read-only tree and reconstruct its
 original decoded text exactly; the explorer does not retain that extra tree.
-A complete grammar, include graph, and safe transformation API are still needed
-before authoring is introduced.
+The [selected-source include graph](includes.md) preserves directive order while
+requiring every target in the supplied bundle. A complete grammar and safe
+transformation API are still needed before authoring is introduced.
 
 The UI uses React, Tailwind CSS, and a shadcn-style Base UI Button component with
 local ownership of its source and styling. `components.json` supplies shadcn aliases.
@@ -52,8 +53,12 @@ URLs to an SPA shell. Base paths are explicit in Vite, the router, and the worke
 
 `jledger server` resolves file-selection precedence once, binds only to IPv4
 loopback, and exposes `GET /api/journals`. The endpoint accepts no path parameters.
-A reload rereads only the selected paths. It does not discover arbitrary files or
-follow `include` directives. The browser enters this mode only with `?local=1`;
+A reload rereads only the selected paths. Literal relative `include` directives
+resolve among that explicit file allowlist in core; they never cause filesystem
+discovery. Source names are relative to the selected files’ common directory.
+Canonical selected paths are revalidated on each read, and final symlink opens are
+refused. The common directory is a naming boundary, not authority to read its other
+files. The browser enters this mode only with `?local=1`;
 ordinary static visits do not probe a journal endpoint.
 
 Host validation, origin checks, Fetch Metadata checks, no CORS, no-store responses,

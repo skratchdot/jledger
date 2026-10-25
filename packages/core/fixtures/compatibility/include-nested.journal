@@ -1,0 +1,9 @@
+2026-01-01 Before
+  assets:cash  100 USD
+  equity:opening
+
+include parts/child.journal
+
+2026-01-01 After
+  expenses:food  2.34 USD
+  assets:cash

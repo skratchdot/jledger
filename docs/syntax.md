@@ -1,8 +1,9 @@
 # Source-preserving syntax
 
 Core exposes a read-only source syntax layer alongside the accounting parser.
-This is the first step toward safe include graphs and eventual authoring; it does
-not expand journal compatibility or provide editing/writing commands.
+The syntax layer underpins selected-source includes and eventual authoring.
+Source classification itself does not validate accounting or provide editing/
+writing commands.
 
 ```ts
 import { parseJournalSyntax, printJournalSyntax } from '@jledger/core';
@@ -61,10 +62,11 @@ Unicode offsets, BOM/CRLF and EOF boundaries, generated unsupported text,
 block-comment context, source locations, and continued fail-closed interpretation.
 The pinned compatibility corpus protects the existing accounting behavior.
 Production browser tests exercise the 200,000-transaction scenario and a synthetic
-12-file monthly bundle with refunds, comments, Unicode, and mixed line endings.
+13-file monthly include bundle with refunds, comments, Unicode, and mixed line endings.
 
-The next slice is include graph resolution: explicit entry points, ordered include
-edges with source spans, adapters restricted to selected browser sources or an
-explicit CLI root, and diagnostics for cycles, missing/ambiguous paths, traversal,
-symlink escapes, and limits. Includes remain errors until that complete path is
-implemented and checked against the pinned reference tools.
+The [selected-source include graph](includes.md) now resolves literal paths within
+explicitly supplied sources, preserving ordered edge spans and rejecting invalid
+graphs. The accounting parser expands those edges without flattening/rewriting
+source strings, keeping diagnostics and transaction drill-down tied to the original
+files and lines. Broader include syntax, optional disk discovery, a full grammar,
+and authoring remain separate work.

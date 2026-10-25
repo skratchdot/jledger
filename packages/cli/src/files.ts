@@ -1,7 +1,8 @@
-import { glob, readFile, realpath, stat } from 'node:fs/promises';
-import { basename, join, resolve } from 'node:path';
+import { glob, open, realpath, stat } from 'node:fs/promises';
+import { constants } from 'node:fs';
+import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { homedir } from 'node:os';
-import type { Source } from '@jledger/core';
+import { MAX_JOURNAL_SOURCES, type Source } from '@jledger/core';
 
 export const MAX_BYTES = 256 * 1024 * 1024;
 
@@ -47,26 +48,66 @@ export async function resolveFiles(
 }
 
 export async function readSources(files: string[]): Promise<Source[]> {
-  const sizes = await Promise.all(
-    files.map(async (file) => {
-      const info = await stat(file);
+  if (files.length > MAX_JOURNAL_SOURCES)
+    throw new Error(`Select at most ${MAX_JOURNAL_SOURCES} journal files.`);
+  if (!files.length) return [];
+  const canonical = await Promise.all(files.map((file) => realpath(file)));
+  if (canonical.some((file, i) => file !== resolve(files[i]!)))
+    throw new Error(
+      'A selected journal path changed or is a symbolic link. Reselect the journals.',
+    );
+  if (new Set(canonical).size !== canonical.length)
+    throw new Error('The same journal was selected more than once.');
+  // Virtual paths share only the selected files' common directory. This grants
+  // no authority to open other files there: includes resolve against this allowlist.
+  let directory = dirname(canonical[0]!);
+  for (const file of canonical) {
+    while (true) {
+      const path = relative(directory, file);
+      if (!isAbsolute(path) && path !== '..' && !path.startsWith(`..${sep}`))
+        break;
+      const parent = dirname(directory);
+      if (parent === directory)
+        throw new Error('Selected journals must share a filesystem root.');
+      directory = parent;
+    }
+  }
+  let total = 0;
+  const decoder = new TextDecoder('utf-8', { fatal: true });
+  const sources: Source[] = [];
+  for (const file of canonical) {
+    const handle = await open(
+      file,
+      constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK,
+    );
+    try {
+      const info = await handle.stat();
       if (!info.isFile())
         throw new Error('Each journal must be a regular file.');
-      return info.size;
-    }),
-  );
-  if (sizes.reduce((sum, size) => sum + size, 0) > MAX_BYTES)
-    throw new Error('Selected journals exceed the 256 MiB total limit.');
-  const buffers = await Promise.all(files.map((file) => readFile(file)));
-  if (buffers.reduce((sum, buffer) => sum + buffer.length, 0) > MAX_BYTES)
-    throw new Error('Selected journals exceed the 256 MiB total limit.');
-  const names = files.map((file) => basename(file));
-  const decoder = new TextDecoder('utf-8', { fatal: true });
-  return buffers.map((buffer, i) => ({
-    name:
-      names.filter((n) => n === names[i]).length > 1
-        ? `${i + 1}/${names[i]}`
-        : names[i]!,
-    text: decoder.decode(buffer),
-  }));
+      if (total + info.size > MAX_BYTES)
+        throw new Error('Selected journals exceed the 256 MiB total limit.');
+      // Bound allocation even if a selected file grows between stat and read.
+      const chunks: Buffer[] = [];
+      let size = 0;
+      while (true) {
+        const buffer = Buffer.alloc(
+          Math.min(64 * 1024, MAX_BYTES - total - size + 1),
+        );
+        const { bytesRead } = await handle.read(buffer);
+        if (!bytesRead) break;
+        size += bytesRead;
+        if (total + size > MAX_BYTES)
+          throw new Error('Selected journals exceed the 256 MiB total limit.');
+        chunks.push(buffer.subarray(0, bytesRead));
+      }
+      total += size;
+      sources.push({
+        name: relative(directory, file).split(sep).join('/'),
+        text: decoder.decode(Buffer.concat(chunks, size)),
+      });
+    } finally {
+      await handle.close();
+    }
+  }
+  return sources;
 }

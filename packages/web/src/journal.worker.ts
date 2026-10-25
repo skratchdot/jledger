@@ -1,5 +1,5 @@
 import { JournalEngine, type Filters } from './journal-engine';
-import type { Source } from '@jledger/core';
+import { MAX_JOURNAL_SOURCES, type Source } from '@jledger/core';
 
 export type Request =
   | {
@@ -23,12 +23,16 @@ self.onmessage = async (event: MessageEvent<Request>) => {
       const current = ++generation;
       let sources = request.sources ?? [];
       if (request.files) {
+        if (request.files.length > MAX_JOURNAL_SOURCES)
+          throw new Error(
+            `Select at most ${MAX_JOURNAL_SOURCES} journal files.`,
+          );
         if (request.files.reduce((sum, file) => sum + file.size, 0) > MAX_BYTES)
           throw new Error('Choose files totaling 256 MiB or less.');
         const decoder = new TextDecoder('utf-8', { fatal: true });
         sources = await Promise.all(
           request.files.map(async (file) => ({
-            name: file.name,
+            name: file.webkitRelativePath || file.name,
             text: decoder.decode(await file.arrayBuffer()),
           })),
         );
