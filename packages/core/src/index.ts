@@ -3,6 +3,14 @@ import { scanJournalLines } from './syntax.js';
 import { resolveIncludes } from './includes.js';
 import { checkBalanceAssertions } from './assertions.js';
 import {
+  parseAmount,
+  parseCommodityFormat,
+  type CommodityFormat,
+  type DecimalMark,
+} from './amounts.js';
+export { parseAmount } from './amounts.js';
+export type { AmountContext, CommodityFormat, DecimalMark } from './amounts.js';
+import {
   hasPostingDateSyntax,
   parseFullDate,
   parsePostingDateComment,
@@ -68,25 +76,6 @@ export interface Balance {
   amounts: Amount[];
 }
 
-/** Deliberately narrow grammar; unsupported syntax must never become a plausible balance. */
-export function parseAmount(text: string): Amount | null {
-  const number = '[+-]?\\d+(?:\\.\\d+)?';
-  const prefix = text.match(new RegExp(`^([+-]?)\\s*([$€£])\\s*(${number})$`));
-  if (prefix) {
-    if (prefix[1] && /^[+-]/.test(prefix[3]!)) return null;
-    return {
-      quantity: add('0', `${prefix[1]}${prefix[3]}`),
-      commodity: prefix[2]!,
-    };
-  }
-  const suffix = text.match(
-    new RegExp(`^(${number})(?:\\s+([\\p{L}][\\p{L}\\p{N}._-]*|[$€£]))?$`, 'u'),
-  );
-  return suffix
-    ? { quantity: add('0', suffix[1]!), commodity: suffix[2] ?? '' }
-    : null;
-}
-
 type PendingPosting = Omit<Posting, 'amount'> & { amount: Amount | null };
 type PendingTransaction = Omit<Transaction, 'postings'> & {
   postings: PendingPosting[];
@@ -107,7 +96,14 @@ export function parseJournal(sources: Source[]): Journal {
     includes.set(edge.from, lines);
   }
   let hasAssertions = false;
-  function parseSource(source: Source) {
+  interface ParsingContext {
+    decimalMark?: DecimalMark;
+    commodityFormats: Map<string, CommodityFormat>;
+  }
+  function parseSource(source: Source, inherited: ParsingContext) {
+    // Decimal marks are file-scoped; commodity formats flow through expanded includes.
+    const context = { ...inherited };
+    let commodityBlock: string | undefined;
     let tx: PendingTransaction | null = null;
     let txErrors = 0;
     let blockComment = false;
@@ -176,6 +172,7 @@ export function parseJournal(sources: Source[]): Journal {
         continue;
       }
       if (node.kind === 'block-comment-start') {
+        commodityBlock = undefined;
         finish();
         blockComment = true;
         continue;
@@ -202,16 +199,51 @@ export function parseJournal(sources: Source[]): Journal {
         }
       }
       if (node.kind === 'blank') {
+        commodityBlock = undefined;
         finish();
         continue;
       }
       if (node.kind === 'comment') continue;
       const content = raw.split(';')[0]!.trimEnd();
       if (!/^\s/.test(raw)) {
+        commodityBlock = undefined;
         finish();
         const child = includes.get(source.name)?.get(node.line);
         if (child !== undefined) {
-          parseSource(byName.get(child)!);
+          parseSource(byName.get(child)!, context);
+          continue;
+        }
+        if (/^decimal-mark(?:\s|$)/.test(content)) {
+          const match = content.match(/^decimal-mark\s+([.,])$/);
+          if (!match)
+            error(
+              location,
+              'decimal-mark',
+              'Use decimal-mark . or decimal-mark , without other options.',
+            );
+          else context.decimalMark = match[1] as DecimalMark;
+          continue;
+        }
+        if (/^commodity(?:\s|$)/.test(content)) {
+          const declaration = parseCommodityFormat(
+            content.slice('commodity'.length).trim(),
+            context.decimalMark,
+          );
+          if (!declaration)
+            error(
+              location,
+              'commodity-format',
+              'Use an unquoted commodity or a supported numeric format example. Examples must agree with decimal-mark and use three-digit grouping.',
+            );
+          else {
+            commodityBlock = declaration.commodity;
+            if (declaration.format)
+              context.commodityFormats.set(
+                declaration.commodity,
+                declaration.format,
+              );
+            else context.commodityFormats.delete(declaration.commodity);
+          }
           continue;
         }
         if (/^account\s+\S/.test(content)) continue;
@@ -257,6 +289,20 @@ export function parseJournal(sources: Source[]): Journal {
           postings: [],
         };
       } else {
+        if (!tx && commodityBlock && /^format(?:\s|$)/.test(content.trim())) {
+          const declaration = parseCommodityFormat(
+            content.trim().slice('format'.length).trim(),
+            context.decimalMark,
+          );
+          if (!declaration?.format || declaration.commodity !== commodityBlock)
+            error(
+              location,
+              'commodity-format',
+              'A format subdirective must contain a supported numeric example of the declared commodity.',
+            );
+          else context.commodityFormats.set(commodityBlock, declaration.format);
+          continue;
+        }
         if (!tx) {
           error(
             location,
@@ -306,24 +352,24 @@ export function parseJournal(sources: Source[]): Journal {
             );
             continue;
           }
-          balanceAssertion = parseAmount(parts[1]!.trim());
+          balanceAssertion = parseAmount(parts[1]!.trim(), context);
           if (!balanceAssertion) {
             error(
               location,
               'balance-assertion-syntax',
-              'Use a supported explicit quantity and commodity after =. Costs, expressions, grouping and extra assertion operators are not supported.',
+              'Use a supported explicit quantity and commodity after =. Costs, expressions and extra assertion operators are not supported. Grouping and comma decimals require explicit supported directives.',
             );
             continue;
           }
         }
         const amount = postingAmountText
-          ? parseAmount(postingAmountText)
+          ? parseAmount(postingAmountText, context)
           : null;
         if (amountText && !amount) {
           error(
             location,
             'amount',
-            'Unsupported amount. Use dot decimals with an optional currency symbol or suffix commodity; costs, grouping, and expressions are not supported yet.',
+            'Unsupported amount or grouping. Use exact decimals with a supported unquoted prefix/suffix commodity. Grouping and comma decimals require a compatible explicit directive; costs and expressions are not supported.',
           );
           continue;
         }
@@ -347,7 +393,8 @@ export function parseJournal(sources: Source[]): Journal {
         'Unterminated comment block.',
       );
   }
-  for (const name of graph.entryPoints) parseSource(byName.get(name)!);
+  for (const name of graph.entryPoints)
+    parseSource(byName.get(name)!, { commodityFormats: new Map() });
   if (hasAssertions && !journal.diagnostics.length)
     journal.diagnostics.push(...checkBalanceAssertions(journal.transactions));
   return journal;

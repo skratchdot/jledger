@@ -263,7 +263,35 @@
     ]
   },
   "commodity-format": {
-    "accepted": true
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Decimal comma",
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "1234.56"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Decimal comma",
+        "account": "equity:opening",
+        "commodity": "EUR",
+        "quantity": "-1234.56"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "1234.56"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "EUR",
+        "quantity": "-1234.56"
+      }
+    ]
   },
   "assertion-failure": {
     "accepted": false
@@ -708,6 +736,440 @@
         "account": "expenses:food",
         "commodity": "USD",
         "quantity": "2"
+      }
+    ]
+  },
+  "format-source-order-comma": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Test",
+        "account": "expenses:food",
+        "commodity": "EUR",
+        "quantity": "1.234"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Test",
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "-1.234"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "-1.234"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "EUR",
+        "quantity": "1.234"
+      }
+    ]
+  },
+  "format-source-order-dot": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Test",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1234"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Test",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1234"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1234"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1234"
+      }
+    ]
+  },
+  "format-changing": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Test",
+        "account": "expenses:food",
+        "commodity": "EUR",
+        "quantity": "1.234"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Test",
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "-1.234"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Test",
+        "account": "expenses:food",
+        "commodity": "EUR",
+        "quantity": "1.234"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Test",
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "-1.234"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "-2.468"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "EUR",
+        "quantity": "2.468"
+      }
+    ]
+  },
+  "decimal-mark-comma": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Test",
+        "account": "expenses:food",
+        "commodity": "EUR",
+        "quantity": "1.234"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Test",
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "-1.234"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "-1.234"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "EUR",
+        "quantity": "1.234"
+      }
+    ]
+  },
+  "decimal-mark-dot": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Test",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1234"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Test",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1234"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1234"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1234"
+      }
+    ]
+  },
+  "decimal-mark-fraction": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Test",
+        "account": "expenses:food",
+        "commodity": "EUR",
+        "quantity": "1.23"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Test",
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "-1.23"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "-1.23"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "EUR",
+        "quantity": "1.23"
+      }
+    ]
+  },
+  "format-prefix": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Test",
+        "account": "expenses:food",
+        "commodity": "EUR",
+        "quantity": "1234.56"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Test",
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "-1234.56"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "-1234.56"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "EUR",
+        "quantity": "1234.56"
+      }
+    ]
+  },
+  "format-dollar": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Test",
+        "account": "expenses:food",
+        "commodity": "$",
+        "quantity": "1234.56"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Test",
+        "account": "assets:cash",
+        "commodity": "$",
+        "quantity": "-1234.56"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "$",
+        "quantity": "-1234.56"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "$",
+        "quantity": "1234.56"
+      }
+    ]
+  },
+  "format-subdirective": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Test",
+        "account": "expenses:food",
+        "commodity": "EUR",
+        "quantity": "1234"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Test",
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "-1234"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "-1234"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "EUR",
+        "quantity": "1234"
+      }
+    ]
+  },
+  "format-exact-precision": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Test",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1.23456"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Test",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1.23456"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1.23456"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1.23456"
+      }
+    ]
+  },
+  "format-grouping-rejected": {
+    "accepted": false
+  },
+  "format-conflict-rejected": {
+    "accepted": true
+  },
+  "format-includes": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Child",
+        "account": "expenses:food",
+        "commodity": "EUR",
+        "quantity": "1.234"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Child",
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "-1.234"
+      },
+      {
+        "date": "2026-01-02",
+        "description": "Parent",
+        "account": "expenses:food",
+        "commodity": "EUR",
+        "quantity": "1.234"
+      },
+      {
+        "date": "2026-01-02",
+        "description": "Parent",
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "-1.234"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "-2.468"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "EUR",
+        "quantity": "2.468"
+      }
+    ]
+  },
+  "format-include-styles": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Inherited comma",
+        "account": "expenses:food",
+        "commodity": "EUR",
+        "quantity": "1.234"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Inherited comma",
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "-1.234"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Changed to dot",
+        "account": "expenses:food",
+        "commodity": "EUR",
+        "quantity": "1.234"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Changed to dot",
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "-1.234"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Parent after child",
+        "account": "expenses:food",
+        "commodity": "EUR",
+        "quantity": "1.234"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Parent after child",
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "-1.234"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "-3.702"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "EUR",
+        "quantity": "3.702"
       }
     ]
   }

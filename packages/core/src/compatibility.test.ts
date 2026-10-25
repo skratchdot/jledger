@@ -66,6 +66,14 @@ describe('compatibility corpus v1 (captured hledger 1.52 / Ledger 3.3.2)', () =>
           continue;
         }
         expect(expected.accepted).toBe(true);
+        if (tool === 'ledger' && fixture.ledgerParity === false) {
+          // Captured acceptance is not accounting parity. The declared difference
+          // must be real, and live verification still checks both full captures.
+          expect(expected).not.toEqual(
+            hledger[fixture.id as keyof typeof hledger],
+          );
+          continue;
+        }
         expect(
           tool === 'ledger' && fixture.ledgerUsesTransactionDates
             ? projection(true)

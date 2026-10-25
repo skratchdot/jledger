@@ -257,7 +257,7 @@ test('monthly include bundle preserves exact totals, comment context and source 
       .toString()
       .padStart(3, '0');
     const bankBalance = `${bankCents < 0n ? '-' : ''}${bankDigits.slice(0, -2)}.${bankDigits.slice(-2)}`;
-    const salary = `2026-${month}-01 Salary month ${month}\n  assets:bank  3000.00 USD = ${bankBalance} USD\n  income:salary\n\n`;
+    const salary = `2026-${month}-01 Salary month ${month}\n  assets:bank  3,000.00 USD = ${bankBalance} USD\n  income:salary\n\n`;
     const purchases = Array.from({ length: 1999 }, (_, item) => {
       const number = item + 1;
       const quantity = number % 2 ? '10.01' : '-1.23';
@@ -275,7 +275,10 @@ test('monthly include bundle preserves exact totals, comment context and source 
   files.push({
     name: 'main.journal',
     mimeType: 'text/plain',
-    buffer: Buffer.from(files.map((file) => `include ${file.name}\n`).join('')),
+    buffer: Buffer.from(
+      'commodity 1,000.00 USD\n' +
+        files.map((file) => `include ${file.name}\n`).join(''),
+    ),
   });
   await page.goto('./');
   await page.getByLabel('Import journal files').setInputFiles(files);
@@ -470,6 +473,39 @@ test('unsupported secondary posting dates are diagnostics rather than inert comm
   await expect(page.getByRole('alert')).toContainText('secondary.journal:2');
   await expect(page.getByRole('alert')).toContainText(
     'Secondary posting dates are not supported',
+  );
+  await expect(page.getByRole('table')).toHaveCount(0);
+});
+
+test('explicit commodity formats normalize exact totals and preserve original source', async ({
+  page,
+}) => {
+  const text =
+    'commodity EUR\n  format 1.000,00 EUR\n\n2026-01-01 Salary\n  assets:cash  2.000,00 EUR = 2.000,00 EUR\n  income:salary\n\n2026-02-01 Food\n  expenses:food  12,34 EUR\n  assets:cash  -12,34 EUR = 1.987,66 EUR\n';
+  const file = (contents: string) => ({
+    name: 'formatted.journal',
+    mimeType: 'text/plain',
+    buffer: Buffer.from(contents),
+  });
+  await page.goto('./');
+  await page.getByLabel('Import journal files').setInputFiles(file(text));
+  await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '3');
+  await expect(page.getByLabel('Filtered totals')).toContainText('2000.00 EUR');
+  await expect(page.getByLabel('Filtered totals')).toContainText('12.34 EUR');
+  await page.getByRole('button', { name: 'Filter month 2026-02' }).click();
+  await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '2');
+  await page.getByRole('button', { name: '· Food', exact: true }).click();
+  await expect(page.getByRole('dialog')).toContainText(
+    'balance checked: 1987.66 EUR',
+  );
+  await expect(page.getByRole('dialog')).toContainText('12,34 EUR');
+  await expect(page.getByRole('dialog')).toContainText('formatted.journal:8');
+  await page.getByRole('button', { name: 'Close', exact: true }).click();
+  await page
+    .getByLabel('Import journal files')
+    .setInputFiles(file(text.replace('12,34 EUR', '12.34,56 EUR')));
+  await expect(page.getByRole('alert')).toContainText(
+    'Unsupported amount or grouping',
   );
   await expect(page.getByRole('table')).toHaveCount(0);
 });

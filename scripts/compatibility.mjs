@@ -3,7 +3,7 @@ import { spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import assert from 'node:assert/strict';
-import { add, parseAmount } from '../packages/core/dist/index.js';
+import { add } from '../packages/core/dist/index.js';
 
 const root = new URL(
   '../packages/core/fixtures/compatibility/',
@@ -69,11 +69,6 @@ function quantity(text) {
   return value.includes('.')
     ? value.replace(/0+$/, '').replace(/\.$/, '')
     : value;
-}
-function amount(value) {
-  const parsed = parseAmount(value);
-  assert.ok(parsed, `Unsupported reference report amount: ${value}`);
-  return { commodity: parsed.commodity, quantity: quantity(parsed.quantity) };
 }
 function hledgerAmount(a) {
   const { decimalMantissa, decimalPlaces } = a.aquantity;
@@ -150,20 +145,35 @@ for (const tool of tools) {
         '--flat',
         '--no-total',
         ...(tool.name === 'ledger'
-          ? ['--format', '%(quoted(account)),%(quoted(amount))\n']
-          : ['-O', 'csv']),
+          ? [
+              '--format',
+              '%(quoted(account)),%(quoted(quantity(amount))),%(quoted(commodity(amount)))\n',
+            ]
+          : ['-O', 'json']),
       ]);
       assert.equal(report.status, 0, report.stderr);
-      const rows = csv(report.stdout);
-      entry.balances = (tool.name === 'ledger' ? rows : rows.slice(1))
-        .flatMap(([account, value]) =>
-          value.split(/,\s+|\n/).map((part) => ({ account, ...amount(part) })),
-        )
-        .sort(
-          (a, b) =>
-            a.account.localeCompare(b.account) ||
-            a.commodity.localeCompare(b.commodity),
-        );
+      // JSON mantissas and Ledger quantity expressions bypass localized display
+      // punctuation and commodity precision; exact report quantities must not round.
+      entry.balances =
+        tool.name === 'ledger'
+          ? csv(report.stdout).map(([account, q, commodity]) => ({
+              account,
+              commodity,
+              quantity: quantity(q),
+            }))
+          : JSON.parse(
+              report.stdout.replace(
+                /("decimalMantissa"\s*:\s*)(-?\d+)/g,
+                '$1"$2"',
+              ),
+            )[0].flatMap(([account, , , amounts]) =>
+              amounts.map((a) => ({ account, ...hledgerAmount(a) })),
+            );
+      entry.balances.sort(
+        (a, b) =>
+          a.account.localeCompare(b.account) ||
+          a.commodity.localeCompare(b.commodity),
+      );
     }
     observed[fixture.id] = entry;
   }
