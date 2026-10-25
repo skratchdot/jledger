@@ -90,11 +90,13 @@ for (const tool of tools) {
   assert.match(version.stdout, tool.version, 'Wrong reference version');
   const observed = {};
   for (const fixture of cases) {
-    const path = fileURLToPath(new URL(`${fixture.id}.journal`, root));
-    const prefix =
-      tool.name === 'ledger'
-        ? ['--args-only', '-f', path]
-        : ['--no-conf', '-f', path];
+    const inputFiles = (
+      fixture.referenceFiles ?? [`${fixture.id}.journal`]
+    ).flatMap((name) => ['-f', fileURLToPath(new URL(name, root))]);
+    const prefix = [
+      tool.name === 'ledger' ? '--args-only' : '--no-conf',
+      ...inputFiles,
+    ];
     const parsed = run(tool, [
       ...prefix,
       ...(tool.name === 'ledger' ? ['csv'] : ['print', '-O', 'json']),
@@ -217,7 +219,7 @@ for (const tool of tools) {
     // tag system has no equivalent hledger type query, so do not imply parity.
     if (entry.accepted && fixture.accountTypes && tool.name === 'hledger') {
       entry.accountTypes = {};
-      for (const type of ['A', 'L', 'E', 'R', 'X', 'C', 'V']) {
+      for (const type of ['A', 'L', 'E', 'R', 'X', 'C', 'V', 'G']) {
         const result = run(tool, [
           ...prefix,
           'accounts',

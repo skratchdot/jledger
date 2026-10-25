@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { formatAmount, type Source } from '@jledger/core';
+import { ACCOUNT_TYPE_LABELS, formatAmount, type Source } from '@jledger/core';
 import demo from '@jledger/examples/demo.journal?raw';
 import { useJournal } from './use-journal';
 import { dateRangeError, monthBounds } from './report-filters';
@@ -545,7 +545,7 @@ export function Explorer() {
                                             }}
                                           />
                                           {name
-                                            .replace(/^expenses:/i, '')
+                                            .replace(/^expenses?:/i, '')
                                             .replaceAll(':', ' / ')}
                                         </span>
                                         <strong>
@@ -686,7 +686,9 @@ export function Explorer() {
                         <p className="chart-hint">
                           Grouped by transaction · date filters use posting
                           dates · all {report.count.toLocaleString()} matches
-                          are browsable. Totals include every match.
+                          are browsable. Totals include every match. Income and
+                          spending use journal account types or English-name
+                          defaults.
                         </p>
                       </section>
                     </>
@@ -729,22 +731,37 @@ export function Explorer() {
             </p>
           )}
           <dl>
-            {selected.postings.map((p, i) => (
-              <div key={i}>
-                <dt>{p.account}</dt>
-                <dd>
-                  {formatAmount(p.amount)}
-                  {p.inferred && <small> inferred</small>}
-                  {p.date && <small> · posted {p.date}</small>}
-                  {p.balanceAssertion && (
+            {selected.postings.map((p, i) => {
+              const classification = selected.postingTypes[i]!;
+              return (
+                <div key={i}>
+                  <dt>{p.account}</dt>
+                  <dd>
+                    {formatAmount(p.amount)}
+                    {p.inferred && <small> inferred</small>}
                     <small>
                       {' '}
-                      · balance checked: {formatAmount(p.balanceAssertion)}
+                      ·{' '}
+                      {classification.type
+                        ? ACCOUNT_TYPE_LABELS[classification.type]
+                        : 'Unclassified'}
+                      {classification.origin === 'declared'
+                        ? ` · declared on ${classification.account} at ${classification.source!.file}:${classification.source!.line}`
+                        : classification.origin === 'inferred'
+                          ? ' · English-name default'
+                          : ''}
                     </small>
-                  )}
-                </dd>
-              </div>
-            ))}
+                    {p.date && <small> · posted {p.date}</small>}
+                    {p.balanceAssertion && (
+                      <small>
+                        {' '}
+                        · balance checked: {formatAmount(p.balanceAssertion)}
+                      </small>
+                    )}
+                  </dd>
+                </div>
+              );
+            })}
           </dl>
           <h3>Original source</h3>
           <pre>{selected.excerpt}</pre>

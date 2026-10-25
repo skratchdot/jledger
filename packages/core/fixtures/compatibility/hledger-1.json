@@ -1631,6 +1631,34 @@
   },
   "account-type-inline": {
     "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic meal",
+        "account": "dépenses:repas",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic meal",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "account": "dépenses:repas",
+        "commodity": "USD",
+        "quantity": "2"
+      }
+    ],
     "accountTypes": {
       "A": ["assets:cash"],
       "L": [],
@@ -1638,11 +1666,40 @@
       "R": [],
       "X": ["dépenses:repas"],
       "C": ["assets:cash"],
-      "V": []
+      "V": [],
+      "G": []
     }
   },
   "account-type-continuation": {
     "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic meal",
+        "account": "dépenses:repas",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic meal",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "account": "dépenses:repas",
+        "commodity": "USD",
+        "quantity": "2"
+      }
+    ],
     "accountTypes": {
       "A": ["assets:cash"],
       "L": [],
@@ -1650,7 +1707,8 @@
       "R": [],
       "X": ["dépenses:repas"],
       "C": ["assets:cash"],
-      "V": []
+      "V": [],
+      "G": []
     }
   },
   "account-type-single-space": {
@@ -1662,11 +1720,40 @@
       "R": [],
       "X": [],
       "C": ["assets:cash"],
-      "V": []
+      "V": [],
+      "G": []
     }
   },
   "account-type-word": {
     "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic meal",
+        "account": "dépenses:repas",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic meal",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "account": "dépenses:repas",
+        "commodity": "USD",
+        "quantity": "2"
+      }
+    ],
     "accountTypes": {
       "A": ["assets:cash"],
       "L": [],
@@ -1674,7 +1761,8 @@
       "R": [],
       "X": ["dépenses:repas"],
       "C": ["assets:cash"],
-      "V": []
+      "V": [],
+      "G": []
     }
   },
   "account-type-repeated": {
@@ -1686,11 +1774,40 @@
       "R": [],
       "X": ["dépenses:repas"],
       "C": ["assets:cash"],
-      "V": []
+      "V": [],
+      "G": []
     }
   },
   "account-type-child": {
     "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic meal",
+        "account": "dépenses:repas",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic meal",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "account": "dépenses:repas",
+        "commodity": "USD",
+        "quantity": "2"
+      }
+    ],
     "accountTypes": {
       "A": ["assets:cash"],
       "L": [],
@@ -1698,7 +1815,8 @@
       "R": ["dépenses:repas"],
       "X": [],
       "C": ["assets:cash"],
-      "V": []
+      "V": [],
+      "G": []
     }
   },
   "account-type-invalid": {
@@ -1706,6 +1824,34 @@
   },
   "account-type-no-separator": {
     "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic meal",
+        "account": "dépenses:repas",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic meal",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "account": "dépenses:repas",
+        "commodity": "USD",
+        "quantity": "2"
+      }
+    ],
     "accountTypes": {
       "A": ["assets:cash"],
       "L": [],
@@ -1713,7 +1859,815 @@
       "R": ["dépenses:repas"],
       "X": [],
       "C": ["assets:cash"],
-      "V": []
+      "V": [],
+      "G": []
+    }
+  },
+  "account-type-codes": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "typeA:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "typeL:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "typeE:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "typeR:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "typeX:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "typeC:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "typeV:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "typeG:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "balancing",
+        "commodity": "USD",
+        "quantity": "-8"
+      }
+    ],
+    "balances": [
+      {
+        "account": "balancing",
+        "commodity": "USD",
+        "quantity": "-8"
+      },
+      {
+        "account": "typeA:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "typeC:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "typeE:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "typeG:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "typeL:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "typeR:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "typeV:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "typeX:child",
+        "commodity": "USD",
+        "quantity": "1"
+      }
+    ],
+    "accountTypes": {
+      "A": ["typeA:child", "typeC:child"],
+      "L": ["typeL:child"],
+      "E": ["typeE:child", "typeV:child"],
+      "R": ["typeG:child", "typeR:child"],
+      "X": ["typeX:child"],
+      "C": ["typeC:child"],
+      "V": ["typeV:child"],
+      "G": ["typeG:child"]
+    }
+  },
+  "account-type-words": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "typeA:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "typeL:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "typeE:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "typeR:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "typeX:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "typeC:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "typeV:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "typeG:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "balancing",
+        "commodity": "USD",
+        "quantity": "-8"
+      }
+    ],
+    "balances": [
+      {
+        "account": "balancing",
+        "commodity": "USD",
+        "quantity": "-8"
+      },
+      {
+        "account": "typeA:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "typeC:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "typeE:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "typeG:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "typeL:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "typeR:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "typeV:child",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "typeX:child",
+        "commodity": "USD",
+        "quantity": "1"
+      }
+    ],
+    "accountTypes": {
+      "A": ["typeA:child", "typeC:child"],
+      "L": ["typeL:child"],
+      "E": ["typeE:child", "typeV:child"],
+      "R": ["typeG:child", "typeR:child"],
+      "X": ["typeX:child"],
+      "C": ["typeC:child"],
+      "V": ["typeV:child"],
+      "G": ["typeG:child"]
+    }
+  },
+  "account-type-defaults": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "asset:bank:checking",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "asset:saving",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "debts:loan",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "liability:card",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "equity:conversion",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "income:salary",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "revenues:salary",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "revenue:capital-gains",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "Income:losses",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "expense:food",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "EXPENSES:food",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "unclassified",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "balancing",
+        "commodity": "USD",
+        "quantity": "-14"
+      }
+    ],
+    "balances": [
+      {
+        "account": "asset:bank:checking",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "asset:saving",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "balancing",
+        "commodity": "USD",
+        "quantity": "-14"
+      },
+      {
+        "account": "debts:loan",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "equity:conversion",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "expense:food",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "EXPENSES:food",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "Income:losses",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "income:salary",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "liability:card",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "revenue:capital-gains",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "revenues:salary",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "unclassified",
+        "commodity": "USD",
+        "quantity": "1"
+      }
+    ],
+    "accountTypes": {
+      "A": ["asset:bank:checking", "asset:saving", "assets:cash"],
+      "L": ["debts:loan", "liability:card"],
+      "E": ["equity:conversion", "equity:opening"],
+      "R": [
+        "Income:losses",
+        "income:salary",
+        "revenue:capital-gains",
+        "revenues:salary"
+      ],
+      "X": ["EXPENSES:food", "expense:food"],
+      "C": ["asset:bank:checking", "asset:saving", "assets:cash"],
+      "V": ["equity:conversion"],
+      "G": ["Income:losses", "revenue:capital-gains"]
+    }
+  },
+  "account-type-overrides": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "expenses:clearing",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "balancing",
+        "commodity": "USD",
+        "quantity": "-3"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "balancing",
+        "commodity": "USD",
+        "quantity": "-3"
+      },
+      {
+        "account": "expenses:clearing",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      }
+    ],
+    "accountTypes": {
+      "A": ["expenses:clearing"],
+      "L": [],
+      "E": [],
+      "R": [],
+      "X": ["assets:cash", "expenses:food"],
+      "C": [],
+      "V": [],
+      "G": []
+    }
+  },
+  "account-type-untyped-repeat": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "dépenses:repas",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "balancing",
+        "commodity": "USD",
+        "quantity": "-1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "balancing",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "account": "dépenses:repas",
+        "commodity": "USD",
+        "quantity": "1"
+      }
+    ],
+    "accountTypes": {
+      "A": [],
+      "L": [],
+      "E": [],
+      "R": [],
+      "X": ["dépenses:repas"],
+      "C": [],
+      "V": [],
+      "G": []
+    }
+  },
+  "account-type-duplicate-tags": {
+    "accepted": true,
+    "accountTypes": {
+      "A": [],
+      "L": [],
+      "E": [],
+      "R": ["dépenses:repas"],
+      "X": [],
+      "C": [],
+      "V": [],
+      "G": []
+    }
+  },
+  "account-type-reverse-repeat": {
+    "accepted": true,
+    "accountTypes": {
+      "A": [],
+      "L": [],
+      "E": [],
+      "R": [],
+      "X": ["dépenses:repas"],
+      "C": [],
+      "V": [],
+      "G": []
+    }
+  },
+  "account-type-subtype-defaults": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "caisse:cash",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "conversion:trade",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "gains:stock",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "equity:conversion",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "income:gains",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "balancing",
+        "commodity": "USD",
+        "quantity": "-6"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "balancing",
+        "commodity": "USD",
+        "quantity": "-6"
+      },
+      {
+        "account": "caisse:cash",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "conversion:trade",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "equity:conversion",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "gains:stock",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "income:gains",
+        "commodity": "USD",
+        "quantity": "1"
+      }
+    ],
+    "accountTypes": {
+      "A": ["assets:cash", "caisse:cash"],
+      "L": [],
+      "E": ["conversion:trade", "equity:conversion"],
+      "R": ["gains:stock", "income:gains"],
+      "X": [],
+      "C": ["caisse:cash"],
+      "V": ["conversion:trade"],
+      "G": ["gains:stock"]
+    }
+  },
+  "account-type-include": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "dépenses:repas",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "revenus:paie",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "balancing",
+        "commodity": "USD",
+        "quantity": "-2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "balancing",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "account": "dépenses:repas",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "revenus:paie",
+        "commodity": "USD",
+        "quantity": "1"
+      }
+    ],
+    "accountTypes": {
+      "A": [],
+      "L": [],
+      "E": [],
+      "R": ["revenus:paie"],
+      "X": ["dépenses:repas"],
+      "C": [],
+      "V": [],
+      "G": []
+    }
+  },
+  "account-type-roots": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "dépenses:repas",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "revenus:paie",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Synthetic classification",
+        "account": "balancing",
+        "commodity": "USD",
+        "quantity": "-2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "balancing",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "account": "dépenses:repas",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "revenus:paie",
+        "commodity": "USD",
+        "quantity": "1"
+      }
+    ],
+    "accountTypes": {
+      "A": [],
+      "L": [],
+      "E": [],
+      "R": ["revenus:paie"],
+      "X": ["dépenses:repas"],
+      "C": [],
+      "V": [],
+      "G": []
+    }
+  },
+  "account-type-invalid-word": {
+    "accepted": false
+  },
+  "account-type-alternate-key": {
+    "accepted": true,
+    "accountTypes": {
+      "A": [],
+      "L": [],
+      "E": [],
+      "R": [],
+      "X": [],
+      "C": [],
+      "V": [],
+      "G": []
     }
   }
 }

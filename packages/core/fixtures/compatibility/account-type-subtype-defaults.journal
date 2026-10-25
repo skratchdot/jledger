@@ -1,0 +1,12 @@
+account caisse  ; type:C
+account conversion  ; type:V
+account gains  ; type:G
+
+2026-01-01 Synthetic classification
+  caisse:cash  1 USD
+  conversion:trade  1 USD
+  gains:stock  1 USD
+  assets:cash  1 USD
+  equity:conversion  1 USD
+  income:gains  1 USD
+  balancing  -6 USD

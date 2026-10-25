@@ -1,0 +1,2 @@
+include account-type-postings.journal
+include account-type-declarations.journal

@@ -6,6 +6,8 @@ import ledger from '../fixtures/compatibility/ledger-1.json';
 import {
   add,
   accountHierarchy,
+  createAccountTypeResolver,
+  matchesAccountType,
   balances,
   effectivePostingDate,
   parseJournal,
@@ -88,6 +90,26 @@ describe('compatibility corpus v1 (captured hledger 1.52 / Ledger 3.3.2)', () =>
         expect(report).toEqual(
           'balances' in expected ? expected.balances : undefined,
         );
+        if (
+          tool === 'hledger' &&
+          fixture.accountTypes &&
+          'accountTypes' in expected
+        ) {
+          const classify = createAccountTypeResolver(journal);
+          const accounts = [
+            ...new Set(
+              journal.transactions.flatMap((t) =>
+                t.postings.map((p) => p.account),
+              ),
+            ),
+          ].sort();
+          for (const type of ['A', 'L', 'E', 'R', 'X', 'C', 'V', 'G'] as const)
+            expect(
+              accounts.filter((account) =>
+                matchesAccountType(classify(account).type, type),
+              ),
+            ).toEqual(expected.accountTypes[type]);
+        }
         if (fixture.hierarchy?.includes(tool)) {
           const hierarchy = accountHierarchy(journal);
           const posted = new Set(hierarchy.direct.map((b) => b.account));
@@ -114,8 +136,8 @@ describe('compatibility corpus v1 (captured hledger 1.52 / Ledger 3.3.2)', () =>
   }
 });
 
-describe('account classification reference evidence (not jledger support)', () => {
-  it('captures inherited expenses, child overrides, first repeated declaration, and whitespace differences', () => {
+describe('account classification reference evidence', () => {
+  it('captures inherited expenses, child overrides, repeated declarations, and whitespace differences', () => {
     expect(hledger['account-type-inline'].accountTypes.X).toEqual([
       'dépenses:repas',
     ]);

@@ -39,7 +39,7 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    balanced postings, and direct balances against hledger 1.52 and a pinned Ledger
    release; document intentional differences. Prioritize representative journals
    before adding many unrelated features.
-   The initial [corpus v1](conformance.md) now covers 59 synthetic cases with
+   The initial [corpus v1](conformance.md) now covers 71 synthetic cases with
    pinned hledger 1.52 / Ledger 3.3.2 captures and a live differential command.
 2. Add a lossless syntax tree and include graph. The initial read-only,
    [source-preserving line tree](syntax.md) now shares a streaming scanner with
@@ -57,10 +57,11 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    subset. Quoted commodities, broader grouping, assignments and default-year/alias
    rules remain compatibility work; canonical report display remains exact.
 4. [Account hierarchy rollups](account-hierarchy.md) now provide exact inclusive
-   parents and a direct-posting display option. Configurable account types remain
-   the next slice. [Account-type conformance cases](account-types.md) now record
-   inheritance, overrides, repeated declarations, and whitespace; unsupported type
-   tags disable reports. Never guess all types from English labels for statements.
+   parents and a direct-posting display option. [Journal-defined account types](account-types.md)
+   now drive income/spending, with inheritance, child overrides, source explanations,
+   and separate reference classification comparisons. Conflicting/ambiguous tags
+   disable reports. UI overrides and financial statements remain future work;
+   never guess all types from English labels for statements.
 5. [Inclusive date ranges](explorer-filters.md) now work across charts and the
    register, using shared posting matching and month shortcuts. Next add account
    trees, saved filter presets, explicit query chips, keyboard navigation, and accessible chart/table equivalents. Specify hledger

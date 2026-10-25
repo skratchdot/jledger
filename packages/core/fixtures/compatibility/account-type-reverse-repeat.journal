@@ -1,0 +1,6 @@
+account dépenses  ; type:R
+account dépenses  ; type:X
+
+2026-01-01 Synthetic classification
+  dépenses:repas  1 USD
+  balancing  -1 USD

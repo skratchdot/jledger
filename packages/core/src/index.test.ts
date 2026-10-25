@@ -118,8 +118,8 @@ describe('journal subset', () => {
 
 describe('unsupported account classifications', () => {
   it.each([
-    ['account expenses  ; type:A', 1],
-    ['account expenses\n  ; type: A', 2],
+    ['account expenses  ; type:gain', 1],
+    ['account expenses\n  ; type:', 2],
     ['account expenses ; type: A', 1],
     ['account expenses  ; note: example, type:Q', 1],
   ])('rejects %s instead of ignoring classification', (declaration, line) => {
@@ -148,7 +148,7 @@ describe('unsupported account classifications', () => {
         name: 'main.journal',
         text: 'include types.journal\n2024-01-01\n  expenses:food  1 USD\n  assets:cash',
       },
-      { name: 'types.journal', text: 'account expenses\n  ; type:A' },
+      { name: 'types.journal', text: 'account expenses\n  ; type:Q' },
     ]);
     expect(journal.diagnostics).toEqual([
       expect.objectContaining({

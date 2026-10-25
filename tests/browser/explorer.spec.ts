@@ -777,7 +777,7 @@ test('hierarchy limit errors preserve the previous complete import with a warnin
   await expect(page.getByRole('table')).not.toContainText('999 USD');
 });
 
-test('account type declarations pause reports instead of showing misleading spending', async ({
+test('invalid account types pause reports instead of retaining previous spending', async ({
   page,
 }) => {
   await page.goto('./');
@@ -790,12 +790,53 @@ test('account type declarations pause reports instead of showing misleading spen
   await page.getByLabel('Import journal files').setInputFiles({
     name: 'typed.journal',
     mimeType: 'text/plain',
-    buffer: Buffer.from('account expenses  ; type:A\n\n' + journal),
+    buffer: Buffer.from('account expenses  ; type:Q\n\n' + journal),
   });
   await expect(page.getByRole('alert')).toContainText('typed.journal:1');
-  await expect(page.getByRole('alert')).toContainText(
-    'Account type declarations',
-  );
+  await expect(page.getByRole('alert')).toContainText('Unknown account type');
   await expect(page.getByRole('table')).toHaveCount(0);
   await expect(page.getByLabel('Filtered totals')).toHaveCount(0);
+});
+
+test('journal account types drive exact spending and income with linked categories and provenance', async ({
+  page,
+}) => {
+  await page.goto('./');
+  const text =
+    'include types.journal\n\n2026-01-01 Salary\n  assets:cash  1000 USD\n  revenus:paie\n\n2026-01-02 Café\n  dépenses:repas  0.10 USD\n  assets:cash\n\n2026-01-03 Refund\n  dépenses:repas  -0.03 USD\n  assets:cash\n\n2026-01-04 Transfer\n  expenses:clearing  20 USD\n  assets:cash';
+  await page.getByLabel('Import journal files').setInputFiles([
+    { name: 'main.journal', mimeType: 'text/plain', buffer: Buffer.from(text) },
+    {
+      name: 'types.journal',
+      mimeType: 'text/plain',
+      buffer: Buffer.from(
+        'account dépenses\n  ; type:expense\naccount revenus  ; type:R\naccount expenses  ; type:A',
+      ),
+    },
+  ]);
+  await expect(page.getByLabel('Filtered totals')).toContainText('1000 USD');
+  await expect(page.getByLabel('Filtered totals')).toContainText('0.07 USD');
+  await page
+    .getByRole('button', { name: 'Filter dépenses:repas', exact: true })
+    .click();
+  await expect(page.getByRole('table')).toContainText('Café');
+  await expect(page.getByRole('table')).toContainText('Refund');
+  await expect(page.getByRole('table')).not.toContainText('Transfer');
+  await expect(page.getByRole('table')).not.toContainText('Salary');
+  await expect(page.getByLabel('Filtered totals')).toContainText('0.07 USD');
+  await page.getByRole('button', { name: '· Café', exact: true }).click();
+  await expect(page.getByRole('dialog')).toContainText(
+    'Expense · declared on dépenses at types.journal:2',
+  );
+  await expect(page.getByRole('dialog')).toContainText(
+    'Cash · English-name default',
+  );
+  await page.getByRole('button', { name: 'Close', exact: true }).click();
+  await page
+    .getByRole('button', { name: 'Clear filters', exact: true })
+    .click();
+  await page.getByRole('button', { name: '· Transfer', exact: true }).click();
+  await expect(page.getByRole('dialog')).toContainText(
+    'Asset · declared on expenses at types.journal:4',
+  );
 });

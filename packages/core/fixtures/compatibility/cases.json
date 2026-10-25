@@ -244,7 +244,7 @@
   },
   {
     "id": "account-type-inline",
-    "supported": false,
+    "supported": true,
     "accountTypes": true,
     "referenceAcceptance": {
       "hledger": true,
@@ -253,7 +253,7 @@
   },
   {
     "id": "account-type-continuation",
-    "supported": false,
+    "supported": true,
     "accountTypes": true,
     "referenceAcceptance": {
       "hledger": true,
@@ -271,7 +271,7 @@
   },
   {
     "id": "account-type-word",
-    "supported": false,
+    "supported": true,
     "accountTypes": true,
     "referenceAcceptance": {
       "hledger": true,
@@ -289,7 +289,7 @@
   },
   {
     "id": "account-type-child",
-    "supported": false,
+    "supported": true,
     "accountTypes": true,
     "referenceAcceptance": {
       "hledger": true,
@@ -307,6 +307,127 @@
   },
   {
     "id": "account-type-no-separator",
+    "supported": true,
+    "accountTypes": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
+  },
+  {
+    "id": "account-type-codes",
+    "supported": true,
+    "accountTypes": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
+  },
+  {
+    "id": "account-type-words",
+    "supported": true,
+    "accountTypes": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
+  },
+  {
+    "id": "account-type-defaults",
+    "supported": true,
+    "accountTypes": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
+  },
+  {
+    "id": "account-type-overrides",
+    "supported": true,
+    "accountTypes": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
+  },
+  {
+    "id": "account-type-untyped-repeat",
+    "supported": true,
+    "accountTypes": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
+  },
+  {
+    "id": "account-type-duplicate-tags",
+    "supported": false,
+    "accountTypes": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
+  },
+  {
+    "id": "account-type-reverse-repeat",
+    "supported": false,
+    "accountTypes": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
+  },
+  {
+    "id": "account-type-subtype-defaults",
+    "supported": true,
+    "accountTypes": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
+  },
+  {
+    "id": "account-type-include",
+    "supported": true,
+    "accountTypes": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    },
+    "sources": [
+      "account-type-include.journal",
+      "account-type-postings.journal",
+      "account-type-declarations.journal"
+    ]
+  },
+  {
+    "id": "account-type-roots",
+    "supported": true,
+    "accountTypes": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    },
+    "sources": [
+      "account-type-roots.journal",
+      "account-type-declarations.journal"
+    ],
+    "referenceFiles": [
+      "account-type-roots.journal",
+      "account-type-declarations.journal"
+    ]
+  },
+  {
+    "id": "account-type-invalid-word",
+    "supported": false,
+    "accountTypes": true,
+    "referenceAcceptance": {
+      "hledger": false,
+      "ledger": true
+    }
+  },
+  {
+    "id": "account-type-alternate-key",
     "supported": false,
     "accountTypes": true,
     "referenceAcceptance": {

@@ -1,3 +1,18 @@
+import {
+  hasAccountTypeTag,
+  parseAccountTypeComment,
+  type AccountDeclaration,
+} from './account-types.js';
+export {
+  createAccountTypeResolver,
+  matchesAccountType,
+  ACCOUNT_TYPE_LABELS,
+} from './account-types.js';
+export type {
+  AccountType,
+  AccountDeclaration,
+  AccountClassification,
+} from './account-types.js';
 import { add, isZero, negate } from './decimal.js';
 import { scanJournalLines } from './syntax.js';
 import { resolveIncludes } from './includes.js';
@@ -73,6 +88,7 @@ export interface Journal {
   transactions: Transaction[];
   diagnostics: Diagnostic[];
   sources: Source[];
+  accountDeclarations: AccountDeclaration[];
 }
 export interface Balance {
   account: string;
@@ -85,7 +101,12 @@ type PendingTransaction = Omit<Transaction, 'postings'> & {
 };
 
 export function parseJournal(sources: Source[]): Journal {
-  const journal: Journal = { transactions: [], diagnostics: [], sources };
+  const journal: Journal = {
+    transactions: [],
+    diagnostics: [],
+    sources,
+    accountDeclarations: [],
+  };
   const error = (where: Location, code: string, message: string) =>
     journal.diagnostics.push({ ...where, code, message });
   const graph = resolveIncludes(sources);
@@ -99,6 +120,40 @@ export function parseJournal(sources: Source[]): Journal {
     includes.set(edge.from, lines);
   }
   let hasAssertions = false;
+  const typedDeclarations = new Map<string, AccountDeclaration>();
+  const readAccountType = (
+    declaration: AccountDeclaration,
+    comment: string,
+    location: Location,
+  ) => {
+    const parsed = parseAccountTypeComment(comment);
+    if (parsed.error) {
+      error(location, 'account-type', parsed.error);
+      return;
+    }
+    if (!parsed.type) return;
+    if (declaration.type) {
+      error(
+        location,
+        'account-type',
+        'Use one type: tag per account declaration; duplicate tags are not supported.',
+      );
+      return;
+    }
+    const previous = typedDeclarations.get(declaration.account);
+    if (previous?.type && previous.type !== parsed.type) {
+      error(
+        location,
+        'account-type',
+        `Conflicting account types for ${declaration.account}; the earlier type is at ${previous.typeSource!.file}:${previous.typeSource!.line}.`,
+      );
+      return;
+    }
+    declaration.type = parsed.type;
+    declaration.typeSource = location;
+    // Repeating the same type does not change its original provenance.
+    if (!previous) typedDeclarations.set(declaration.account, declaration);
+  };
   interface ParsingContext {
     decimalMark?: DecimalMark;
     commodityFormats: Map<string, CommodityFormat>;
@@ -107,7 +162,7 @@ export function parseJournal(sources: Source[]): Journal {
     // Decimal marks are file-scoped; commodity formats flow through expanded includes.
     const context = { ...inherited };
     let commodityBlock: string | undefined;
-    let accountBlock = false;
+    let accountBlock: AccountDeclaration | undefined;
     let tx: PendingTransaction | null = null;
     let txErrors = 0;
     let blockComment = false;
@@ -176,6 +231,7 @@ export function parseJournal(sources: Source[]): Journal {
         continue;
       }
       if (node.kind === 'block-comment-start') {
+        accountBlock = undefined;
         commodityBlock = undefined;
         finish();
         blockComment = true;
@@ -203,26 +259,30 @@ export function parseJournal(sources: Source[]): Journal {
         }
       }
       if (node.kind === 'blank') {
+        accountBlock = undefined;
         commodityBlock = undefined;
         finish();
         continue;
       }
       if (node.kind === 'comment') {
-        if (
-          accountBlock &&
-          /^\s/.test(raw) &&
-          /(?:^|[\s,])type\s*:/i.test(raw.slice(semicolon + 1))
-        )
-          error(
-            location,
-            'account-type',
-            'Account type declarations are not supported yet; reports are disabled to avoid misclassification.',
-          );
+        if (accountBlock && /^\s/.test(raw)) {
+          if (/^\s+;/.test(raw))
+            readAccountType(accountBlock, raw.slice(semicolon + 1), location);
+          else {
+            if (hasAccountTypeTag(raw))
+              error(
+                location,
+                'account-type',
+                'Account type continuation tags require an indented semicolon comment.',
+              );
+            accountBlock = undefined;
+          }
+        } else accountBlock = undefined;
         continue;
       }
       const content = raw.split(';')[0]!.trimEnd();
       if (!/^\s/.test(raw)) {
-        accountBlock = false;
+        accountBlock = undefined;
         commodityBlock = undefined;
         finish();
         const child = includes.get(source.name)?.get(node.line);
@@ -264,16 +324,30 @@ export function parseJournal(sources: Source[]): Journal {
           continue;
         }
         if (/^account\s+\S/.test(content)) {
-          accountBlock = true;
+          const account = content.slice('account'.length).trim();
           if (
-            semicolon >= 0 &&
-            /(?:^|[\s,])type\s*:/i.test(raw.slice(semicolon + 1))
-          )
+            /[[\]()=\t]| {2,}/.test(account) ||
+            account.split(':').some((part) => !part.trim())
+          ) {
             error(
               location,
-              'account-type',
-              'Account type declarations are not supported yet; reports are disabled to avoid misclassification.',
+              'account',
+              'Invalid or unsupported declared account name.',
             );
+            continue;
+          }
+          accountBlock = { account, source: location };
+          journal.accountDeclarations.push(accountBlock);
+          if (semicolon >= 0 && hasAccountTypeTag(raw.slice(semicolon + 1))) {
+            if (!/(?: {2,}|\t)\s*$/.test(raw.slice(0, semicolon)))
+              error(
+                location,
+                'account-type',
+                'Use two spaces or a tab before an inline account type comment.',
+              );
+            else
+              readAccountType(accountBlock, raw.slice(semicolon + 1), location);
+          }
           continue;
         }
         const header = content.match(
