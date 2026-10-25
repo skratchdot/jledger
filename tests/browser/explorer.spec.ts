@@ -76,7 +76,7 @@ test('demo, account drill-down, month filters and drag-and-drop work', async ({
   await expect(page.getByRole('table')).not.toContainText('2026-01');
   await page.getByRole('button', { name: /Accounts/ }).click();
   await expect(
-    page.getByRole('button', { name: 'assets:bank:checking 7139.80 USD' }),
+    page.getByRole('button', { name: 'assets:bank:checking 7,139.80 USD' }),
   ).toBeVisible();
   await page.getByRole('button', { name: 'Close journals' }).click();
   await page.evaluate((text) => {
@@ -212,7 +212,9 @@ test('200,000 transactions import off-thread, search stays responsive, and every
     'aria-rowcount',
     String(count + 1),
   );
-  await expect(page.getByLabel('Filtered totals')).toContainText('2000.00 USD');
+  await expect(page.getByLabel('Filtered totals')).toContainText(
+    '2,000.00 USD',
+  );
   await page.getByLabel('From date', { exact: true }).fill('2024-01-02');
   await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '1');
   await page.getByLabel('From date', { exact: true }).fill('2024-01-01');
@@ -221,7 +223,9 @@ test('200,000 transactions import off-thread, search stays responsive, and every
     'aria-rowcount',
     String(count + 1),
   );
-  await expect(page.getByLabel('Filtered totals')).toContainText('2000.00 USD');
+  await expect(page.getByLabel('Filtered totals')).toContainText(
+    '2,000.00 USD',
+  );
   expect(await page.locator('tbody tr').count()).toBeLessThan(50);
   await page.getByLabel('Scrollable transaction register').evaluate((node) => {
     node.scrollTop = node.scrollHeight;
@@ -296,10 +300,10 @@ test('monthly include bundle preserves exact totals, comment context and source 
     '24001',
   );
   await expect(page.getByLabel('Filtered totals')).toContainText(
-    '105374.76 USD',
+    '105,374.76 USD',
   );
   await expect(page.getByLabel('Filtered totals')).toContainText(
-    '36000.00 USD',
+    '36,000.00 USD',
   );
   expect(await page.locator('tbody tr').count()).toBeLessThan(50);
   await page.getByLabel('Month', { exact: true }).selectOption('2026-12');
@@ -307,7 +311,9 @@ test('monthly include bundle preserves exact totals, comment context and source 
     'aria-rowcount',
     '2001',
   );
-  await expect(page.getByLabel('Filtered totals')).toContainText('8781.23 USD');
+  await expect(page.getByLabel('Filtered totals')).toContainText(
+    '8,781.23 USD',
+  );
   await page.getByLabel('Search transactions').fill('month 12 item 1999');
   await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '2');
   await page.getByRole('button', { name: /month 12 item 1999/ }).click();
@@ -442,7 +448,7 @@ test('posting dates drive month totals while register rows retain transaction co
   });
   await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '2');
   await page.getByRole('button', { name: 'Filter month 2026-02' }).click();
-  await expect(page.getByLabel('Filtered totals')).toContainText('2 USD');
+  await expect(page.getByLabel('Filtered totals')).toContainText('2.00 USD');
   await expect(page.getByRole('table')).toContainText('2026-01-01');
   await expect(page.getByRole('table')).toContainText('posted 2026-02-01');
   await expect(page.getByRole('table')).not.toContainText('assets:cash');
@@ -454,18 +460,18 @@ test('posting dates drive month totals while register rows retain transaction co
   await expect(page.getByRole('dialog')).toContainText('dated.journal:1');
   await page.getByRole('button', { name: 'Close', exact: true }).click();
   await page.getByLabel('Month', { exact: true }).selectOption('2026-01');
-  await expect(page.getByLabel('Filtered totals')).toContainText('0 USD');
+  await expect(page.getByLabel('Filtered totals')).toContainText('0.00 USD');
   await expect(page.getByRole('table')).toContainText('assets:cash');
   await expect(page.getByRole('table')).not.toContainText('expenses:food');
   await page.getByRole('button', { name: /Accounts/ }).click();
   await page
-    .getByRole('button', { name: 'expenses:food 2 USD', exact: true })
+    .getByRole('button', { name: 'expenses:food 2.00 USD', exact: true })
     .click();
   await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '1');
   await page.getByRole('button', { name: /Overview/ }).click();
   await page.getByLabel('Month', { exact: true }).selectOption('2026-02');
   await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '2');
-  await expect(page.getByLabel('Filtered totals')).toContainText('2 USD');
+  await expect(page.getByLabel('Filtered totals')).toContainText('2.00 USD');
 });
 
 test('unsupported secondary posting dates are diagnostics rather than inert comments', async ({
@@ -499,13 +505,15 @@ test('explicit commodity formats normalize exact totals and preserve original so
   await page.goto('./');
   await page.getByLabel('Import journal files').setInputFiles(file(text));
   await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '3');
-  await expect(page.getByLabel('Filtered totals')).toContainText('2000.00 EUR');
+  await expect(page.getByLabel('Filtered totals')).toContainText(
+    '2,000.00 EUR',
+  );
   await expect(page.getByLabel('Filtered totals')).toContainText('12.34 EUR');
   await page.getByRole('button', { name: 'Filter month 2026-02' }).click();
   await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '2');
   await page.getByRole('button', { name: '· Food', exact: true }).click();
   await expect(page.getByRole('dialog')).toContainText(
-    'balance checked: 1987.66 EUR',
+    'balance checked: 1,987.66 EUR',
   );
   await expect(page.getByRole('dialog')).toContainText('12,34 EUR');
   await expect(page.getByRole('dialog')).toContainText('formatted.journal:8');
@@ -668,20 +676,20 @@ test('inclusive account balances include descendants once and keep their full-jo
     page.getByLabel('Include subaccounts', { exact: true }),
   ).toBeChecked();
   const bank = page.getByRole('button', {
-    name: 'assets:bank 13 USD',
+    name: 'assets:bank 13.00 USD',
     exact: true,
   });
   await expect(bank).toBeVisible();
-  await expect(bank).toHaveAttribute('title', /direct postings: 8 USD/);
+  await expect(bank).toHaveAttribute('title', /direct postings: 8.00 USD/);
   await expect(
-    page.getByRole('button', { name: 'assets 20 USD', exact: true }),
+    page.getByRole('button', { name: 'assets 20.00 USD', exact: true }),
   ).toBeVisible();
   await page.getByLabel('Include subaccounts', { exact: true }).uncheck();
   await expect(
-    page.getByRole('button', { name: 'assets:bank 8 USD', exact: true }),
+    page.getByRole('button', { name: 'assets:bank 8.00 USD', exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole('button', { name: 'assets 20 USD', exact: true }),
+    page.getByRole('button', { name: 'assets 20.00 USD', exact: true }),
   ).toHaveCount(0);
   await page.getByLabel('Include subaccounts', { exact: true }).check();
   await bank.click();
@@ -690,7 +698,7 @@ test('inclusive account balances include descendants once and keep their full-jo
   await page.getByLabel('From date', { exact: true }).fill('2026-01-03');
   await page.getByLabel('Through date', { exact: true }).fill('2026-01-05');
   await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '3');
-  await expect(bank).toContainText('13 USD');
+  await expect(bank).toContainText('13.00 USD');
   await page.getByRole('button', { name: '· Food', exact: true }).click();
   await expect(page.getByRole('dialog')).toContainText('hierarchy.journal:17');
   await page.getByRole('button', { name: 'Close', exact: true }).click();
@@ -707,7 +715,7 @@ test('inclusive account balances include descendants once and keep their full-jo
   });
   await expect(
     page.getByRole('button', {
-      name: 'assets:cash 3 EUR · 3 USD',
+      name: 'assets:cash 3.00 EUR · 3.00 USD',
       exact: true,
     }),
   ).toBeVisible();
@@ -774,7 +782,7 @@ test('hierarchy limit errors preserve the previous complete import with a warnin
     'too-deep.journal',
   );
   await expect(page.getByRole('table')).toContainText('Coffee');
-  await expect(page.getByRole('table')).not.toContainText('999 USD');
+  await expect(page.getByRole('table')).not.toContainText('999.00 USD');
 });
 
 test('invalid account types pause reports instead of retaining previous spending', async ({
@@ -814,7 +822,9 @@ test('journal account types drive exact spending and income with linked categori
       ),
     },
   ]);
-  await expect(page.getByLabel('Filtered totals')).toContainText('1000 USD');
+  await expect(page.getByLabel('Filtered totals')).toContainText(
+    '1,000.00 USD',
+  );
   await expect(page.getByLabel('Filtered totals')).toContainText('0.07 USD');
   await page
     .getByRole('button', { name: 'Filter dépenses:repas', exact: true })

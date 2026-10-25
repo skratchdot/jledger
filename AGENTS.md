@@ -31,3 +31,9 @@
   rationale and validation. Example: feat(web): add spending filters
 - GitHub Pages deploys automatically on pushes to main after validation. Keep
   manual workflow dispatch available on main for recovery.
+- Complete implementation tasks by committing the changes, pushing a task branch,
+  and opening a ready-for-review pull request unless the user explicitly requests
+  local-only work or a draft. Update an existing task PR when applicable. Include
+  validation results and the PR link in the final response. Do not stop after local
+  edits or ask for separate permission to submit the PR. If access prevents
+  submission, report the specific blocker. Do not merge without an explicit request.

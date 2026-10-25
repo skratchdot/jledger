@@ -158,7 +158,7 @@ test('tables preserve exact large and unitless amounts, empty states and narrow 
   );
   await page.getByLabel('Commodity', { exact: true }).selectOption('USD');
   await expect(page.getByLabel('Filtered totals')).toContainText(
-    '9007199254740992.99 USD',
+    '9,007,199,254,740,992.99 USD',
   );
   await page.getByRole('button', { name: 'Tables', exact: true }).click();
   const categories = page.getByRole('table', {
@@ -166,7 +166,7 @@ test('tables preserve exact large and unitless amounts, empty states and narrow 
     exact: true,
   });
   await expect(categories).toContainText(long);
-  await expect(categories).toContainText('9007199254740992.99 USD');
+  await expect(categories).toContainText('9,007,199,254,740,992.99 USD');
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= window.innerWidth,

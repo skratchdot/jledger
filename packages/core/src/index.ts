@@ -569,6 +569,47 @@ export function accountHierarchy(journal: Journal): AccountHierarchy {
   return { direct, inclusive: rollupAccountBalances(direct) };
 }
 
-export function formatAmount(amount: Amount): string {
-  return `${amount.quantity}${amount.commodity ? ` ${amount.commodity}` : ''}`;
+const currencyCodes = new Set(Intl.supportedValuesOf('currency'));
+const currencyDigits = new Map<string, number>();
+const symbolCurrencies: Record<string, string> = {
+  $: 'USD',
+  '€': 'EUR',
+  '£': 'GBP',
+  '¥': 'JPY',
+  '₹': 'INR',
+  '₩': 'KRW',
+  '₽': 'RUB',
+  '₺': 'TRY',
+  '₫': 'VND',
+  '₪': 'ILS',
+  '₱': 'PHP',
+  '฿': 'THB',
+};
+
+/** Stable English display formatting; never rounds or converts quantities to floats. */
+export function formatAmount({ quantity, commodity }: Amount): string {
+  const symbolCurrency = Object.hasOwn(symbolCurrencies, commodity)
+    ? symbolCurrencies[commodity]
+    : undefined;
+  const currency =
+    symbolCurrency ?? (currencyCodes.has(commodity) ? commodity : undefined);
+  let minimumDigits = 0;
+  if (currency) {
+    let digits = currencyDigits.get(currency);
+    if (digits === undefined) {
+      digits =
+        new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency,
+        }).resolvedOptions().minimumFractionDigits ?? 2;
+      currencyDigits.set(currency, digits);
+    }
+    minimumDigits = digits;
+  }
+  const [whole = '0', fraction = ''] = quantity.replace(/^[+-]/, '').split('.');
+  const integer = whole.replace(/^0+(?=\d)/, '');
+  const decimal = fraction.padEnd(minimumDigits, '0');
+  const negative = quantity.startsWith('-') && /[1-9]/.test(integer + fraction);
+  const number = `${negative ? '-' : ''}${symbolCurrency ? commodity : ''}${integer.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}${decimal ? `.${decimal}` : ''}`;
+  return `${number}${commodity && !symbolCurrency ? ` ${commodity}` : ''}`;
 }

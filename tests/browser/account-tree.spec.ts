@@ -14,7 +14,7 @@ async function fixture(page: Page) {
   await expect(page.getByRole('table')).toContainText('Food');
   await page.getByRole('button', { name: /Accounts/ }).click();
   await expect(
-    page.getByRole('button', { name: 'assets:bank 13 USD', exact: true }),
+    page.getByRole('button', { name: 'assets:bank 13.00 USD', exact: true }),
   ).toBeVisible();
   return buffer;
 }
@@ -39,16 +39,16 @@ test('account disclosures preserve balances, child folds, query scope and keyboa
   await expect(bank).toBeFocused();
   await expect(
     page.getByRole('button', {
-      name: 'assets:bank:checking 2 USD',
+      name: 'assets:bank:checking 2.00 USD',
       exact: true,
     }),
   ).toHaveCount(0);
   await expect(
-    page.getByRole('button', { name: 'assets:banking 7 USD', exact: true }),
+    page.getByRole('button', { name: 'assets:banking 7.00 USD', exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole('button', { name: 'assets:bank 13 USD', exact: true }),
-  ).toHaveAttribute('title', /direct postings: 8 USD/);
+    page.getByRole('button', { name: 'assets:bank 13.00 USD', exact: true }),
+  ).toHaveAttribute('title', /direct postings: 8.00 USD/);
   await expect(page.getByLabel('Search transactions')).toHaveValue('Food');
   await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '2');
   await page
@@ -61,17 +61,17 @@ test('account disclosures preserve balances, child folds, query scope and keyboa
   await expect(bank).toBeVisible();
   await expect(
     page.getByRole('button', {
-      name: 'assets:bank:checking 2 USD',
+      name: 'assets:bank:checking 2.00 USD',
       exact: true,
     }),
   ).toHaveCount(0);
   await page.getByLabel('Include subaccounts', { exact: true }).uncheck();
   await expect(
-    page.getByRole('button', { name: 'assets:bank 8 USD', exact: true }),
+    page.getByRole('button', { name: 'assets:bank 8.00 USD', exact: true }),
   ).toBeVisible();
   await expect(
     page.getByRole('button', {
-      name: 'assets:bank:checking 2 USD',
+      name: 'assets:bank:checking 2.00 USD',
       exact: true,
     }),
   ).toBeVisible();
@@ -81,7 +81,7 @@ test('account disclosures preserve balances, child folds, query scope and keyboa
     .getByRole('button', { name: 'Clear filters', exact: true })
     .click();
   await page
-    .getByRole('button', { name: 'assets:bank 13 USD', exact: true })
+    .getByRole('button', { name: 'assets:bank 13.00 USD', exact: true })
     .click();
   await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '5');
   await expect(page.getByRole('table')).not.toContainText('Separate prefix');
@@ -91,7 +91,7 @@ test('account disclosures preserve balances, child folds, query scope and keyboa
     .click();
   await expect(
     page.getByRole('button', {
-      name: 'assets:bank:checking 2 USD',
+      name: 'assets:bank:checking 2.00 USD',
       exact: true,
     }),
   ).toBeVisible();
@@ -99,10 +99,10 @@ test('account disclosures preserve balances, child folds, query scope and keyboa
     .getByRole('button', { name: 'Collapse all accounts', exact: true })
     .click();
   await expect(
-    page.getByRole('button', { name: 'assets 20 USD', exact: true }),
+    page.getByRole('button', { name: 'assets 20.00 USD', exact: true }),
   ).toBeVisible();
   await expect(
-    page.getByRole('button', { name: 'assets:bank 13 USD', exact: true }),
+    page.getByRole('button', { name: 'assets:bank 13.00 USD', exact: true }),
   ).toHaveCount(0);
   await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '5');
 });
@@ -198,7 +198,7 @@ test('large branches use bounded worker windows and reject stale responses after
     ),
   });
   await expect(
-    page.getByRole('button', { name: 'assets:cash 9 USD', exact: true }),
+    page.getByRole('button', { name: 'assets:cash 9.00 USD', exact: true }),
   ).toBeVisible();
   const observed = await page.evaluate(() => {
     const state = window as typeof window & {
@@ -222,7 +222,7 @@ test('large branches use bounded worker windows and reject stale responses after
   expect(observed.maxRows).toBeLessThanOrEqual(200);
   expect(observed.leakedArrays).toBe(false);
   await expect(
-    page.getByRole('button', { name: 'assets:cash 9 USD', exact: true }),
+    page.getByRole('button', { name: 'assets:cash 9.00 USD', exact: true }),
   ).toBeVisible();
   await expect(
     page.getByRole('button', { name: 'assets:cash -50.00 USD', exact: true }),
@@ -253,7 +253,7 @@ test('failed imports retain a usable folded hierarchy and successful same-name i
     .click();
   await expect(
     page.getByRole('button', {
-      name: 'assets:bank:checking 2 USD',
+      name: 'assets:bank:checking 2.00 USD',
       exact: true,
     }),
   ).toBeVisible();
@@ -278,7 +278,7 @@ test('failed imports retain a usable folded hierarchy and successful same-name i
     .click();
   await expect(
     page.getByRole('button', {
-      name: 'assets:bank:checking 2 USD',
+      name: 'assets:bank:checking 2.00 USD',
       exact: true,
     }),
   ).toBeVisible();
@@ -293,7 +293,7 @@ test('failed imports retain a usable folded hierarchy and successful same-name i
   ).toBeVisible();
   await expect(
     page.getByRole('button', {
-      name: 'assets:bank:checking 2 USD',
+      name: 'assets:bank:checking 2.00 USD',
       exact: true,
     }),
   ).toBeVisible();
