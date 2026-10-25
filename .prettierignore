@@ -1,5 +1,0 @@
-pnpm-lock.yaml
-packages/web/src/routeTree.gen.ts
-dist
-node_modules
-.tanstack
