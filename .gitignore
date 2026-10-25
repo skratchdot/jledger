@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.output/
+.tanstack/
+.vite/
+*.tsbuildinfo
+playwright-report/
+test-results/
+.env
+.env.*
+!.env.example
+*.local
+# Never commit personal journals. Only synthetic examples belong in git.
+/private/

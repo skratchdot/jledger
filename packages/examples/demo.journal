@@ -1,0 +1,49 @@
+; Synthetic demo data. Never put personal financial data in this package.
+account assets:bank:checking
+account assets:bank:savings
+account equity:opening
+account income:salary
+account expenses:rent
+account expenses:groceries
+account expenses:coffee
+
+2026-01-01 * Opening balances
+    assets:bank:checking   2500.00 USD
+    assets:bank:savings    8000.00 USD
+    equity:opening
+
+2026-01-03 * Northwind | January salary
+    assets:bank:checking   4200.00 USD
+    income:salary
+
+2026-01-05 * Home | Monthly rent
+    expenses:rent         1450.00 USD
+    assets:bank:checking
+
+2026-01-08 * Corner market | Weekly groceries
+    expenses:groceries      86.42 USD
+    assets:bank:checking
+
+2026-01-10 * Little oak | Coffee with Sam
+    expenses:coffee          8.50 USD
+    assets:bank:checking
+
+2026-01-15 * Transfer to savings
+    assets:bank:savings     600.00 USD
+    assets:bank:checking
+
+2026-01-19 ! Corner market | Weekly groceries
+    expenses:groceries      73.18 USD
+    assets:bank:checking
+
+2026-02-03 * Northwind | February salary
+    assets:bank:checking   4200.00 USD
+    income:salary
+
+2026-02-05 * Home | Monthly rent
+    expenses:rent         1450.00 USD
+    assets:bank:checking
+
+2026-02-08 Corner market | Weekly groceries
+    expenses:groceries      92.10 USD
+    assets:bank:checking

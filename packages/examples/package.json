@@ -1,0 +1,9 @@
+{
+  "name": "@jledger/examples",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./demo.journal": "./demo.journal"
+  }
+}

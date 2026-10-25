@@ -1,0 +1,17 @@
+{
+  "name": "@jledger/cli",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "jledger": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@jledger/core": "workspace:*",
+    "commander": "15.0.0"
+  }
+}

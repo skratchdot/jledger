@@ -1,0 +1,54 @@
+# Large-journal performance
+
+Responsiveness is an architectural requirement. The application must accept input
+and scroll while parsing/searching; virtualization alone does not make main-thread
+parsing or aggregation acceptable.
+
+## Implemented
+
+- A dedicated module worker owns source text, the parsed journal, a normalized
+  search index, sorted transaction IDs, and the current filtered result IDs.
+- File decoding, local API fetching/JSON decoding, parsing, direct balances,
+  substring searching, and exact filtered totals run in that worker.
+- React receives a summary and report aggregates, not the entire transaction set.
+  The register requests only the visible window, with a small overscan.
+- TanStack Virtual renders the register and account balances. The register has no
+  arbitrary first-200-result limit; the entire result set remains browsable.
+- Search debounces for 100 ms. Queries yield every 8,192 records to allow newer
+  requests to cancel stale scans; request IDs discard stale UI responses.
+- Details and original source snippets are retrieved on demand.
+- Charts show the top 30 expense categories; the account view exposes the others.
+- A register row previews up to three matching postings. Details show all postings.
+
+The current input guard is 256 MiB total, not a promise that every 256 MiB journal
+fits comfortably in every browser. Parsing is still whole-file and in-memory;
+parsed objects, indexes, raw sources, and transfers consume more memory than the
+input file size. Browser memory and device speed remain real constraints. There is
+no streaming parser, persisted index, or supported million-transaction SLA yet.
+
+## Regression scenario
+
+`pnpm test:browser` builds on the current production artifact and imports 200,000
+synthetic two-posting transactions (14,888,890 bytes). It checks that:
+
+1. Search input remains usable during import (less than 1 second for the tested action).
+2. Animation frames continue while the import and first search complete.
+3. A known final transaction can be found and the exact total is `2000.00 USD`.
+4. Clearing filters exposes all 200,000 matches, with fewer than 50 mounted table rows.
+5. Scrolling to the end reaches the final transaction, not a truncated first page.
+
+Metrics are written to the current run's ignored `test-results/**/metrics.json` and
+attached to the Playwright result. Test both the root build and the `/jledger/`
+static deployment. A synthetic repeated transaction is a useful regression, not
+a substitute for diverse real-world journals or a cross-device benchmark.
+
+## Next improvements
+
+Incremental/streaming parsing, source byte offsets, query indexes (date, account,
+commodity), large account/commodity selector virtualization, import progress and
+cancellation, reduced duplicate memory, realistic include graphs, and explicit
+budgets for memory, time-to-first-result, and p95 input latency.
+
+Changes to the parser or explorer should preserve this regression and add evidence
+for any stronger performance claim. Never move heavy work back onto the UI thread
+just because a demo journal is small.
