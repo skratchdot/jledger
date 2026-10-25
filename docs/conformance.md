@@ -59,10 +59,11 @@ are evidence from the tools, never generated from jledger's own expected results
 
 ## Next focused milestone: safe include graphs
 
-Before adding authoring, introduce a source-preserving syntax layer: ordered nodes
+The first [source-preserving syntax layer](syntax.md) is implemented: ordered nodes
 for transaction headers, postings, directives, comments, blank lines, and unknown
-syntax, with original text and source spans. Preserve unsupported nodes and errors;
-financial interpretation must still fail closed. Require byte-for-byte round trips
+syntax, with original text and source spans. Unsupported nodes and errors remain
+visible, and financial interpretation still fails closed. Exact decoded-text round
+trips are tested; a full grammar and safe transformation API are still required
 before exposing any editing feature.
 
 Then add relative include graph resolution through injected adapters. Core receives

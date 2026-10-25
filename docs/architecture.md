@@ -25,9 +25,13 @@ Core consumes named UTF-8 source strings and returns transactions and diagnostic
 Source files remain authoritative; derived reports are disposable. Locations retain
 file names and line numbers. Quantities are decimal strings with exact BigInt-backed
 addition, so JSON and browser/Node boundaries do not lose precision.
-The present parser is a strict line-based subset, not a complete journal grammar.
-A future lossless syntax tree should preserve comments, whitespace, tags, directives,
-and source spans before any authoring/round-trip editing is introduced.
+The present accounting parser is a strict subset, not a complete journal grammar.
+It streams the [source-preserving syntax layer](syntax.md), whose line nodes retain
+full source spans and distinguish comments, postings, headers, directives, and
+unknown text. Callers can explicitly retain a read-only tree and reconstruct its
+original decoded text exactly; the explorer does not retain that extra tree.
+A complete grammar, include graph, and safe transformation API are still needed
+before authoring is introduced.
 
 The UI uses React, Tailwind CSS, and a shadcn-style Base UI Button component with
 local ownership of its source and styling. `components.json` supplies shadcn aliases.
