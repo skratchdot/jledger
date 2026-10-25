@@ -1,4 +1,4 @@
-# Explorer date ranges
+# Explorer filters and reusable scopes
 
 The explorer's **From** and **Through** controls select an inclusive range of
 primary posting dates. Leave either side blank for an open-ended range, or leave
@@ -27,6 +27,43 @@ Monthly charts show the existing journal months that overlap the selected scope,
 with totals calculated only from matching postings in those months. They do not
 generate missing calendar months or imply that an entire boundary month is selected.
 A custom range may therefore show a partial month's total.
+
+## Visible scope and saved filters
+
+Active filter chips show search text, an account and its descendants, dates/month,
+transaction status, and the selected commodity. Clear one optional chip without
+changing the others. Removing a chip returns keyboard focus to the relevant
+control (search for account/search chips, From for dates, or Status).
+Dates are one scope: clearing that chip removes both bounds
+and any month shortcut. The commodity chip is informational because report totals
+always use one selected commodity; use the dropdown to change it.
+
+Expand **Saved filters**, enter a name, and choose **Save current filters** (or
+press Enter in the name field). Each preset snapshots all seven filter fields:
+search, account, month shortcut, From, Through, commodity, and status. Applying it
+restores the whole scope together, including the effective selected commodity,
+then runs the existing worker query. Editing or clearing filters does not change
+the saved snapshot. Matching presets indicate their active state. View selection
+and the account hierarchy's display toggle are not part of a report filter.
+
+Preset names are trimmed, limited to 80 characters, and must be unique ignoring
+case. Duplicate names produce a correction message rather than replacing an
+existing preset. At most 20 presets are kept for an open journal; remove one to
+make room. Removing a preset leaves the current scope intact and returns keyboard
+focus to the name field. Long names and filter text remain bounded on narrow
+screens, with full text available to assistive technology and in titles.
+
+Saving is disabled during processing or while the date range is invalid. An
+existing valid preset can recover an invalid range. Applying a preset or clearing
+a chip dismisses any selected transaction detail. Financial scans, cancellation,
+and exact arithmetic still run in the worker; preset operations only copy the
+small filter configuration.
+
+Saved filters belong to the **currently open journal session**. A newly loaded
+journal, closing journals, demo selection, a successful local file reload, or a
+page refresh clears them, even if file names are unchanged. A failed file read
+retains the prior complete journal and its saved filters. Clear filters clears
+optional filter values, not saved presets, and keeps the selected commodity.
 
 ## Transaction and journal scope
 
@@ -58,11 +95,18 @@ on-demand details and virtualized result windows remain in place.
 
 Range state stays in memory. It is not written to URLs, application storage,
 service-worker caches or journals, and changing it causes no network request.
-There are no relative-to-today presets, saved filters or hledger query-language
-compatibility claims in this slice. Calendar/date syntax in journal files is
+Saved filter names and configurations also stay in memory: no localStorage,
+sessionStorage, IndexedDB, URL serialization, downloads, or network sync is used.
+Offline app-shell caches contain no presets. There are no relative-to-today
+presets, shared/exported scopes, or hledger query-language compatibility claims. Calendar/date syntax in journal files is
 unchanged; see [posting dates](posting-dates.md) for source support.
 
 Tests cover inclusive boundaries, open ends, leap day and century rules, refunds,
 posting overrides, combined filters, invalid range recovery, preserved import errors,
 month shortcuts, responsive controls, and filtering then browsing all 200,000
-synthetic transactions. That scenario is a regression, not a device-wide guarantee.
+synthetic transactions. Production-browser tests also cover complete preset
+restoration across combined filters and commodities, immutable snapshots,
+month/date recovery, duplicate/blank names, bounded storage, keyboard controls,
+narrow layouts, session replacement, local reload, failed reads, and an offline
+refresh with no persisted presets. These scenarios are regressions, not device-wide
+guarantees.

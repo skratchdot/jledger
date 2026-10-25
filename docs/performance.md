@@ -27,6 +27,10 @@ parsing or aggregation acceptable.
   hierarchy uses iterative traversal and explicit depth/node limits; both arrays
   still cross in the summary, so high account counts remain a memory concern.
 - React receives a summary and report aggregates, not the entire transaction set.
+- Named filter presets retain at most 20 seven-field configurations with 80-character
+  names per open journal. Copying/comparing this bounded metadata does not scan
+  postings or compute totals on the UI thread. Applying uses the existing worker
+  query path; chips and preset controls do not add mounted register/account rows.
   The register requests only the visible window, with a small overscan.
 - TanStack Virtual renders the register and account balances. The register has no
   arbitrary first-200-result limit; the entire result set remains browsable.

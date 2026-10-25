@@ -63,8 +63,10 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    disable reports. UI overrides and financial statements remain future work;
    never guess all types from English labels for statements.
 5. [Inclusive date ranges](explorer-filters.md) now work across charts and the
-   register, using shared posting matching and month shortcuts. Next add account
-   trees, saved filter presets, explicit query chips, keyboard navigation, and accessible chart/table equivalents. Specify hledger
+   register, using shared posting matching and month shortcuts. Active scope chips
+   and bounded, in-memory named filter presets now support reusable exploration,
+   keyboard save/apply/remove, and complete filter restoration. Next add collapsible
+   account trees, broader keyboard navigation, and accessible chart/table equivalents. Specify hledger
    query compatibility separately from simple free-text search.
 6. Extend the existing worker and virtualization foundation with streaming/incremental
    parsing, indexed queries, realistic multi-file benchmarks, and memory budgets.

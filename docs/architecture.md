@@ -19,7 +19,13 @@ and exact report aggregation. React receives metadata, aggregate results, on-dem
 details, and only the visible transaction window. TanStack Virtual bounds the
 register and account DOM. [Date ranges](explorer-filters.md) are inclusive and
 match the same posting as account and commodity filters. The worker and visible rows share that matcher;
-range errors are validated independently of journal diagnostics. Searches debounce
+range errors are validated independently of journal diagnostics.
+Active filter chips and bounded named presets copy only the seven-field report
+configuration on the UI thread. Presets are scoped to the worker's successful-load
+revision, so replacing/reloading a journal resets them even with identical names.
+Failed file reads preserve the prior session. Applying a snapshot uses the same
+query/debounce/cancellation flow and clears selected details; financial computation
+stays in the worker. Presets are never written to URLs or browser storage. Searches debounce
 for 100 ms; worker scans yield between chunks so newer searches cancel stale work. Files and local-server JSON are read
 in the worker, keeping large payload decoding off the UI thread.
 

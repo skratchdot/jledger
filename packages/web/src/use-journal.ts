@@ -148,6 +148,7 @@ export function useJournal(
   );
   return {
     summary,
+    journalRevision: revision,
     report,
     window,
     detail,
