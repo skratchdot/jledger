@@ -113,3 +113,36 @@ describe('compatibility corpus v1 (captured hledger 1.52 / Ledger 3.3.2)', () =>
     });
   }
 });
+
+describe('account classification reference evidence (not jledger support)', () => {
+  it('captures inherited expenses, child overrides, first repeated declaration, and whitespace differences', () => {
+    expect(hledger['account-type-inline'].accountTypes.X).toEqual([
+      'dépenses:repas',
+    ]);
+    expect(hledger['account-type-continuation'].accountTypes).toEqual(
+      hledger['account-type-inline'].accountTypes,
+    );
+    expect(hledger['account-type-word'].accountTypes).toEqual(
+      hledger['account-type-inline'].accountTypes,
+    );
+    expect(hledger['account-type-repeated'].accountTypes).toEqual(
+      hledger['account-type-inline'].accountTypes,
+    );
+    expect(hledger['account-type-child'].accountTypes.R).toEqual([
+      'dépenses:repas',
+    ]);
+    expect(hledger['account-type-child'].accountTypes.X).toEqual([]);
+    expect(hledger['account-type-no-separator'].accountTypes).toEqual(
+      hledger['account-type-child'].accountTypes,
+    );
+    expect(hledger['account-type-single-space'].accountTypes.X).toEqual([]);
+    expect(hledger['account-type-child'].accountTypes.A).toEqual([
+      'assets:cash',
+    ]);
+    expect(hledger['account-type-child'].accountTypes.C).toEqual([
+      'assets:cash',
+    ]);
+    expect(hledger['account-type-invalid'].accepted).toBe(false);
+    expect(ledger['account-type-invalid'].accepted).toBe(true);
+  });
+});

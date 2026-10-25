@@ -1385,5 +1385,29 @@
         "quantity": "-3"
       }
     ]
+  },
+  "account-type-inline": {
+    "accepted": true
+  },
+  "account-type-continuation": {
+    "accepted": true
+  },
+  "account-type-single-space": {
+    "accepted": true
+  },
+  "account-type-word": {
+    "accepted": true
+  },
+  "account-type-repeated": {
+    "accepted": true
+  },
+  "account-type-child": {
+    "accepted": true
+  },
+  "account-type-invalid": {
+    "accepted": true
+  },
+  "account-type-no-separator": {
+    "accepted": true
   }
 }

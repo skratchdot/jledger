@@ -1628,5 +1628,92 @@
         "quantity": "-3"
       }
     ]
+  },
+  "account-type-inline": {
+    "accepted": true,
+    "accountTypes": {
+      "A": ["assets:cash"],
+      "L": [],
+      "E": [],
+      "R": [],
+      "X": ["dépenses:repas"],
+      "C": ["assets:cash"],
+      "V": []
+    }
+  },
+  "account-type-continuation": {
+    "accepted": true,
+    "accountTypes": {
+      "A": ["assets:cash"],
+      "L": [],
+      "E": [],
+      "R": [],
+      "X": ["dépenses:repas"],
+      "C": ["assets:cash"],
+      "V": []
+    }
+  },
+  "account-type-single-space": {
+    "accepted": true,
+    "accountTypes": {
+      "A": ["assets:cash"],
+      "L": [],
+      "E": [],
+      "R": [],
+      "X": [],
+      "C": ["assets:cash"],
+      "V": []
+    }
+  },
+  "account-type-word": {
+    "accepted": true,
+    "accountTypes": {
+      "A": ["assets:cash"],
+      "L": [],
+      "E": [],
+      "R": [],
+      "X": ["dépenses:repas"],
+      "C": ["assets:cash"],
+      "V": []
+    }
+  },
+  "account-type-repeated": {
+    "accepted": true,
+    "accountTypes": {
+      "A": ["assets:cash"],
+      "L": [],
+      "E": [],
+      "R": [],
+      "X": ["dépenses:repas"],
+      "C": ["assets:cash"],
+      "V": []
+    }
+  },
+  "account-type-child": {
+    "accepted": true,
+    "accountTypes": {
+      "A": ["assets:cash"],
+      "L": [],
+      "E": [],
+      "R": ["dépenses:repas"],
+      "X": [],
+      "C": ["assets:cash"],
+      "V": []
+    }
+  },
+  "account-type-invalid": {
+    "accepted": false
+  },
+  "account-type-no-separator": {
+    "accepted": true,
+    "accountTypes": {
+      "A": ["assets:cash"],
+      "L": [],
+      "E": [],
+      "R": ["dépenses:repas"],
+      "X": [],
+      "C": ["assets:cash"],
+      "V": []
+    }
   }
 }

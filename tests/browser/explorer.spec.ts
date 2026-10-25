@@ -776,3 +776,26 @@ test('hierarchy limit errors preserve the previous complete import with a warnin
   await expect(page.getByRole('table')).toContainText('Coffee');
   await expect(page.getByRole('table')).not.toContainText('999 USD');
 });
+
+test('account type declarations pause reports instead of showing misleading spending', async ({
+  page,
+}) => {
+  await page.goto('./');
+  await page.getByLabel('Import journal files').setInputFiles({
+    name: 'valid.journal',
+    mimeType: 'text/plain',
+    buffer: Buffer.from(journal),
+  });
+  await expect(page.getByLabel('Filtered totals')).toContainText('4.25 USD');
+  await page.getByLabel('Import journal files').setInputFiles({
+    name: 'typed.journal',
+    mimeType: 'text/plain',
+    buffer: Buffer.from('account expenses  ; type:A\n\n' + journal),
+  });
+  await expect(page.getByRole('alert')).toContainText('typed.journal:1');
+  await expect(page.getByRole('alert')).toContainText(
+    'Account type declarations',
+  );
+  await expect(page.getByRole('table')).toHaveCount(0);
+  await expect(page.getByLabel('Filtered totals')).toHaveCount(0);
+});
