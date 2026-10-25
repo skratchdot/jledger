@@ -13,7 +13,7 @@
   },
   {
     "id": "assertion",
-    "supported": false
+    "supported": true
   },
   {
     "id": "cost",
@@ -61,5 +61,58 @@
   {
     "id": "include-missing",
     "supported": false
+  },
+  {
+    "id": "assertion-chronological",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "assertion-split",
+    "supported": true
+  },
+  {
+    "id": "assertion-direct",
+    "supported": true
+  },
+  {
+    "id": "assertion-precision-failure",
+    "supported": false
+  },
+  {
+    "id": "assertion-commodity",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "assertion-unitless-failure",
+    "supported": false
+  },
+  {
+    "id": "assertion-unitless",
+    "supported": true
+  },
+  {
+    "id": "assertion-total",
+    "supported": false
+  },
+  {
+    "id": "assertion-inclusive",
+    "supported": false
+  },
+  {
+    "id": "assertion-assignment",
+    "supported": false
+  },
+  {
+    "id": "assertion-includes",
+    "supported": true,
+    "sources": ["assertion-includes.journal", "parts/asserted-child.journal"]
   }
 ]

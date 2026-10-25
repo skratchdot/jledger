@@ -70,7 +70,7 @@ describe('journal subset', () => {
     ['2024-01-01\n  a\n  b', 'inference'],
     ['2024-01-01\n  a  1 USD\n  b  -1 EUR', 'unbalanced'],
     ['2024-01-01\n  a  1 USD\n  b  1 EUR\n  c', 'inference'],
-    ['2024-01-01\n  a  1 USD = 10 USD\n  b', 'amount'],
+    ['2024-01-01\n  a  1 USD = 10 USD\n  b', 'balance-assertion'],
     ['2024-01-01\n  (a)  1 USD\n  b', 'account'],
     ['include other.journal', 'include-missing'],
     ['commodity $1,000.00', 'unsupported'],

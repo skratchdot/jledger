@@ -1,0 +1,7 @@
+2026-01-01 Opening
+  assets:cash  10 USD
+  equity:opening
+
+2026-01-02 Other
+  assets:cash  1 EUR = 10 USD
+  equity:eur

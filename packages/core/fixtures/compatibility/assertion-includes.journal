@@ -1,0 +1,9 @@
+2026-01-01 Opening
+  assets:cash  10 USD = 10 USD
+  equity:opening
+
+include parts/asserted-child.journal
+
+2026-01-03 Add
+  assets:cash  1 USD = 10 USD
+  equity:opening

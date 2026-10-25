@@ -52,8 +52,9 @@ privacy boundary described in architecture.md.
   jledger intentionally rejects it to avoid unexpected double counting. Repeat
   semantics and explicit root selection need a separate implementation.
 - Transactions do not span include/file boundaries. Unknown directives, costs,
-  assertions, posting dates, and other unsupported financial syntax in children
-  still disable every report. Includes do not make incomplete totals usable.
+  assignment/total/inclusive assertion forms, posting dates, and other unsupported
+  financial syntax in children still disable every report. Plain `=` assertions validate across the expanded
+  bundle in date order. Includes do not make incomplete totals usable.
 
 Core first validates the complete graph, including rootless cycles. Missing targets,
 normalized path collisions, file/directory ambiguity, cycles, repeats, and limits

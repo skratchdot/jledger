@@ -164,7 +164,35 @@
     ]
   },
   "assertion": {
-    "accepted": true
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Opening",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Opening",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-10"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-10"
+      }
+    ]
   },
   "cost": {
     "accepted": true
@@ -326,5 +354,228 @@
   },
   "include-missing": {
     "accepted": false
+  },
+  "assertion-chronological": {
+    "accepted": false
+  },
+  "assertion-split": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Opening",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Opening",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-10"
+      },
+      {
+        "date": "2026-01-02",
+        "description": "Split",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2026-01-02",
+        "description": "Split",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "date": "2026-01-02",
+        "description": "Split",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "3"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "7"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-10"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "3"
+      }
+    ]
+  },
+  "assertion-direct": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Child",
+        "account": "assets:cash:child",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Child",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-10"
+      },
+      {
+        "date": "2026-01-02",
+        "description": "Parent",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-02",
+        "description": "Parent",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "assets:cash:child",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-11"
+      }
+    ]
+  },
+  "assertion-precision-failure": {
+    "accepted": false
+  },
+  "assertion-commodity": {
+    "accepted": false
+  },
+  "assertion-unitless-failure": {
+    "accepted": false
+  },
+  "assertion-unitless": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "No commodity",
+        "account": "assets:cash",
+        "commodity": "",
+        "quantity": "10"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "No commodity",
+        "account": "equity:opening",
+        "commodity": "",
+        "quantity": "-10"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "",
+        "quantity": "10"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "",
+        "quantity": "-10"
+      }
+    ]
+  },
+  "assertion-total": {
+    "accepted": false
+  },
+  "assertion-inclusive": {
+    "accepted": false
+  },
+  "assertion-assignment": {
+    "accepted": true
+  },
+  "assertion-includes": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Opening",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Opening",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-10"
+      },
+      {
+        "date": "2026-01-02",
+        "description": "Spend",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2026-01-02",
+        "description": "Spend",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-03",
+        "description": "Add",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-03",
+        "description": "Add",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-11"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      }
+    ]
   }
 }

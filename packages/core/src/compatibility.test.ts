@@ -14,7 +14,7 @@ const canonical = (value: string) => {
 
 describe('compatibility corpus v1 (captured hledger 1.52 / Ledger 3.3.2)', () => {
   for (const fixture of cases) {
-    it(`${fixture.id}: ${fixture.supported ? 'posting semantics and direct report parity' : 'rejects input and disables reports'}`, () => {
+    it(`${fixture.id}: ${fixture.supported ? 'posting semantics and direct report parity' : 'diagnostics disable reports'}`, () => {
       const name = `${fixture.id}.journal`;
       const journal = parseJournal(
         (fixture.sources ?? [name]).map((sourceName) => ({
@@ -43,6 +43,7 @@ describe('compatibility corpus v1 (captured hledger 1.52 / Ledger 3.3.2)', () =>
           quantity: canonical(p.amount.quantity),
         })),
       );
+      postings.sort((a, b) => a.date.localeCompare(b.date));
       const report = balances(journal).flatMap((b) =>
         b.amounts.map((a) => ({
           account: b.account,
@@ -50,8 +51,15 @@ describe('compatibility corpus v1 (captured hledger 1.52 / Ledger 3.3.2)', () =>
           quantity: canonical(a.quantity),
         })),
       );
-      for (const reference of [hledger, ledger]) {
+      for (const [tool, reference] of [
+        ['hledger', hledger],
+        ['ledger', ledger],
+      ] as const) {
         const expected = reference[fixture.id as keyof typeof reference];
+        if (fixture.referenceAcceptance?.[tool] === false) {
+          expect(expected.accepted).toBe(false);
+          continue;
+        }
         expect(expected.accepted).toBe(true);
         expect(postings).toEqual(
           'postings' in expected ? expected.postings : undefined,

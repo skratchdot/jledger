@@ -252,7 +252,12 @@ test('monthly include bundle preserves exact totals, comment context and source 
     const month = String(index + 1).padStart(2, '0');
     const prefix =
       '; synthetic monthly export\ncomment\ninclude not-a-real-file.journal\nend comment\n\n';
-    const salary = `2026-${month}-01 Salary month ${month}\n  assets:bank  3000.00 USD\n  income:salary\n\n`;
+    const bankCents = 300000n - 578123n * BigInt(index);
+    const bankDigits = (bankCents < 0n ? -bankCents : bankCents)
+      .toString()
+      .padStart(3, '0');
+    const bankBalance = `${bankCents < 0n ? '-' : ''}${bankDigits.slice(0, -2)}.${bankDigits.slice(-2)}`;
+    const salary = `2026-${month}-01 Salary month ${month}\n  assets:bank  3000.00 USD = ${bankBalance} USD\n  income:salary\n\n`;
     const purchases = Array.from({ length: 1999 }, (_, item) => {
       const number = item + 1;
       const quantity = number % 2 ? '10.01' : '-1.23';
@@ -374,5 +379,40 @@ test('journal folder maps nested relative paths in the worker and rejects escape
   await expect(page.getByRole('alert')).toContainText(
     'Include path must stay within the selected bundle',
   );
+  await expect(page.getByRole('table')).toHaveCount(0);
+});
+
+test('balance assertions are checked in date order and failures pause every report', async ({
+  page,
+}) => {
+  const text =
+    '2024-02-02 Coffee\n  expenses:coffee  4.25 USD\n  assets:cash  -4.25 USD = 995.75 USD\n\n2024-02-01 Salary\n  assets:cash  1000 USD = 1000 USD\n  income:salary\n';
+  await page.goto('./');
+  const file = (contents: string) => ({
+    name: 'asserted.journal',
+    mimeType: 'text/plain',
+    buffer: Buffer.from(contents),
+  });
+  await page.getByLabel('Import journal files').setInputFiles(file(text));
+  await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '3');
+  await expect(page.getByLabel('Filtered totals')).toContainText('4.25 USD');
+  await page.getByRole('button', { name: '· Coffee', exact: true }).click();
+  await expect(page.getByRole('dialog')).toContainText(
+    'balance checked: 995.75 USD',
+  );
+  await expect(page.getByRole('dialog')).toContainText('= 995.75 USD');
+  await page.getByRole('button', { name: 'Close', exact: true }).click();
+  await page
+    .getByLabel('Import journal files')
+    .setInputFiles(file(text.replace('= 995.75 USD', '= 995.74 USD')));
+  await expect(page.getByRole('alert')).toContainText('asserted.journal:3');
+  await expect(page.getByRole('alert')).toContainText(
+    'expected 995.74 USD, calculated 995.75 USD',
+  );
+  await expect(
+    page.getByRole('heading', {
+      name: 'Reports paused to keep your totals honest.',
+    }),
+  ).toBeVisible();
   await expect(page.getByRole('table')).toHaveCount(0);
 });

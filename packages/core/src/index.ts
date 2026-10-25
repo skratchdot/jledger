@@ -1,6 +1,7 @@
 import { add, isZero, negate } from './decimal.js';
 import { scanJournalLines } from './syntax.js';
 import { resolveIncludes } from './includes.js';
+import { checkBalanceAssertions } from './assertions.js';
 export {
   resolveIncludes,
   MAX_INCLUDE_DEPTH,
@@ -36,6 +37,8 @@ export interface Posting {
   account: string;
   amount: Amount;
   inferred: boolean;
+  /** A single-commodity, direct-account plain = assertion; consult diagnostics for validity. */
+  balanceAssertion?: Amount;
   status: Status;
   source: Location;
 }
@@ -107,6 +110,7 @@ export function parseJournal(sources: Source[]): Journal {
     lines.set(edge.line, edge.to);
     includes.set(edge.from, lines);
   }
+  let hasAssertions = false;
   function parseSource(source: Source) {
     let tx: PendingTransaction | null = null;
     let txErrors = 0;
@@ -273,16 +277,51 @@ export function parseJournal(sources: Source[]): Journal {
           continue;
         }
         const amountText = amountParts.join(' ').trim();
-        const amount = amountText ? parseAmount(amountText) : null;
+        let postingAmountText = amountText;
+        let balanceAssertion: Amount | null = null;
+        if (amountText.includes('=')) {
+          const parts = amountText.split('=');
+          if (parts.length !== 2 || parts[1]!.trimStart().startsWith('*')) {
+            error(
+              location,
+              'balance-assertion-syntax',
+              'Only plain = balance assertions are supported. Total (==) and inclusive (=*) assertions are not supported yet.',
+            );
+            continue;
+          }
+          postingAmountText = parts[0]!.trim();
+          if (!postingAmountText) {
+            error(
+              location,
+              'balance-assignment',
+              'Balance assignments are not supported yet. Supply an explicit posting amount before =.',
+            );
+            continue;
+          }
+          balanceAssertion = parseAmount(parts[1]!.trim());
+          if (!balanceAssertion) {
+            error(
+              location,
+              'balance-assertion-syntax',
+              'Use a supported explicit quantity and commodity after =. Costs, expressions, grouping and extra assertion operators are not supported.',
+            );
+            continue;
+          }
+        }
+        const amount = postingAmountText
+          ? parseAmount(postingAmountText)
+          : null;
         if (amountText && !amount) {
           error(
             location,
             'amount',
-            'Unsupported amount. Use dot decimals with an optional currency symbol or suffix commodity; costs, assertions, grouping, and expressions are not supported yet.',
+            'Unsupported amount. Use dot decimals with an optional currency symbol or suffix commodity; costs, grouping, and expressions are not supported yet.',
           );
           continue;
         }
+        if (balanceAssertion) hasAssertions = true;
         tx.postings.push({
+          ...(balanceAssertion ? { balanceAssertion } : {}),
           account,
           amount,
           status,
@@ -300,6 +339,8 @@ export function parseJournal(sources: Source[]): Journal {
       );
   }
   for (const name of graph.entryPoints) parseSource(byName.get(name)!);
+  if (hasAssertions && !journal.diagnostics.length)
+    journal.diagnostics.push(...checkBalanceAssertions(journal.transactions));
   return journal;
 }
 

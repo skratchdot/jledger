@@ -8,6 +8,9 @@ parsing or aggregation acceptable.
 
 - A dedicated module worker owns source text, the parsed journal, a normalized
   search index, sorted transaction IDs, and the current filtered result IDs.
+- Plain assertion validation runs in the worker in date/posting order, only for
+  journals containing assertions. It retains transaction references for a stable
+  chronological sort and running direct balances; ordinary imports skip this pass.
 - Core streams source-span line nodes while parsing, without retaining an extra
   syntax tree or split-line array. Explicit syntax inspection can opt into a tree.
 - File decoding, local API fetching/JSON decoding, parsing, direct balances,
@@ -47,12 +50,13 @@ a substitute for diverse real-world journals or a cross-device benchmark.
 ## Multi-file regression
 
 The browser suite also imports a synthetic 13-file monthly include bundle with
-24,000 transactions: salary, alternating purchases/refunds, inline Unicode comments,
-block comments containing include-shaped text, and mixed LF/CRLF/BOM inputs.
+24,000 transactions: salary with monthly bank-balance assertions, alternating
+purchases/refunds, inline Unicode comments, block comments containing include-shaped text, and mixed LF/CRLF/BOM inputs.
 It checks exact full-year and monthly totals, bounded register rows, and a final
 transaction's original file, line number, and source excerpt. The files are
 all explicitly selected; a root manifest includes the 12 monthly children once.
-Like the larger scenario, it is a regression case, not a memory budget or a device-wide performance promise.
+Like the larger scenario, it is a regression case, not a memory budget or a
+device-wide performance promise.
 
 ## Next improvements
 
