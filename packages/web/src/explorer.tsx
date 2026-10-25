@@ -2,7 +2,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { ACCOUNT_TYPE_LABELS, formatAmount, type Source } from '@jledger/core';
 import demo from '@jledger/examples/demo.journal?raw';
 import { useJournal } from './use-journal';
-import { dateRangeError, monthBounds } from './report-filters';
+import { dateRangeError, monthBounds, type Filters } from './report-filters';
+import { ActiveFilters, type FilterChip } from './components/active-filters';
+import { SavedFilters } from './components/saved-filters';
 import { VirtualRegister } from './components/virtual-register';
 import { VirtualAccounts } from './components/virtual-accounts';
 import { Button } from './components/ui/button';
@@ -49,6 +51,7 @@ export function Explorer() {
   const engine = useJournal(filters, range);
   const {
     summary,
+    journalRevision,
     report,
     busy,
     message,
@@ -72,6 +75,9 @@ export function Explorer() {
     1,
     ...categories.map(([, value]) => Math.abs(Number(value))),
   );
+  const searchInput = useRef<HTMLInputElement>(null);
+  const fromDateInput = useRef<HTMLInputElement>(null);
+  const statusInput = useRef<HTMLSelectElement>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const folderInput = useRef<HTMLInputElement>(null);
   function resetFilters() {
@@ -81,6 +87,30 @@ export function Explorer() {
     setDateFrom('');
     setDateTo('');
     setStatus('all');
+    setSelected(null);
+  }
+  function applyFilters(next: Filters) {
+    setQuery(next.query);
+    setAccount(next.account);
+    setMonth(next.month);
+    setDateFrom(next.dateFrom);
+    setDateTo(next.dateTo);
+    setCommodity(next.commodity);
+    setStatus(next.status);
+    setSelected(null);
+  }
+  function clearFilter(filter: FilterChip) {
+    if (filter === 'query' || filter === 'account') {
+      if (filter === 'query') setQuery('');
+      else setAccount('');
+      searchInput.current?.focus();
+    } else if (filter === 'status') {
+      setStatus('all');
+      statusInput.current?.focus();
+    } else {
+      selectMonth('');
+      fromDateInput.current?.focus();
+    }
     setSelected(null);
   }
   function selectMonth(next: string) {
@@ -365,6 +395,7 @@ export function Explorer() {
                     <label className="search">
                       <span>⌕</span>
                       <input
+                        ref={searchInput}
                         aria-label="Search transactions"
                         placeholder="Search payees, notes, accounts…"
                         value={query}
@@ -391,6 +422,7 @@ export function Explorer() {
                         <input
                           type="date"
                           autoComplete="off"
+                          ref={fromDateInput}
                           aria-label="From date"
                           value={dateFrom}
                           min="0001-01-01"
@@ -450,6 +482,7 @@ export function Explorer() {
                     <label>
                       <span className="sr-only">Status</span>
                       <select
+                        ref={statusInput}
                         aria-label="Status"
                         value={status}
                         onChange={(e) => setStatus(e.target.value)}
@@ -475,6 +508,17 @@ export function Explorer() {
                     From and Through include both boundary dates. Filters use
                     posting dates.
                   </p>
+                  <ActiveFilters
+                    filters={{ ...filters, commodity: currency }}
+                    onClear={clearFilter}
+                  />
+                  <SavedFilters
+                    key={journalRevision}
+                    filters={{ ...filters, commodity: currency }}
+                    busy={busy}
+                    invalidRange={Boolean(invalidDateRange)}
+                    onApply={applyFilters}
+                  />
                   {invalidDateRange ? (
                     <section
                       className="panel date-range-error"
@@ -485,18 +529,6 @@ export function Explorer() {
                     </section>
                   ) : (
                     <>
-                      {account && (
-                        <div className="account-filter">
-                          Filtering account: <strong>{account}</strong>{' '}
-                          <Button
-                            className="text-button"
-                            aria-label="Clear account filter"
-                            onClick={() => setAccount('')}
-                          >
-                            ×
-                          </Button>
-                        </div>
-                      )}
                       {view === 'overview' ? (
                         <>
                           <section

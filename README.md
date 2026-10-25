@@ -91,6 +91,8 @@ installation is a later milestone.
   account, and text filters. Income/spending follows [journal account types](docs/account-types.md),
   with inherited declarations, child overrides, and English-name defaults.
   Transaction details explain the classification source.
+- [Active filter chips and named presets](docs/explorer-filters.md) make report
+  scopes visible and reusable. Presets stay in memory for the open journal only.
 - [Primary posting dates](docs/posting-dates.md) for month filters, monthly charts,
   and assertion checks; transaction and posting dates remain visible in drill-down.
 - A transaction register with posting amounts and source references, transaction
