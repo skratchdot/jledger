@@ -20,7 +20,7 @@ and explicitly captured direct/inclusive balances have parity evidence.
 | One omitted amount                                       | Inferred when explicit amounts use exactly one commodity                                                                                                |
 | Explicit multi-commodity postings                        | Accepted only if each commodity independently sums to zero                                                                                              |
 | Line comments, inline semicolon comments, block comments | Accepted; original source retained; no general tag query semantics                                                                                      |
-| Simple `account NAME` declarations                       | Accepted; no declaration enforcement; type tags produce diagnostics                                                                                     |
+| Simple `account NAME` declarations                       | Account type tags with inheritance and child overrides; see [supported subset](account-types.md); no declaration enforcement                            |
 | Multiple independently selected files                    | Supported; no inference across file boundaries                                                                                                          |
 | Includes                                                 | Selected-source literal relative paths; see [include policy](includes.md)                                                                               |
 | Primary posting date override comments                   | Full inline bracket dates and restricted lowercase `date:` tags; see [posting dates](posting-dates.md). Partial/secondary/continuation forms are errors |
@@ -68,12 +68,13 @@ parent and child rows overlap. CLI balance remains direct. There is no conversio
 net-worth calculation, or investment return calculation. No hledger query-language
 compatibility is implied by the explorer's substring search.
 
-The spending UI recognizes English account prefixes (`expenses`, `income`, `revenue`,
-case-insensitive). Other account names are still available in balances and the
-register, but are not classified into income/spending cards. Configurable account
-types and hledger type-tag semantics are required before general financial statements.
-[Account type declarations](account-types.md) now produce diagnostics rather than
-being silently ignored, including inline and indented continuation tags.
+Income/spending reports use [journal-defined account types](account-types.md),
+including parent inheritance and child overrides. Otherwise common English account
+names supply defaults. Unrecognized names remain in balances/registers without
+being counted as income/spending. Invalid/ambiguous type tags and conflicting
+repeated declarations disable reports. The corpus compares sampled hledger type
+queries separately from postings and balances; Ledger tag acceptance does not imply
+classification parity. General financial statements remain unsupported.
 
 Implementation choices, such as stricter date validation or omitted-amount handling,
 are tested as jledger behavior today. The corpus documents which cases have been compared with pinned reference tools.

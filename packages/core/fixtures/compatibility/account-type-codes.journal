@@ -1,0 +1,19 @@
+account typeA  ; type:A
+account typeL  ; type:L
+account typeE  ; type:E
+account typeR  ; type:R
+account typeX  ; type:X
+account typeC  ; type:C
+account typeV  ; type:V
+account typeG  ; type:G
+
+2026-01-01 Synthetic classification
+  typeA:child  1 USD
+  typeL:child  1 USD
+  typeE:child  1 USD
+  typeR:child  1 USD
+  typeX:child  1 USD
+  typeC:child  1 USD
+  typeV:child  1 USD
+  typeG:child  1 USD
+  balancing  -8 USD

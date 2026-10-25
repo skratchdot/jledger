@@ -88,8 +88,9 @@ installation is a later milestone.
   a failed assertion disables every report. Assignments and total/inclusive forms
   remain unsupported.
 - Interactive expense categories and monthly charts, plus inclusive [date ranges](docs/explorer-filters.md), status, commodity,
-  account, and text filters. Income/spending classification currently uses English
-  `income`/`revenue`/`expenses` account prefixes, case-insensitively.
+  account, and text filters. Income/spending follows [journal account types](docs/account-types.md),
+  with inherited declarations, child overrides, and English-name defaults.
+  Transaction details explain the classification source.
 - [Primary posting dates](docs/posting-dates.md) for month filters, monthly charts,
   and assertion checks; transaction and posting dates remain visible in drill-down.
 - A transaction register with posting amounts and source references, transaction

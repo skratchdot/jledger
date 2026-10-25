@@ -1,0 +1,16 @@
+2026-01-01 Synthetic classification
+  assets:cash  1 USD
+  asset:bank:checking  1 USD
+  asset:saving  1 USD
+  debts:loan  1 USD
+  liability:card  1 USD
+  equity:conversion  1 USD
+  equity:opening  1 USD
+  income:salary  1 USD
+  revenues:salary  1 USD
+  revenue:capital-gains  1 USD
+  Income:losses  1 USD
+  expense:food  1 USD
+  EXPENSES:food  1 USD
+  unclassified  1 USD
+  balancing  -14 USD

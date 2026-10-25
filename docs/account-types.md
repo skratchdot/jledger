@@ -1,57 +1,107 @@
-# Account types: reference evidence and current restriction
+# Journal-defined account types
 
-jledger does not yet interpret hledger account type declarations. Inline `type:`
-tags on `account` directives and indented continuation comments now produce an
-`account-type` diagnostic at the tag's source line. All reports are disabled,
-including direct balances. This closes a gap where declarations were ignored and
-English-prefix spending classification could contradict the journal.
-
-For example, this journal must not show an expense total:
+Income and spending follow explicit hledger-style account type declarations,
+including inherited parent types. Configure types in the journal; no browser
+settings, external service, or persistence is required.
 
 ```journal
+account dépenses  ; type:X
+account revenus
+  ; type:revenue
 account expenses  ; type:A
+account dépenses:other-income  ; type:R
 
-2026-01-01 Synthetic transfer
-  expenses:clearing  2 USD
+2026-01-01 Synthetic meal
+  dépenses:repas  0.10 USD
   assets:cash
 ```
 
-Ordinary account declarations and comments remain accepted. Transaction and posting
-tags named `type` are not account declarations. The guard deliberately also rejects
-single-space inline type tags; users should resolve ambiguous syntax before reports.
-There is no configurable account-type UI or financial-statement support yet.
+The meal contributes exactly `0.10 USD` to spending. Postings to `expenses` and its
+children are assets, despite their English name. The explicitly typed
+`dépenses:other-income` subtree is income rather than spending. Untyped/unrecognized
+accounts still appear in balances and the register, but not income/spending totals.
+Transaction details show each posting's type, its declaration account and source
+line, or that an English-name default was used.
 
-## Pinned reference observations
+## Supported declaration subset
 
-Eight synthetic fixtures extend the hledger 1.52 / Ledger 3.3.2 corpus. hledger
-classification is captured with `accounts --used type:CODE` for A, L, E, R, X, C,
-and V, independently of financial report projections. Cash also matches asset
-queries, so these sets are not mutually exclusive. Ledger acceptance is recorded;
-its tag system does not imply the same classification semantics.
+Use `account NAME` with one lowercase `type:` tag. Inline comments require **two
+spaces or a tab** before `;`. A contiguous, indented semicolon continuation comment
+also works. Blank lines, hash comments, top-level comments, block comments, and other directives
+end the declaration's continuation context. Ordinary comma-delimited tags and notes
+can share a comment; general tag queries and account declaration enforcement are
+not implemented.
 
-The committed cases establish:
+| Code | Accepted word (case-insensitive) | Classification          |
+| ---- | -------------------------------- | ----------------------- |
+| A    | asset                            | Asset                   |
+| L    | liability                        | Liability               |
+| E    | equity                           | Equity                  |
+| R    | revenue                          | Income                  |
+| X    | expense                          | Expense                 |
+| C    | cash                             | Cash; also an asset     |
+| V    | conversion                       | Conversion; also equity |
+| G    | gains                            | Gain; also income       |
 
-- Two spaces before inline `; type:X`, or an indented continuation comment,
-  classify the declared account's posted descendants as expenses.
-- The word `expense` is accepted in the sampled case.
-- A child `type:R` overrides its parent's `type:X`.
-- The first of repeated X/R declarations wins in the sampled case.
-- One space before `; type:X` does not classify the posted descendant as X.
-- An invalid Q type is rejected by hledger but accepted by Ledger.
-- The child-override sample gives the same classification with or without a blank
-  separator before the transaction.
+Code values are also case-insensitive. `income`, plural `expenses`, and singular
+`gain` are not accepted type values by the pinned hledger parser. In particular,
+use `G` or `gains`. Supporting a type does not enable costs, conversions, valuation,
+or investment reports; unsupported financial syntax still disables all reports.
 
-These are sampled observations, not a complete type specification. Ordinary tests
-check the selected observations and fail-closed behavior. The live differential
-command verifies every captured classification set against the pinned executable.
-All fixtures are synthetic, including the non-ASCII account names; the runner uses
-`C.UTF-8` rather than ASCII `C` for reliable decoding.
+Declarations apply to the **whole loaded journal**, including earlier transactions,
+expanded includes, and independent selected roots. The nearest explicit declaration
+on the exact account or an ancestor wins, with case-sensitive account matching and
+colon segment boundaries. A child declaration overrides its parent. Untyped
+redeclarations do not erase an earlier type. Repeating the same type is accepted;
+transaction details retain its first declaration's provenance.
 
-## Next implementation slice
+Invalid values, single-space inline type comments, alternate tag key spellings,
+duplicate tags (including across continuation lines), and conflicting repeated
+account declarations produce source-located diagnostics and disable every report.
+Conflicts identify the earlier declaration as well as the current source line.
+These are deliberate restrictions: hledger accepts some ambiguous/duplicate forms.
+Repeated X/R declarations in either order classify as X in the captured reference
+cases; this must not be interpreted as a general first-declaration-wins rule.
 
-Add browser-safe account declaration metadata with source locations, then a cached
-core type resolver shared by worker reports. Test explicit declarations against
-name inference, include/independent-root ordering, all accepted code/word forms,
-and conflicting/duplicate tags before enabling them. Preserve exact arithmetic,
-worker execution, and diagnostics for any remaining unsupported forms. Implement
-income/spending classification first; statements and UI overrides remain separate.
+## English-name defaults
+
+Explicit declarations take precedence over all name defaults. Otherwise common
+English names are recognized case-insensitively, including singular/plural
+`asset(s)`, `debt(s)`, `liability`/`liabilities`, `equity`, `income(s)`/`revenue(s)`,
+and `expense(s)`. Cash/bank/checking/saving descendants under assets, conversion
+children under equity, and gain/loss children under income/revenue have subtype
+defaults. These conventions are a convenience, not a substitute for declarations
+for other languages or personal naming schemes.
+
+As in the pinned reference, explicitly declaring a subtype elsewhere can suppress
+its name inference: declaring a `C` account makes otherwise undeclared `assets:cash`
+inherit asset type A; similarly V and G defaults fall back to equity E and income R.
+This does not change ordinary income/spending totals because gains are income.
+The corpus covers these sampled rules; no general financial statement parity is
+implied.
+
+## Core, worker and reference checks
+
+`Journal.accountDeclarations` retains account names, declaration source locations,
+and optional canonical types/tag locations. `createAccountTypeResolver(journal)`
+refuses diagnostics and builds an isolated cached resolver. It uses declarations
+once, walks account paths iteratively, and shares cached ancestor classifications.
+`matchesAccountType` includes subtype membership (C in A, V in E, G in R).
+The explorer creates its resolver in the worker on import, uses it for exact
+filtered reports, and returns classification metadata only with on-demand details.
+Changing imports replaces the resolver; no financial configuration is cached on disk.
+
+The [71-case conformance corpus](conformance.md) captures hledger 1.52 classification
+queries independently from posting and balance parity. Marked supported cases
+compare jledger's used-account sets for A/L/E/R/X/C/V/G against those captures.
+Ledger 3.3.2 acceptance, postings and direct balances are compared where supported;
+its tag system does not imply equivalent account classification.
+
+Fixtures cover all codes and word values, English defaults, inheritance, child
+overrides, same/conflicting repeated declarations, whitespace, non-ASCII accounts,
+late included declarations, independent roots, and subtype inference. Unsupported
+cases retain acceptance/classification evidence without claiming jledger support.
+The live runner ignores tool configuration and uses `C.UTF-8` for reliable decoding.
+
+A configurable account-type UI, general tag queries, statement reports, and broader
+conflicting declaration compatibility remain future work.

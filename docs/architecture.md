@@ -28,6 +28,11 @@ and built in the worker. The UI switches aggregate arrays without recomputing
 financial totals, and the account list remains virtualized. Import state commits
 atomically after report construction; hierarchy-limit errors retain the previous
 complete import with a warning.
+[Journal-defined account types](account-types.md) retain declaration/tag provenance
+in core. An isolated cached resolver is created in the worker per import; filtered
+income/spending uses its canonical classifications. Only on-demand transaction
+details carry classification provenance to React. Unsupported/conflicting types
+disable every report; there is no persisted browser classification configuration.
 
 Core consumes named UTF-8 source strings and returns transactions and diagnostics.
 Source files remain authoritative; derived reports are disposable. Locations retain

@@ -294,3 +294,89 @@ describe('worker report engine', () => {
     ).toEqual([]);
   });
 });
+
+describe('journal-defined income and spending', () => {
+  const typedSources = [
+    {
+      name: 'main.journal',
+      text: 'include types.journal\n\n2026-01-01 Salary\n  assets:cash  1000 USD\n  revenus:paie\n\n2026-02-01 Meal\n  dépenses:repas  0.10 USD ; [2026-01-31]\n  assets:cash\n\n2026-02-02 Refund\n  dépenses:repas  -0.03 USD\n  assets:cash\n\n2026-02-03 Transfer\n  expenses:clearing  20 USD\n  assets:cash\n\n2026-02-04 Gain\n  dépenses:gain  -5 USD\n  assets:cash',
+    },
+    {
+      name: 'types.journal',
+      text: 'account dépenses\n  ; type:X\naccount revenus  ; type:R\naccount expenses  ; type:A\naccount dépenses:gain  ; type:G',
+    },
+  ];
+  it('uses declared and inherited types for exact totals, linked categories and effective months', async () => {
+    const engine = new JournalEngine();
+    expect(engine.load(typedSources).diagnostics).toEqual([]);
+    expect(await engine.query(filters)).toMatchObject({
+      count: 5,
+      income: '1005',
+      spending: '0.07',
+      categories: [['dépenses:repas', '0.07']],
+      monthly: [
+        { month: '2026-01', value: '0.10' },
+        { month: '2026-02', value: '-0.03' },
+      ],
+    });
+    expect(await engine.query({ ...filters, month: '2026-01' })).toMatchObject({
+      count: 2,
+      income: '1000',
+      spending: '0.10',
+    });
+    expect(
+      await engine.query({ ...filters, account: 'dépenses:repas' }),
+    ).toMatchObject({ count: 2, income: '0', spending: '0.07' });
+    expect(
+      await engine.query({
+        ...filters,
+        dateFrom: '2026-02-01',
+        dateTo: '2026-02-28',
+      }),
+    ).toMatchObject({ count: 4, income: '5', spending: '-0.03' });
+  });
+  it('explains classification only in on-demand details and replaces the resolver with each import', async () => {
+    const engine = new JournalEngine();
+    engine.load(typedSources);
+    await engine.query({ ...filters, query: 'meal' });
+    const detail = engine.detail(engine.rows(0, 1)[0]!.id)!;
+    expect(detail.postingTypes[0]).toEqual({
+      type: 'X',
+      origin: 'declared',
+      account: 'dépenses',
+      source: { file: 'types.journal', line: 2 },
+    });
+    expect(detail.excerpt).toContain('dépenses:repas');
+    engine.load([{ name: 'fresh.journal', text }]);
+    expect(await engine.query(filters)).toMatchObject({
+      income: '100',
+      spending: '0.30',
+    });
+    expect(
+      engine.detail(engine.rows(0, 1)[0]!.id)!.postingTypes[0],
+    ).toMatchObject({ type: 'X', origin: 'inferred' });
+  });
+  it('fails closed on a conflicting replacement and never returns classified partial details', async () => {
+    const engine = new JournalEngine();
+    engine.load(typedSources);
+    await engine.query(filters);
+    const summary = engine.load([
+      ...typedSources,
+      { name: 'conflict.journal', text: 'account dépenses  ; type:A' },
+    ]);
+    expect(summary.diagnostics).toEqual([
+      expect.objectContaining({
+        file: 'conflict.journal',
+        code: 'account-type',
+      }),
+    ]);
+    expect(summary.accounts).toEqual([]);
+    expect(await engine.query(filters)).toMatchObject({
+      count: 0,
+      income: '0',
+      spending: '0',
+    });
+    expect(engine.rows(0, 10)).toEqual([]);
+    expect(engine.detail(0)).toBeNull();
+  });
+});

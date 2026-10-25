@@ -2,6 +2,9 @@ import {
   add,
   effectivePostingDate,
   accountHierarchy,
+  createAccountTypeResolver,
+  matchesAccountType,
+  type AccountClassification,
   type AccountRollup,
   parseJournal,
   type Balance,
@@ -40,12 +43,19 @@ export interface Row extends Transaction {
 }
 export interface Detail extends Row {
   excerpt: string;
+  postingTypes: AccountClassification[];
 }
 const pause = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
 
 /** Lives exclusively in the worker in production; the UI receives summaries and visible rows. */
 export class JournalEngine {
-  private journal: Journal = { transactions: [], sources: [], diagnostics: [] };
+  private journal: Journal = {
+    transactions: [],
+    sources: [],
+    diagnostics: [],
+    accountDeclarations: [],
+  };
+  private classify: ((account: string) => AccountClassification) | undefined;
   private index: { id: number; text: string }[] = [];
   private matches: number[] = [];
   summary: Summary = {
@@ -67,6 +77,7 @@ export class JournalEngine {
     const hierarchy = valid
       ? accountHierarchy(journal)
       : { direct: [], inclusive: [] };
+    const classify = valid ? createAccountTypeResolver(journal) : undefined;
     const index = valid
       ? journal.transactions
           .map((t, id) => ({
@@ -97,6 +108,7 @@ export class JournalEngine {
       months: [...months].sort(),
     };
     this.journal = journal;
+    this.classify = classify;
     this.index = index;
     this.matches = [];
     this.summary = summary;
@@ -134,7 +146,8 @@ export class JournalEngine {
       matches.push(entry.id);
       for (const p of t.postings) {
         if (!matchesPosting(p, t.date, filters)) continue;
-        if (/^expenses(?::|$)/i.test(p.account)) {
+        const type = this.classify!(p.account).type;
+        if (type === 'X') {
           spending = add(spending, p.amount.quantity);
           categories.set(
             p.account,
@@ -143,7 +156,7 @@ export class JournalEngine {
           const month = effectivePostingDate(p, t.date).slice(0, 7);
           monthly.set(month, add(monthly.get(month) ?? '0', p.amount.quantity));
         }
-        if (/^(?:income|revenue)(?::|$)/i.test(p.account))
+        if (matchesAccountType(type, 'R'))
           income = add(income, p.amount.quantity);
       }
     }
@@ -172,11 +185,14 @@ export class JournalEngine {
   }
   detail(id: number): Detail | null {
     const t = this.journal.transactions[id];
-    if (!t) return null;
+    if (!t || !this.classify) return null;
     const source = this.journal.sources.find((s) => s.name === t.source.file);
     return {
       ...t,
       id,
+      postingTypes: t.postings.map((posting) =>
+        this.classify!(posting.account),
+      ),
       excerpt:
         source?.text
           .split(/\r?\n/)

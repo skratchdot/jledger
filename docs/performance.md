@@ -14,6 +14,11 @@ parsing or aggregation acceptable.
 - Explicit format state stays in the worker parser. Compiled amount patterns are
   reused; normalization removes grouping with string operations and uses exact
   decimals. Includes share commodity formats while copying the small file context.
+- Account type declarations are indexed once per import in the worker. The type
+  resolver caches account paths and inherited results rather than searching
+  declarations for every posting. Classification metadata crosses to React only
+  in on-demand details. Cached paths add memory proportional to distinct accounts
+  and their ancestors; this is not a new account-count or memory guarantee.
 - Core streams source-span line nodes while parsing, without retaining an extra
   syntax tree or split-line array. Explicit syntax inspection can opt into a tree.
 - File decoding, local API fetching/JSON decoding, parsing, direct balances,

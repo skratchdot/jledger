@@ -1,0 +1,9 @@
+account expenses  ; type:A
+account expenses:food  ; type:X
+account assets  ; type:X
+
+2026-01-01 Synthetic classification
+  expenses:clearing  1 USD
+  expenses:food  1 USD
+  assets:cash  1 USD
+  balancing  -3 USD
