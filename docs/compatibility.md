@@ -5,7 +5,7 @@ with explicitly documented [Ledger](https://ledger-cli.org/docs.html) interopera
 Those formats overlap but are not identical. **This prototype is not fully compatible
 with either tool**. A small [versioned corpus](conformance.md) is differentially
 tested against hledger 1.52 and Ledger 3.3.2; only its sampled posting semantics
-and flat direct balances have parity evidence.
+and explicitly captured direct/inclusive balances have parity evidence.
 
 | Feature                                                  | Current behavior                                                                                                                                        |
 | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -62,8 +62,9 @@ journal containing diagnostics, and the web hides all reports for that import.
 Partial valid transactions may exist in the parse result for inspection, but they
 are not a usable financial report. Empty input is valid and has zero transactions.
 
-Reports currently expose direct account balances by commodity and a transaction
-register. There is no conversion to a base currency, lot accounting, balance sheet,
+Reports expose direct balances, [inclusive account rollups](account-hierarchy.md)
+by commodity, and a transaction register. Hierarchy values are full-journal totals;
+parent and child rows overlap. CLI balance remains direct. There is no conversion to a base currency, lot accounting, balance sheet,
 net-worth calculation, or investment return calculation. No hledger query-language
 compatibility is implied by the explorer's substring search.
 

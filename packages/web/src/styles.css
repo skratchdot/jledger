@@ -744,6 +744,22 @@ tr:last-child td {
 .account-row strong {
   font-weight: 400;
 }
+.account-rollup-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+  font-size: 12px;
+}
+.account-row .account-parent {
+  font-weight: 600;
+}
+.account-row > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .account-filter {
   margin: -8px 0 20px;
   color: #859475;

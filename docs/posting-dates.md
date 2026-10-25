@@ -32,7 +32,7 @@ it does not duplicate its spending when all months are selected.
 The register remains grouped and ordered by transaction date. Its date column is
 labelled accordingly; explicit posting dates appear beside the amounts. Date filters
 can show only part of a transaction, while details show every original posting and
-both date contexts. Full-journal account balances are independent of month filters.
+both date contexts. Full-journal direct and inclusive account balances are independent of date filters.
 
 Plain balance assertions also follow effective posting dates. The checker sorts
 individual postings by effective date, retaining expanded source/posting order for

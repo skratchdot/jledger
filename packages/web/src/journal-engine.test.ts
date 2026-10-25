@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { MAX_ACCOUNT_DEPTH } from '@jledger/core';
 import { JournalEngine, type Filters } from './journal-engine';
 const filters: Filters = {
   query: '',
@@ -232,5 +233,64 @@ describe('worker report engine', () => {
     expect(
       await engine.query({ ...filters, dateFrom: '2024-02-01' }),
     ).toMatchObject({ count: 0, spending: '0' });
+  });
+  it('builds full-journal rollups in the worker without adding nested totals to filtered spending', async () => {
+    const engine = new JournalEngine();
+    const summary = engine.load([
+      {
+        name: 'a',
+        text: '2024-01-01 Parent\n  expenses:food  1.00 USD\n  assets:cash\n\n2024-02-01 Child\n  expenses:food:coffee  2.00 USD\n  assets:cash\n',
+      },
+    ]);
+    expect(
+      summary.accounts.find((b) => b.account === 'expenses:food')!.amounts[0]!
+        .quantity,
+    ).toBe('1.00');
+    expect(
+      summary.accountRollups.find((b) => b.account === 'expenses:food')!
+        .amounts[0]!.quantity,
+    ).toBe('3.00');
+    expect(
+      await engine.query({ ...filters, account: 'expenses:food' }),
+    ).toMatchObject({ count: 2, spending: '3.00' });
+    expect(
+      await engine.query({
+        ...filters,
+        account: 'expenses:food',
+        dateFrom: '2024-02-01',
+      }),
+    ).toMatchObject({ count: 1, spending: '2.00' });
+    expect(
+      engine.summary.accountRollups.find((b) => b.account === 'expenses')!
+        .amounts[0]!.quantity,
+    ).toBe('3.00');
+  });
+
+  it('keeps a failed hierarchy import atomic, preserving the previous complete journal', async () => {
+    const engine = new JournalEngine();
+    engine.load([{ name: 'previous', text }]);
+    await engine.query(filters);
+    const rows = engine.rows(0, 10);
+    const tooDeep = Array(MAX_ACCOUNT_DEPTH + 1)
+      .fill('nested')
+      .join(':');
+    expect(() =>
+      engine.load([
+        {
+          name: 'new',
+          text: `2024-01-01 New\n  ${tooDeep}  999 USD\n  equity\n`,
+        },
+      ]),
+    ).toThrow(/hierarchy/);
+    expect(engine.summary.names).toEqual(['previous']);
+    expect(engine.rows(0, 10)).toEqual(rows);
+    expect(await engine.query(filters)).toMatchObject({
+      count: 3,
+      spending: '0.30',
+    });
+    expect(
+      engine.load([{ name: 'invalid', text: 'include missing\n' }])
+        .accountRollups,
+    ).toEqual([]);
   });
 });

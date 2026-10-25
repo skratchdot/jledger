@@ -37,7 +37,8 @@ use the same posting matcher as worker aggregates. Details retain every posting,
 original transaction date and source reference, including postings outside the
 current filter scope.
 
-Direct account balances keep their full-journal scope, independent of date filters.
+Direct and inclusive [account balances](account-hierarchy.md) keep their full-journal
+scope, independent of date filters.
 Parsing, include resolution, transaction balancing and assertions also validate the
 whole journal before exploration. A range cannot hide an unsupported line or failed
 assertion elsewhere in the source.

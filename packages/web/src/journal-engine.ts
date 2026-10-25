@@ -1,7 +1,8 @@
 import {
   add,
   effectivePostingDate,
-  balances,
+  accountHierarchy,
+  type AccountRollup,
   parseJournal,
   type Balance,
   type Diagnostic,
@@ -23,6 +24,7 @@ export interface Summary {
   diagnosticCount: number;
   transactionCount: number;
   accounts: Balance[];
+  accountRollups: AccountRollup[];
   commodities: string[];
   months: string[];
 }
@@ -52,43 +54,53 @@ export class JournalEngine {
     diagnosticCount: 0,
     transactionCount: 0,
     accounts: [],
+    accountRollups: [],
     commodities: [],
     months: [],
   };
 
   load(sources: Source[]): Summary {
-    this.journal = parseJournal(sources);
-    this.matches = [];
-    const valid = !this.journal.diagnostics.length;
-    this.index = valid
-      ? this.journal.transactions
+    // Compute before committing: a hierarchy limit must not mix new transactions
+    // with the previous journal's summary or result IDs after a failed import.
+    const journal = parseJournal(sources);
+    const valid = !journal.diagnostics.length;
+    const hierarchy = valid
+      ? accountHierarchy(journal)
+      : { direct: [], inclusive: [] };
+    const index = valid
+      ? journal.transactions
           .map((t, id) => ({
             id,
             text: `${t.description} ${t.code} ${t.postings.map((p) => p.account).join(' ')}`.toLowerCase(),
           }))
           .sort((a, b) =>
-            this.journal.transactions[b.id]!.date.localeCompare(
-              this.journal.transactions[a.id]!.date,
+            journal.transactions[b.id]!.date.localeCompare(
+              journal.transactions[a.id]!.date,
             ),
           )
       : [];
     const commodities = new Set<string>(),
       months = new Set<string>();
-    for (const transaction of this.journal.transactions)
+    for (const transaction of journal.transactions)
       for (const posting of transaction.postings) {
         commodities.add(posting.amount.commodity);
         months.add(effectivePostingDate(posting, transaction.date).slice(0, 7));
       }
-    this.summary = {
+    const summary: Summary = {
       names: sources.map((s) => s.name),
-      diagnostics: this.journal.diagnostics.slice(0, 200),
-      diagnosticCount: this.journal.diagnostics.length,
-      transactionCount: this.journal.transactions.length,
-      accounts: valid ? balances(this.journal) : [],
+      diagnostics: journal.diagnostics.slice(0, 200),
+      diagnosticCount: journal.diagnostics.length,
+      transactionCount: journal.transactions.length,
+      accounts: hierarchy.direct,
+      accountRollups: hierarchy.inclusive,
       commodities: [...commodities].sort(),
       months: [...months].sort(),
     };
-    return this.summary;
+    this.journal = journal;
+    this.index = index;
+    this.matches = [];
+    this.summary = summary;
+    return summary;
   }
 
   async query(

@@ -2,6 +2,9 @@ import { add, isZero, negate } from './decimal.js';
 import { scanJournalLines } from './syntax.js';
 import { resolveIncludes } from './includes.js';
 import { checkBalanceAssertions } from './assertions.js';
+import { rollupAccountBalances, type AccountHierarchy } from './accounts.js';
+export { MAX_ACCOUNT_DEPTH, MAX_ACCOUNT_NODES } from './accounts.js';
+export type { AccountHierarchy, AccountRollup } from './accounts.js';
 import {
   parseAmount,
   parseCommodityFormat,
@@ -432,6 +435,12 @@ export function balances(journal: Journal): Balance[] {
         .map(([commodity, quantity]) => ({ commodity, quantity })),
     }));
 }
+/** Full-journal direct balances plus inclusive parent/descendant totals, by commodity. */
+export function accountHierarchy(journal: Journal): AccountHierarchy {
+  const direct = balances(journal); // Also refuses every journal diagnostic.
+  return { direct, inclusive: rollupAccountBalances(direct) };
+}
+
 export function formatAmount(amount: Amount): string {
   return `${amount.quantity}${amount.commodity ? ` ${amount.commodity}` : ''}`;
 }

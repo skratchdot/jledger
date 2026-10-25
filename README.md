@@ -94,8 +94,9 @@ installation is a later milestone.
   and assertion checks; transaction and posting dates remain visible in drill-down.
 - A transaction register with posting amounts and source references, transaction
   details, inferred amounts, and original source snippets.
-- A direct account-balance view. These are full-journal balances, independent of
-  register filters; parent/subaccount rollups are not implemented yet.
+- An [account hierarchy](docs/account-hierarchy.md) with exact inclusive parent
+  balances and a direct-posting toggle. Both are full-journal views, independent
+  of register filters; parent and child rows overlap and must not be added together.
 - The same production client served statically or through the local CLI.
 - An offline application shell after the first successful production load on
   HTTPS or loopback. Journal contents stay in memory and must be reimported after

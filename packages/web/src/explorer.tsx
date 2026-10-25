@@ -23,6 +23,7 @@ export function Explorer() {
     [commodity, setCommodity] = useState(''),
     [status, setStatus] = useState('all');
   const [view, setView] = useState<'overview' | 'accounts'>('overview');
+  const [includeSubaccounts, setIncludeSubaccounts] = useState(true);
   const [offline, setOffline] = useState(false),
     [local, setLocal] = useState(false);
   const [range, updateRange] = useState({ start: 0, end: 40 });
@@ -58,8 +59,10 @@ export function Explorer() {
   } = engine;
   const sources = summary.names.map((name) => ({ name }));
   const valid = !summary.diagnosticCount;
-  const allBalances = summary.accounts,
-    commodities = summary.commodities,
+  const allBalances = includeSubaccounts
+    ? summary.accountRollups
+    : summary.accounts;
+  const commodities = summary.commodities,
     months = summary.months;
   const currency = commodities.includes(commodity)
     ? commodity
@@ -623,16 +626,32 @@ export function Explorer() {
                           <div className="section-title">
                             <h2>Account balances</h2>
                             <span>
-                              All dates · direct balances · click to filter the
-                              register
+                              All dates ·{' '}
+                              {includeSubaccounts
+                                ? 'includes subaccounts'
+                                : 'direct postings only'}{' '}
+                              · click to filter the register
                             </span>
                           </div>
                           <p className="muted">
-                            Balances here use the entire journal, independent of
-                            register filters. Parent accounts do not include
-                            subaccounts yet.
+                            Balances use the entire journal, independent of
+                            register filters. Account clicks filter the account
+                            and all descendants in either view.
+                            {includeSubaccounts &&
+                              ' Parent totals include their descendants and overlap child rows; do not add the rows together.'}
                           </p>
+                          <label className="account-rollup-toggle">
+                            <input
+                              type="checkbox"
+                              checked={includeSubaccounts}
+                              onChange={(e) =>
+                                setIncludeSubaccounts(e.target.checked)
+                              }
+                            />{' '}
+                            Include subaccounts
+                          </label>
                           <VirtualAccounts
+                            key={includeSubaccounts ? 'inclusive' : 'direct'}
                             accounts={allBalances}
                             onSelect={setAccount}
                           />
