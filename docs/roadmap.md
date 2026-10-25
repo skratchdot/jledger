@@ -65,8 +65,10 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
 5. [Inclusive date ranges](explorer-filters.md) now work across charts and the
    register, using shared posting matching and month shortcuts. Active scope chips
    and bounded, in-memory named filter presets now support reusable exploration,
-   keyboard save/apply/remove, and complete filter restoration. Next add collapsible
-   account trees, broader keyboard navigation, and accessible chart/table equivalents. Specify hledger
+   keyboard save/apply/remove, and complete filter restoration. Account disclosures
+   now fold branches in the worker with bounded row windows, preserved child state,
+   and native keyboard controls. Next add broader keyboard navigation, account
+   search, and accessible chart/table equivalents. Specify hledger
    query compatibility separately from simple free-text search.
 6. Extend the existing worker and virtualization foundation with streaming/incremental
    parsing, indexed queries, realistic multi-file benchmarks, and memory budgets.

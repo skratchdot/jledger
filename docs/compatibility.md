@@ -64,7 +64,8 @@ are not a usable financial report. Empty input is valid and has zero transaction
 
 Reports expose direct balances, [inclusive account rollups](account-hierarchy.md)
 by commodity, and a transaction register. Hierarchy values are full-journal totals;
-parent and child rows overlap. CLI balance remains direct. There is no conversion to a base currency, lot accounting, balance sheet,
+parent and child rows overlap. Folding branches changes only which rows are shown;
+parent amounts continue to include hidden descendants. CLI balance remains direct. There is no conversion to a base currency, lot accounting, balance sheet,
 net-worth calculation, or investment return calculation. No hledger query-language
 compatibility is implied by the explorer's substring search.
 

@@ -30,10 +30,13 @@ for 100 ms; worker scans yield between chunks so newer searches cancel stale wor
 in the worker, keeping large payload decoding off the UI thread.
 
 [Account rollups](account-hierarchy.md) are computed from direct balances in core
-and built in the worker. The UI switches aggregate arrays without recomputing
-financial totals, and the account list remains virtualized. Import state commits
-atomically after report construction; hierarchy-limit errors retain the previous
-complete import with a warning.
+and built in the worker, together with a subtree/fold index. Summaries expose counts;
+the virtualized account list requests bounded row windows for inclusive or direct
+mode. Expand/collapse changes visibility without changing balances or report scope.
+Independent load/view/window IDs discard stale account responses without cancelling
+financial queries. The committed load ID remains usable after failed replacement
+attempts. Import state commits atomically after report/index construction;
+hierarchy-limit errors retain the previous complete import and folds with a warning.
 [Journal-defined account types](account-types.md) retain declaration/tag provenance
 in core. An isolated cached resolver is created in the worker per import; filtered
 income/spending uses its canonical classifications. Only on-demand transaction
