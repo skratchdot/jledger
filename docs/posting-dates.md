@@ -22,7 +22,8 @@ transaction dates, source names and line numbers remain available unchanged.
 
 ## Explorer and accounting scope
 
-Monthly expense charts and month filters use each posting's primary date, falling
+Monthly expense charts and [inclusive date ranges](explorer-filters.md) use each
+posting's primary date, falling
 back to the transaction date. The account, commodity, and month must match the same
 posting. Only matching postings contribute to filtered amounts. A transaction with
 matching postings in different months can appear in each month, once per result set;

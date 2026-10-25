@@ -58,8 +58,9 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    rules remain compatibility work; canonical report display remains exact.
 4. Make account typing configurable and support account hierarchy rollups.
    Never guess all account types from English labels when computing statements.
-5. Add date ranges, account trees, saved filter presets, explicit query chips,
-   keyboard navigation, and accessible chart/table equivalents. Specify hledger
+5. [Inclusive date ranges](explorer-filters.md) now work across charts and the
+   register, using shared posting matching and month shortcuts. Next add account
+   trees, saved filter presets, explicit query chips, keyboard navigation, and accessible chart/table equivalents. Specify hledger
    query compatibility separately from simple free-text search.
 6. Extend the existing worker and virtualization foundation with streaming/incremental
    parsing, indexed queries, realistic multi-file benchmarks, and memory budgets.

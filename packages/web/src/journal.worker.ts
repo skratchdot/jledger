@@ -1,4 +1,5 @@
 import { JournalEngine, type Filters } from './journal-engine';
+import { InvalidDateRangeError } from './report-filters';
 import { MAX_JOURNAL_SOURCES, type Source } from '@jledger/core';
 
 export type Request =
@@ -86,6 +87,8 @@ self.onmessage = async (event: MessageEvent<Request>) => {
   } catch (error) {
     self.postMessage({
       type: 'error',
+      code:
+        error instanceof InvalidDateRangeError ? 'date-range' : 'processing',
       id: 'id' in request ? request.id : 0,
       message:
         error instanceof Error

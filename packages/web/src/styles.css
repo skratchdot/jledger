@@ -415,6 +415,44 @@ h3 {
   font-size: 11px;
   max-width: 170px;
 }
+.date-range {
+  display: flex;
+  gap: 8px;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.date-range label {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 10px;
+  color: #707b65;
+}
+.date-range input {
+  height: 38px;
+  max-width: 155px;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  padding: 0 8px;
+  color: #46513e;
+  font: inherit;
+}
+.date-range input[aria-invalid='true'] {
+  border-color: #a94432;
+}
+.date-range-help {
+  font-size: 11px;
+  color: var(--muted);
+  margin: -12px 0 18px;
+}
+.date-range-error {
+  padding: 20px;
+  color: #a94432;
+}
 .metrics {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -980,6 +1018,17 @@ footer {
   }
   .search {
     flex-basis: 100%;
+  }
+  .date-range {
+    flex-basis: 100%;
+  }
+  .date-range label {
+    flex: 1;
+    min-width: 0;
+  }
+  .date-range input {
+    width: 100%;
+    max-width: none;
   }
   .filters select {
     font-size: 10px;

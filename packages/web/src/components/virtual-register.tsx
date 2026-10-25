@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { formatAmount } from '@jledger/core';
-import { matchesPosting, type Row } from '../journal-engine';
+import type { Row } from '../journal-engine';
+import { matchesPosting } from '../report-filters';
 
 export function VirtualRegister({
   count,
@@ -10,6 +11,8 @@ export function VirtualRegister({
   currency,
   account,
   month,
+  dateFrom,
+  dateTo,
   onRange,
   onAccount,
   onInspect,
@@ -20,11 +23,13 @@ export function VirtualRegister({
   currency: string;
   account: string;
   month: string;
+  dateFrom: string;
+  dateTo: string;
   onRange: (range: { start: number; end: number }) => void;
   onAccount: (name: string) => void;
   onInspect: (id: number) => void;
 }) {
-  const filters = { commodity: currency, account, month };
+  const filters = { commodity: currency, account, month, dateFrom, dateTo };
   const scroll = useRef<HTMLDivElement>(null);
   const virtualizer = useVirtualizer({
     count,

@@ -70,7 +70,10 @@ export function useJournal(
         (data.id === latestLoad.current || data.id === latestQuery.current)
       ) {
         setLoading(false);
-        setMessage(data.message);
+        if (data.code !== 'date-range') setMessage(data.message);
+        setReport(emptyReport);
+        setWindow({ start: 0, rows: [] });
+        setDetail(null);
         setBusy(false);
       }
     };
@@ -85,7 +88,8 @@ export function useJournal(
       worker.current = null;
     };
   }, []);
-  const { query, month, account, commodity, status } = filters;
+  const { query, month, dateFrom, dateTo, account, commodity, status } =
+    filters;
   useEffect(() => {
     if (!revision || loading) return;
     const id = ++sequence.current;
@@ -99,6 +103,8 @@ export function useJournal(
           filters: {
             query,
             month,
+            dateFrom,
+            dateTo,
             account,
             commodity: summary.commodities.includes(commodity)
               ? commodity
@@ -114,6 +120,8 @@ export function useJournal(
     loading,
     query,
     month,
+    dateFrom,
+    dateTo,
     account,
     commodity,
     status,
