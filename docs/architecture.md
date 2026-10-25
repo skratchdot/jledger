@@ -60,7 +60,8 @@ transaction balancing, in effective posting-date order across the expanded bundl
 from file/include context without consulting the clock. Includes inherit the year
 and restore their parent on return; independent roots start unset. Canonical dates
 are established before assertions/reports, while optional inferred-year provenance
-reaches on-demand transaction details. Partial posting overrides remain errors.
+reaches on-demand transaction details. Month/day posting overrides use the resolved
+transaction year, independently of the active directive; secondary and continuation date forms remain errors.
 [Primary posting dates](posting-dates.md) also drive monthly charts and filters;
 transaction rows retain their original date and expose posting overrides.
 The running-balance pass is skipped when no assertions are present. Assertion

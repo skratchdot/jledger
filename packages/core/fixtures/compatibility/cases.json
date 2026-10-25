@@ -133,7 +133,7 @@
   },
   {
     "id": "posting-date-partial",
-    "supported": false
+    "supported": true
   },
   {
     "id": "posting-date-secondary",
@@ -586,10 +586,57 @@
   },
   {
     "id": "default-year-posting-partial",
-    "supported": false,
+    "supported": true,
     "referenceAcceptance": {
       "hledger": true,
       "ledger": true
     }
+  },
+  {
+    "id": "posting-partial-transaction-year",
+    "supported": true,
+    "ledgerPostingDatesDiffer": true
+  },
+  {
+    "id": "posting-partial-no-rollover",
+    "supported": true
+  },
+  {
+    "id": "posting-partial-tag",
+    "supported": true,
+    "ledgerUsesTransactionDates": true
+  },
+  {
+    "id": "posting-partial-invalid-leap",
+    "supported": false,
+    "referenceAcceptance": {
+      "hledger": false,
+      "ledger": true
+    }
+  },
+  {
+    "id": "posting-partial-assertion",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "posting-partial-day-only",
+    "supported": false,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "posting-partial-includes",
+    "supported": true,
+    "sources": [
+      "posting-partial-includes.journal",
+      "parts/partial-dates.journal"
+    ],
+    "ledgerPostingDatesDiffer": true
   }
 ]

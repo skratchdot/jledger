@@ -18,6 +18,43 @@ const filters: Filters = {
 const text =
   '2024-01-01 * Salary\n  assets:cash  100 USD\n  income:salary\n\n2024-02-01 ! Coffee\n  expenses:coffee  0.10 USD\n  assets:cash\n\n2024-02-02 Tea\n  expenses:tea  0.20 USD\n  assets:cash';
 describe('worker report engine', () => {
+  it('resolves partial overrides before exact date filtering and source detail lookup', async () => {
+    const engine = new JournalEngine();
+    engine.load([
+      {
+        name: 'partial',
+        text: 'Y2020\n2024-03-01 Leap\n  expenses:food  0.10 USD ; [2/29]\n  expenses:food  -0.03 USD ; date:3/2\n  assets:cash',
+      },
+    ]);
+    expect(await engine.query(filters)).toMatchObject({
+      count: 1,
+      spending: '0.07',
+    });
+    expect(
+      await engine.query({
+        ...filters,
+        dateFrom: '2024-02-29',
+        dateTo: '2024-02-29',
+        account: 'expenses',
+      }),
+    ).toMatchObject({ count: 1, spending: '0.10' });
+    const detail = engine.detail(engine.rows(0, 1)[0]!.id)!;
+    expect(detail.date).toBe('2024-03-01');
+    expect(detail.postings.map((p) => p.date)).toEqual([
+      '2024-02-29',
+      '2024-03-02',
+      undefined,
+    ]);
+    expect(detail.excerpt).toContain('[2/29]');
+    expect(
+      await engine.query({ ...filters, month: '2024-03', account: 'expenses' }),
+    ).toMatchObject({ count: 1, spending: '-0.03' });
+    expect(await engine.query({ ...filters, month: '2020-02' })).toMatchObject({
+      count: 0,
+      spending: '0',
+    });
+  });
+
   it('returns exact filtered totals and bounded windows, with on-demand source details', async () => {
     const engine = new JournalEngine();
     expect(engine.load([{ name: 'a.journal', text }]).transactionCount).toBe(3);

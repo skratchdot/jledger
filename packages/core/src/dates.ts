@@ -39,7 +39,10 @@ export function hasPostingDateSyntax(comment: string): boolean {
 }
 
 /** Deliberately conservative inline primary-date subset; date-shaped text never vanishes. */
-export function parsePostingDateComment(comment: string): {
+export function parsePostingDateComment(
+  comment: string,
+  transactionDate: string,
+): {
   date?: string;
   error?: string;
 } {
@@ -56,7 +59,7 @@ export function parsePostingDateComment(comment: string): {
   )
     return {
       error:
-        'Use one complete inline posting date: [YYYY-MM-DD] or lowercase date:YYYY-MM-DD.',
+        'Use one complete inline posting date: [YYYY-MM-DD], [M/D], or a lowercase date: tag.',
     };
   if (brackets.length + tags.length !== 1)
     return {
@@ -74,11 +77,13 @@ export function parsePostingDateComment(comment: string): {
         'A date: tag must start the comment or follow a comma. Use a bracket date for other inline notes.',
     };
   const value = (brackets[0] ?? tags[0])![1]!;
-  const date = parseFullDate(value);
+  // hledger resolves month/day overrides against the containing transaction,
+  // independently of the file default year and without month rollover.
+  const date = parseTransactionDate(value, transactionDate.slice(0, 4));
   return date
     ? { date }
     : {
         error:
-          'Invalid or unsupported posting date. Use a full calendar date; partial and combined primary/secondary dates are not supported.',
+          'Invalid or unsupported posting date. Use a full calendar date or month/day in the transaction year; combined primary/secondary dates are not supported.',
       };
 }

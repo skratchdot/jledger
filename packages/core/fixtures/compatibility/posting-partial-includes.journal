@@ -1,0 +1,5 @@
+Y2020
+include parts/partial-dates.journal
+2024-12-31 Parent
+  expenses:food  0.20 USD ; [1/1]
+  assets:cash

@@ -18,16 +18,17 @@ Three separate questions are tested:
    General hierarchical presentation, query languages, valuation, text layout,
    status inheritance, and rounding/display precision are outside this comparison.
 
-| Cases                                                                                                                                              | jledger                                        | hledger 1.52 | Ledger 3.3.2                   |
-| -------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- | ------------ | ------------------------------ |
-| Salary, refunds, exact quantities, currencies, simple/nested includes, common plain assertions; bracket posting dates; compatible explicit formats | Posting and direct-balance parity              | Accepted     | Accepted                       |
-| Out-of-source-date, single-commodity, or posting-date assertion differences                                                                        | hledger semantics                              | Accepted     | Rejected                       |
-| Costs, repeated includes, balance assignment; partial/secondary/continuation/duplicate date samples                                                | Reports disabled                               | Accepted     | Accepted                       |
-| Hledger `date:` posting tag                                                                                                                        | hledger dates; explicit Ledger difference      | Accepted     | Accepted, tag ignored          |
-| Some inline commodity examples and decimal-mark cases                                                                                              | hledger quantities; explicit Ledger difference | Accepted     | Accepted, different quantities |
-| Conflicting format example                                                                                                                         | Reports disabled                               | Accepted     | Accepted                       |
-| Irregular grouping; total/inclusive assertion samples                                                                                              | Reports disabled                               | Accepted     | Rejected                       |
-| Unbalanced postings, failed/precision/unitless assertions, missing include                                                                         | Reports disabled                               | Rejected     | Rejected                       |
+| Cases                                                                                                                                              | jledger                                                   | hledger 1.52 | Ledger 3.3.2                   |
+| -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | ------------ | ------------------------------ |
+| Salary, refunds, exact quantities, currencies, simple/nested includes, common plain assertions; bracket posting dates; compatible explicit formats | Posting and direct-balance parity                         | Accepted     | Accepted                       |
+| Out-of-source-date, single-commodity, or posting-date assertion differences                                                                        | hledger semantics                                         | Accepted     | Rejected                       |
+| Costs, repeated includes, balance assignment; secondary/continuation/duplicate date samples                                                        | Reports disabled                                          | Accepted     | Accepted                       |
+| Month/day brackets with differing default/transaction years                                                                                        | hledger dates; exact quantities and direct balances agree | Accepted     | Accepted, different year       |
+| Hledger `date:` posting tag                                                                                                                        | hledger dates; explicit Ledger difference                 | Accepted     | Accepted, tag ignored          |
+| Some inline commodity examples and decimal-mark cases                                                                                              | hledger quantities; explicit Ledger difference            | Accepted     | Accepted, different quantities |
+| Conflicting format example                                                                                                                         | Reports disabled                                          | Accepted     | Accepted                       |
+| Irregular grouping; total/inclusive assertion samples                                                                                              | Reports disabled                                          | Accepted     | Rejected                       |
+| Unbalanced postings, failed/precision/unitless assertions, missing include                                                                         | Reports disabled                                          | Rejected     | Rejected                       |
 
 Account-type fixtures additionally distinguish supported declarations/defaults from
 conflicting repeated declarations, duplicate/alternate tags, and ambiguous spacing
@@ -84,7 +85,7 @@ are evidence from the tools, never generated from jledger's own expected results
 ## Selected-source includes and remaining scope
 
 The [source-preserving syntax layer](syntax.md) and [selected-source include graph](includes.md)
-are implemented. The corpus now contains 89 cases, including posting and direct
+are implemented. The corpus now contains 96 cases, including posting and direct
 balance parity for simple and nested includes, plus acceptance-only captures for
 missing and repeated includes. Included sources are supplied explicitly in fixture
 metadata; references read the root journal and follow its real relative paths.
@@ -155,6 +156,22 @@ unchanged defaults after full headers, nested includes, independent roots, canon
 year boundaries and full posting overrides. Supported fixtures compare resolved
 posting dates and exact direct balances. Inline directive comments, year 0001 and
 out-of-source-date assertions explicitly mark Ledger rejection; supported hledger
-projections still compare completely. Y0000/Y10000, short years, missing defaults,
-invalid leap days and partial posting overrides keep reports disabled. Unanchored
-reference samples record acceptance only, without clock-dependent date captures.
+projections still compare completely. Y0000/Y10000, short years, missing defaults
+and invalid leap days keep reports disabled. Unanchored reference samples record acceptance only, without clock-dependent date captures.
+
+## Month/day posting dates
+
+Seven additional cases extend primary overrides to month/day bracket dates and
+`date:` tags. The former partial-posting rejection samples now compare complete
+postings and balances; their directives make the Ledger captures independent of
+the clock. New cases cover transaction/default-year disagreement, no rollover,
+all separators, tags, include-local year scope, leap validation, assertion ordering,
+and continued rejection of single-day syntax.
+
+`ledgerPostingDatesDiffer` marks bracket samples where Ledger uses its default
+year while hledger and jledger use the transaction year. Ordinary tests require
+the Ledger date projection to differ, still compare all posting descriptions,
+accounts, commodities and exact quantities, and compare full direct balances.
+The live runner checks both entire captured date projections. Tag dates retain
+the separate `ledgerUsesTransactionDates` comparison because Ledger ignores them.
+No capture depends on the reference machine's current year.

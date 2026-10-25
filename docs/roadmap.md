@@ -39,7 +39,7 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    balanced postings, and direct balances against hledger 1.52 and a pinned Ledger
    release; document intentional differences. Prioritize representative journals
    before adding many unrelated features.
-   The initial [corpus v1](conformance.md) now covers 89 synthetic cases with
+   The initial [corpus v1](conformance.md) now covers 96 synthetic cases with
    pinned hledger 1.52 / Ledger 3.3.2 captures and a live differential command.
 2. Add a lossless syntax tree and include graph. The initial read-only,
    [source-preserving line tree](syntax.md) now shares a streaming scanner with
@@ -51,12 +51,13 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    aliases/default-year rules, and posting/secondary dates with tested semantics.
    [Plain assertions](assertions.md) with explicit amounts are now supported and
    tested against hledger 1.52. Assignment/total/inclusive forms remain errors;
-   [full inline primary posting dates](posting-dates.md) now drive assertions and
-   month reports. Partial/secondary/continuation dates remain errors. Commodity
+   [inline full and month/day primary posting dates](posting-dates.md) now drive
+   assertions and month reports. Secondary/continuation dates remain errors. Commodity
    [styles and decimal marks](amount-formats.md) now have an explicit parsing
    subset. [Explicit default years](default-years.md) now resolve month/day headers
-   with inherited, file-local include scope and source provenance. Partial posting
-   dates and clock-based year inference remain errors. Quoted commodities, broader
+   with inherited, file-local include scope and source provenance. Month/day posting
+   dates now resolve from the transaction year with explicit Ledger differences;
+   clock-based year inference remains an error. Quoted commodities, broader
    grouping, assignments and aliases remain compatibility work; canonical report
    display remains exact.
 4. [Account hierarchy rollups](account-hierarchy.md) now provide exact inclusive

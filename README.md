@@ -111,7 +111,8 @@ installation is a later milestone.
 - [Explicit default years](docs/default-years.md) for month/day transaction headers,
   with include inheritance and directive source explanations. No clock-based year
   guess or automatic rollover is applied.
-- [Primary posting dates](docs/posting-dates.md) for month filters, monthly charts,
+- [Primary posting dates](docs/posting-dates.md), including month/day overrides in
+  the transaction year, for month filters, monthly charts,
   and assertion checks; transaction and posting dates remain visible in drill-down.
 - A transaction register with posting amounts and source references, transaction
   details, inferred amounts, and original source snippets.

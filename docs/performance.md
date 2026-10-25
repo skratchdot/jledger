@@ -24,6 +24,9 @@ parsing or aggregation acceptable.
   directive object for every row. Calendar normalization stays in the worker; full
   headers retain their existing data shape. This adds no streaming or device-wide
   memory guarantee for yearless journals.
+- Month/day posting dates normalize against the already resolved transaction year
+  in the worker parser. They add no per-posting provenance object or new UI-thread
+  computation; source comments and the transaction date remain available in details.
 - Core streams source-span line nodes while parsing, without retaining an extra
   syntax tree or split-line array. Explicit syntax inspection can opt into a tree.
 - File decoding, local API fetching/JSON decoding, parsing, direct balances,

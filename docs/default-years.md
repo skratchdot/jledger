@@ -50,10 +50,10 @@ Y2024
 Both transactions are in 2024. Use another explicit directive for 2025. Source
 order remains intact in core; reports/registers use their existing date ordering.
 
-Only transaction headers gain this inference. Posting overrides still require a
-full date, such as `[2025-03-01]`; `[3/1]` remains an error even under a year
-directive. Secondary dates, single-day headers, short years, `apply year` blocks,
-joined `year2024`, and wider year forms remain outside this subset. Invalid or
+Month/day [posting overrides](posting-dates.md), such as `[3/1]`, inherit the
+resolved transaction year rather than the active directive. A full posting date
+still uses its own year. Secondary dates, single-day headers, short years,
+`apply year` blocks, joined `year2024`, and wider year forms remain outside this subset. Invalid or
 unsupported syntax disables all reports rather than omitting its data.
 
 ## Includes and independent files
@@ -80,14 +80,15 @@ validity or requiring the year context; retained trees still reconstruct the ori
 BOM, line endings, comments and text exactly.
 
 Core never consults the clock to resolve a year. Financial parsing, indexing,
-assertion checks and reports remain in the worker in the explorer. Existing full
-posting-date overrides retain their semantics. Assertions compare exact balances in
+assertion checks and reports remain in the worker in the explorer. Posting-date
+overrides resolve from the normalized transaction year; full posting-date
+overrides retain their semantics. Assertions compare exact balances in
 effective posting-date order after normalization, not inferred source chronology.
 No source files, caches or URLs are written by this feature.
 
 ## Pinned reference evidence and Ledger interoperability
 
-The [89-case corpus](conformance.md) adds 18 year cases. Supported fixtures compare
+The [96-case corpus](conformance.md) includes 18 default-year cases. Supported fixtures compare
 resolved posting dates, exact quantities and direct balances with hledger 1.52,
 and Ledger 3.3.2 where it accepts the fixture. Includes, independent roots, year
 changes, mixed full/partial headers, boundary years and full posting overrides are
