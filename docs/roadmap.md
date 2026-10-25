@@ -39,6 +39,8 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    balanced postings, and direct balances against hledger 1.52 and a pinned Ledger
    release; document intentional differences. Prioritize representative journals
    before adding many unrelated features.
+   The initial [corpus v1](conformance.md) now covers 11 synthetic cases with
+   pinned hledger 1.52 / Ledger 3.3.2 captures and a live differential command.
 2. Add a lossless syntax tree and include graph. Browser imports need explicit
    relative-path mapping (directory picker where supported, or a clear file bundle
    workflow), cycle/missing-file diagnostics, and no arbitrary disk/network reads.

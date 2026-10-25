@@ -17,7 +17,8 @@
     "format": "oxfmt --write .",
     "format:check": "oxfmt --check .",
     "lint": "oxlint --deny-warnings .",
-    "lint:fix": "oxlint --fix ."
+    "lint:fix": "oxlint --fix .",
+    "test:compatibility": "pnpm --filter @jledger/core build && node scripts/compatibility.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.64.1",

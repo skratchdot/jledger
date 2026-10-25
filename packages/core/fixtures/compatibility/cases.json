@@ -1,0 +1,46 @@
+[
+  {
+    "id": "everyday",
+    "supported": true
+  },
+  {
+    "id": "exact-decimals",
+    "supported": true
+  },
+  {
+    "id": "commodities",
+    "supported": true
+  },
+  {
+    "id": "assertion",
+    "supported": false
+  },
+  {
+    "id": "cost",
+    "supported": false
+  },
+  {
+    "id": "posting-date",
+    "supported": false
+  },
+  {
+    "id": "unbalanced",
+    "supported": false
+  },
+  {
+    "id": "include",
+    "supported": false
+  },
+  {
+    "id": "commodity-format",
+    "supported": false
+  },
+  {
+    "id": "assertion-failure",
+    "supported": false
+  },
+  {
+    "id": "large-exact",
+    "supported": true
+  }
+]
