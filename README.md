@@ -13,7 +13,7 @@ Read the [compatibility contract](docs/compatibility.md) before using real journ
 
 ## Get started
 
-Use Node **24.x** (see `.node-version`) and **pnpm 11.25.0** (see `packageManager`).
+Use Node **24.x** (see `.node-version`) and **pnpm 12.15.0** (see `packageManager`).
 Run these commands at the repository root:
 
 ```sh
