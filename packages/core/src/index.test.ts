@@ -115,3 +115,48 @@ describe('journal subset', () => {
     ).toEqual([{ commodity: 'USD', quantity: '7139.80' }]);
   });
 });
+
+describe('unsupported account classifications', () => {
+  it.each([
+    ['account expenses  ; type:A', 1],
+    ['account expenses\n  ; type: A', 2],
+    ['account expenses ; type: A', 1],
+    ['account expenses  ; note: example, type:Q', 1],
+  ])('rejects %s instead of ignoring classification', (declaration, line) => {
+    const journal = parse(
+      `${declaration}\n\n2024-01-01\n  expenses:food  1 USD\n  assets:cash`,
+    );
+    expect(journal.diagnostics).toEqual([
+      expect.objectContaining({
+        code: 'account-type',
+        file: 'test.journal',
+        line,
+      }),
+    ]);
+    expect(() => balances(journal)).toThrow('reports are disabled');
+  });
+  it('does not treat ordinary account or transaction comments as type declarations', () => {
+    expect(
+      parse(
+        'account expenses  ; prototype: example\n\n2024-01-01 ; type:example\n  expenses:food  1 USD ; type:receipt\n  assets:cash',
+      ).diagnostics,
+    ).toEqual([]);
+  });
+  it('retains included source locations and disables every report', () => {
+    const journal = parseJournal([
+      {
+        name: 'main.journal',
+        text: 'include types.journal\n2024-01-01\n  expenses:food  1 USD\n  assets:cash',
+      },
+      { name: 'types.journal', text: 'account expenses\n  ; type:A' },
+    ]);
+    expect(journal.diagnostics).toEqual([
+      expect.objectContaining({
+        file: 'types.journal',
+        line: 2,
+        code: 'account-type',
+      }),
+    ]);
+    expect(() => balances(journal)).toThrow('reports are disabled');
+  });
+});

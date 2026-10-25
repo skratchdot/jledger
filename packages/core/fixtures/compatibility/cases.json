@@ -241,5 +241,77 @@
     "id": "account-hierarchy-commodities",
     "supported": true,
     "hierarchy": ["hledger"]
+  },
+  {
+    "id": "account-type-inline",
+    "supported": false,
+    "accountTypes": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
+  },
+  {
+    "id": "account-type-continuation",
+    "supported": false,
+    "accountTypes": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
+  },
+  {
+    "id": "account-type-single-space",
+    "supported": false,
+    "accountTypes": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
+  },
+  {
+    "id": "account-type-word",
+    "supported": false,
+    "accountTypes": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
+  },
+  {
+    "id": "account-type-repeated",
+    "supported": false,
+    "accountTypes": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
+  },
+  {
+    "id": "account-type-child",
+    "supported": false,
+    "accountTypes": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
+  },
+  {
+    "id": "account-type-invalid",
+    "supported": false,
+    "accountTypes": true,
+    "referenceAcceptance": {
+      "hledger": false,
+      "ledger": true
+    }
+  },
+  {
+    "id": "account-type-no-separator",
+    "supported": false,
+    "accountTypes": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
   }
 ]

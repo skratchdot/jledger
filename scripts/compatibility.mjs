@@ -23,7 +23,7 @@ const tools = [
     version: /^Ledger 3\.3\.2-/,
   },
 ];
-const env = { ...process.env, LC_ALL: 'C', TZ: 'UTC' };
+const env = { ...process.env, LC_ALL: 'C.UTF-8', TZ: 'UTC' };
 // Prevent user report defaults/file selection from changing reference results.
 for (const key of Object.keys(env))
   if (/^(LEDGER|HLEDGER)_/.test(key)) delete env[key];
@@ -211,6 +211,25 @@ for (const tool of tools) {
             a.account.localeCompare(b.account) ||
             a.commodity.localeCompare(b.commodity),
         );
+      }
+    }
+    // Account classification is separate from posting/balance parity. Ledger's
+    // tag system has no equivalent hledger type query, so do not imply parity.
+    if (entry.accepted && fixture.accountTypes && tool.name === 'hledger') {
+      entry.accountTypes = {};
+      for (const type of ['A', 'L', 'E', 'R', 'X', 'C', 'V']) {
+        const result = run(tool, [
+          ...prefix,
+          'accounts',
+          '--used',
+          `type:${type}`,
+        ]);
+        assert.equal(result.status, 0, result.stderr);
+        entry.accountTypes[type] = result.stdout
+          .trim()
+          .split('\n')
+          .filter(Boolean)
+          .sort();
       }
     }
     observed[fixture.id] = entry;

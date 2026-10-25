@@ -41,8 +41,9 @@ exact JSON mantissas, independently of localized display precision. Ledger direc
 Ledger report cases currently have single-commodity accounts; hledger-only mixed
 account cases use its JSON capture. Zero omission, broader commodity styles, and
 more date/status variants remain gaps. Include cases compare selected-source bundles with reference
-execution of the root journal. Unsupported cases record acceptance only, with no
-suggestion their financial semantics are supported.
+execution of the root journal. Unsupported cases normally record acceptance only. Marked account-type cases
+also capture hledger classification queries, separately from posting/balance parity;
+this evidence does not imply jledger support. See [account types](account-types.md).
 
 ## Reproduce
 
@@ -57,7 +58,8 @@ Missing tools, wrong versions, timeouts, and changed results fail the command.
 It does not silently skip differential checks. `pnpm test` independently compares
 jledger against both captures, so references cannot drift away from core unnoticed.
 Reference processes ignore tool configuration and inherited `LEDGER_*`/`HLEDGER_*`
-settings. They receive only explicit synthetic fixture paths.
+settings and use the `C.UTF-8` locale so non-ASCII account names are decoded
+consistently. They receive only explicit synthetic fixture paths.
 
 The CI reference job uses Debian trixie, `ledger=3.3.2-1+b4`, and the upstream
 hledger Linux x64 release archive:
@@ -74,7 +76,7 @@ are evidence from the tools, never generated from jledger's own expected results
 ## Selected-source includes and remaining scope
 
 The [source-preserving syntax layer](syntax.md) and [selected-source include graph](includes.md)
-are implemented. The corpus now contains 51 cases, including posting and direct
+are implemented. The corpus now contains 59 cases, including posting and direct
 balance parity for simple and nested includes, plus acceptance-only captures for
 missing and repeated includes. Included sources are supplied explicitly in fixture
 metadata; each reference still reads the root journal and follows its real relative

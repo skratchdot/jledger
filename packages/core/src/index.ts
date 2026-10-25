@@ -107,6 +107,7 @@ export function parseJournal(sources: Source[]): Journal {
     // Decimal marks are file-scoped; commodity formats flow through expanded includes.
     const context = { ...inherited };
     let commodityBlock: string | undefined;
+    let accountBlock = false;
     let tx: PendingTransaction | null = null;
     let txErrors = 0;
     let blockComment = false;
@@ -206,9 +207,22 @@ export function parseJournal(sources: Source[]): Journal {
         finish();
         continue;
       }
-      if (node.kind === 'comment') continue;
+      if (node.kind === 'comment') {
+        if (
+          accountBlock &&
+          /^\s/.test(raw) &&
+          /(?:^|[\s,])type\s*:/i.test(raw.slice(semicolon + 1))
+        )
+          error(
+            location,
+            'account-type',
+            'Account type declarations are not supported yet; reports are disabled to avoid misclassification.',
+          );
+        continue;
+      }
       const content = raw.split(';')[0]!.trimEnd();
       if (!/^\s/.test(raw)) {
+        accountBlock = false;
         commodityBlock = undefined;
         finish();
         const child = includes.get(source.name)?.get(node.line);
@@ -249,7 +263,19 @@ export function parseJournal(sources: Source[]): Journal {
           }
           continue;
         }
-        if (/^account\s+\S/.test(content)) continue;
+        if (/^account\s+\S/.test(content)) {
+          accountBlock = true;
+          if (
+            semicolon >= 0 &&
+            /(?:^|[\s,])type\s*:/i.test(raw.slice(semicolon + 1))
+          )
+            error(
+              location,
+              'account-type',
+              'Account type declarations are not supported yet; reports are disabled to avoid misclassification.',
+            );
+          continue;
+        }
         const header = content.match(
           /^(\d{4}[-/.]\d{1,2}[-/.]\d{1,2})(?:\s+(.*))?$/,
         );

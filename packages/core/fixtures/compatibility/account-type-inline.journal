@@ -1,0 +1,5 @@
+account dépenses  ; type:X
+
+2026-01-01 Synthetic meal
+  dépenses:repas  2 USD
+  assets:cash
