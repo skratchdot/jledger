@@ -1,4 +1,11 @@
 import { add, isZero, negate } from './decimal.js';
+import { scanJournalLines } from './syntax.js';
+export {
+  scanJournalLines,
+  parseJournalSyntax,
+  printJournalSyntax,
+} from './syntax.js';
+export type { SyntaxKind, SyntaxLine, JournalSyntax } from './syntax.js';
 export { add, negate, isZero } from './decimal.js';
 
 export interface Source {
@@ -149,15 +156,17 @@ export function parseJournal(sources: Source[]): Journal {
         postings: current.postings as Posting[],
       });
     };
-    const lines = source.text.replace(/^\uFEFF/, '').split(/\r?\n/);
-    for (let index = 0; index < lines.length; index++) {
-      const raw = lines[index]!;
-      const location = { file: source.name, line: index + 1 };
-      if (blockComment) {
-        if (/^end comment\s*$/.test(raw)) blockComment = false;
+    let lastLine = 1;
+    for (const node of scanJournalLines(source)) {
+      lastLine = node.line;
+      const raw = source.text.slice(node.bodyStart, node.bodyEnd);
+      const location = { file: source.name, line: node.line };
+      if (node.kind === 'block-comment-body') continue;
+      if (node.kind === 'block-comment-end') {
+        blockComment = false;
         continue;
       }
-      if (raw === 'comment') {
+      if (node.kind === 'block-comment-start') {
         finish();
         blockComment = true;
         continue;
@@ -171,11 +180,11 @@ export function parseJournal(sources: Source[]): Journal {
         );
         continue;
       }
-      if (!raw.trim()) {
+      if (node.kind === 'blank') {
         finish();
         continue;
       }
-      if (/^\s*[;#]/.test(raw)) continue;
+      if (node.kind === 'comment') continue;
       const content = raw.split(';')[0]!.trimEnd();
       if (!/^\s/.test(raw)) {
         finish();
@@ -271,7 +280,7 @@ export function parseJournal(sources: Source[]): Journal {
     finish();
     if (blockComment)
       error(
-        { file: source.name, line: lines.length },
+        { file: source.name, line: lastLine },
         'comment',
         'Unterminated comment block.',
       );

@@ -24,3 +24,21 @@ jobs:
       - run: pnpm test:browser
       - run: JLEDGER_BASE_PATH=/jledger/ pnpm --filter @jledger/web build
       - run: JLEDGER_TEST_BASE_PATH=/jledger/ pnpm test:browser
+
+  compatibility:
+    runs-on: ubuntu-latest
+    container: node:24-trixie
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - run: apt-get update && apt-get install -y --no-install-recommends ca-certificates curl ledger=3.3.2-1+b4
+      - name: Install pinned hledger
+        run: |
+          mkdir -p /tmp/jledger-reference
+          curl --fail --location --silent --show-error https://github.com/hledgerorg/hledger/releases/download/1.52/hledger-linux-x64.tar.gz -o /tmp/jledger-reference/hledger.tar.gz
+          echo '153e1e69696d5e75b2a13bf23983a0355c35999db713910615c6a536a4cd0a41  /tmp/jledger-reference/hledger.tar.gz' | sha256sum --check
+          tar -xzf /tmp/jledger-reference/hledger.tar.gz -C /tmp/jledger-reference hledger
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:compatibility
+        env:
+          HLEDGER_BIN: /tmp/jledger-reference/hledger

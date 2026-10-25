@@ -3,7 +3,9 @@
 The target is [hledger 1.52 journal format](https://hledger.org/1.52/hledger.html#journal),
 with explicitly documented [Ledger](https://ledger-cli.org/docs.html) interoperability.
 Those formats overlap but are not identical. **This prototype is not fully compatible
-with either tool**, and has not yet been differentially tested against their binaries.
+with either tool**. A small [versioned corpus](conformance.md) is differentially
+tested against hledger 1.52 and Ledger 3.3.2; only its sampled posting semantics
+and flat direct balances have parity evidence.
 
 | Feature                                                  | Current behavior                                                                  |
 | -------------------------------------------------------- | --------------------------------------------------------------------------------- |
@@ -46,8 +48,8 @@ register, but are not classified into income/spending cards. Configurable accoun
 types and hledger type-tag semantics are required before general financial statements.
 
 Implementation choices, such as stricter date validation or omitted-amount handling,
-are tested as jledger behavior today. They become compatibility claims only after
-comparison with the pinned reference tools. Never infer parity from superficial syntax.
+are tested as jledger behavior today. The corpus documents which cases have been compared with pinned reference tools.
+Uncovered behavior remains jledger-specific; never infer parity from superficial syntax.
 
 The current status filter selects transaction status; posting statuses are preserved
 but do not yet override that filter.
