@@ -1,0 +1,8 @@
+2026-01-01 Opening
+  assets:cash  10 USD
+  equity:opening
+
+2026-01-02 Split
+  assets:cash  -1 USD = 9 USD
+  assets:cash  -2 USD = 7 USD
+  expenses:food  3 USD

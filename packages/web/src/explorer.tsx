@@ -597,6 +597,12 @@ export function Explorer() {
                 <dd>
                   {formatAmount(p.amount)}
                   {p.inferred && <small> inferred</small>}
+                  {p.balanceAssertion && (
+                    <small>
+                      {' '}
+                      · balance checked: {formatAmount(p.balanceAssertion)}
+                    </small>
+                  )}
                 </dd>
               </div>
             ))}

@@ -7,30 +7,31 @@ with either tool**. A small [versioned corpus](conformance.md) is differentially
 tested against hledger 1.52 and Ledger 3.3.2; only its sampled posting semantics
 and flat direct balances have parity evidence.
 
-| Feature                                                  | Current behavior                                                                  |
-| -------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| UTF-8, BOM, LF/CRLF                                      | Supported; CLI rejects invalid UTF-8                                              |
-| Full dates                                               | `YYYY-M-D`, `YYYY/M/D`, `YYYY.M.D`; calendar-validated                            |
-| Transaction description, status, code                    | Supported; descriptions retain payee/note text                                    |
-| Indented postings, colon-separated account names         | Supported, including single spaces in names                                       |
-| Account/amount separator                                 | Two or more spaces or a tab                                                       |
-| Posting status                                           | Preserved                                                                         |
-| Decimal quantities                                       | Exact signed decimal integers/fractions; dot decimal mark only                    |
-| Commodities                                              | `$`, `€`, `£` prefixes, or unquoted suffix identifiers/symbols; also no commodity |
-| One omitted amount                                       | Inferred when explicit amounts use exactly one commodity                          |
-| Explicit multi-commodity postings                        | Accepted only if each commodity independently sums to zero                        |
-| Line comments, inline semicolon comments, block comments | Accepted; original source retained; no general tag query semantics                |
-| Simple `account NAME` declarations                       | Accepted; no declaration enforcement or account type tags yet                     |
-| Multiple independently selected files                    | Supported; no inference across file boundaries                                    |
-| Includes                                                 | Selected-source literal relative paths; see [include policy](includes.md)         |
-| Posting date override comments                           | Error; not silently treated as inert comments                                     |
-| Grouping separators, decimal commas, quoted commodities  | Error                                                                             |
-| Commodity/decimal/default-year directives                | Error                                                                             |
-| Costs (`@`, `@@`), market prices, lots                   | Error                                                                             |
-| Balance assertions and assignments                       | Error                                                                             |
-| Virtual/balanced virtual postings                        | Error                                                                             |
-| Secondary/partial dates, automatic/periodic transactions | Error                                                                             |
-| Aliases, apply blocks, expressions                       | Error                                                                             |
+| Feature                                                  | Current behavior                                                                                                      |
+| -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| UTF-8, BOM, LF/CRLF                                      | Supported; CLI rejects invalid UTF-8                                                                                  |
+| Full dates                                               | `YYYY-M-D`, `YYYY/M/D`, `YYYY.M.D`; calendar-validated                                                                |
+| Transaction description, status, code                    | Supported; descriptions retain payee/note text                                                                        |
+| Indented postings, colon-separated account names         | Supported, including single spaces in names                                                                           |
+| Account/amount separator                                 | Two or more spaces or a tab                                                                                           |
+| Posting status                                           | Preserved                                                                                                             |
+| Decimal quantities                                       | Exact signed decimal integers/fractions; dot decimal mark only                                                        |
+| Commodities                                              | `$`, `€`, `£` prefixes, or unquoted suffix identifiers/symbols; also no commodity                                     |
+| One omitted amount                                       | Inferred when explicit amounts use exactly one commodity                                                              |
+| Explicit multi-commodity postings                        | Accepted only if each commodity independently sums to zero                                                            |
+| Line comments, inline semicolon comments, block comments | Accepted; original source retained; no general tag query semantics                                                    |
+| Simple `account NAME` declarations                       | Accepted; no declaration enforcement or account type tags yet                                                         |
+| Multiple independently selected files                    | Supported; no inference across file boundaries                                                                        |
+| Includes                                                 | Selected-source literal relative paths; see [include policy](includes.md)                                             |
+| Posting date override comments                           | Error; not silently treated as inert comments                                                                         |
+| Grouping separators, decimal commas, quoted commodities  | Error                                                                                                                 |
+| Commodity/decimal/default-year directives                | Error                                                                                                                 |
+| Costs (`@`, `@@`), market prices, lots                   | Error                                                                                                                 |
+| Plain balance assertions (`=`)                           | Explicit posting amounts; exact direct-account, single-commodity checks in date order; see [semantics](assertions.md) |
+| Balance assignments, total/inclusive assertions          | Error                                                                                                                 |
+| Virtual/balanced virtual postings                        | Error                                                                                                                 |
+| Secondary/partial dates, automatic/periodic transactions | Error                                                                                                                 |
+| Aliases, apply blocks, expressions                       | Error                                                                                                                 |
 
 Include graph roots are inferred from selected files without incoming includes;
 other selected sources are expanded once at their directive location. This differs
@@ -39,6 +40,10 @@ tool. Repeated includes are an intentional error, even where hledger/Ledger woul
 accept them and count the child again. Missing targets, invalid paths, cycles,
 normalized source collisions, and graph limits disable all reports. Include support
 does not enable unsupported directives or financial syntax in any child.
+
+Plain assertions follow hledger date ordering and commodity-specific semantics.
+Ledger 3.3.2 differs on the sampled out-of-order and mixed-commodity cases; see the
+[assertion interoperability notes](assertions.md). No broad assertion parity is implied.
 
 Unknown syntax yields source-located diagnostics. Core report functions refuse any
 journal containing diagnostics, and the web hides all reports for that import.

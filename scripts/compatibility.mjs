@@ -105,10 +105,13 @@ for (const tool of tools) {
       ...(tool.name === 'ledger' ? ['csv'] : ['print', '-O', 'json']),
     ]);
     const entry = { accepted: parsed.status === 0 };
-    if (fixture.supported)
+    const expectedAcceptance =
+      fixture.referenceAcceptance?.[tool.name] ??
+      (fixture.supported ? true : undefined);
+    if (expectedAcceptance !== undefined)
       assert.equal(
         entry.accepted,
-        true,
+        expectedAcceptance,
         `${tool.name}: ${fixture.id}: ${parsed.stderr}`,
       );
     if (entry.accepted && fixture.supported) {
@@ -138,20 +141,27 @@ for (const tool of tools) {
                 })),
               ),
             );
+      entry.postings.sort((a, b) => a.date.localeCompare(b.date));
       const report = run(tool, [
         ...prefix,
         'balance',
         '--flat',
         '--no-total',
         ...(tool.name === 'ledger'
-          ? ['--format', '%(quoted(account)),%(quoted(total))\n']
+          ? ['--format', '%(quoted(account)),%(quoted(amount))\n']
           : ['-O', 'csv']),
       ]);
       assert.equal(report.status, 0, report.stderr);
       const rows = csv(report.stdout);
       entry.balances = (tool.name === 'ledger' ? rows : rows.slice(1))
-        .map(([account, value]) => ({ account, ...amount(value) }))
-        .sort((a, b) => a.account.localeCompare(b.account));
+        .flatMap(([account, value]) =>
+          value.split(/,\s+|\n/).map((part) => ({ account, ...amount(part) })),
+        )
+        .sort(
+          (a, b) =>
+            a.account.localeCompare(b.account) ||
+            a.commodity.localeCompare(b.commodity),
+        );
     }
     observed[fixture.id] = entry;
   }

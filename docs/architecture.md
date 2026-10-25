@@ -25,6 +25,10 @@ Core consumes named UTF-8 source strings and returns transactions and diagnostic
 Source files remain authoritative; derived reports are disposable. Locations retain
 file names and line numbers. Quantities are decimal strings with exact BigInt-backed
 addition, so JSON and browser/Node boundaries do not lose precision.
+[Plain balance assertions](assertions.md) are checked after successful parsing and
+transaction balancing, in stable chronological order across the expanded bundle.
+The running-balance pass is skipped when no assertions are present. Assertion
+failures disable the complete report set.
 The present accounting parser is a strict subset, not a complete journal grammar.
 It streams the [source-preserving syntax layer](syntax.md), whose line nodes retain
 full source spans and distinguish comments, postings, headers, directives, and

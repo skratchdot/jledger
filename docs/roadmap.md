@@ -39,7 +39,7 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    balanced postings, and direct balances against hledger 1.52 and a pinned Ledger
    release; document intentional differences. Prioritize representative journals
    before adding many unrelated features.
-   The initial [corpus v1](conformance.md) now covers 14 synthetic cases with
+   The initial [corpus v1](conformance.md) now covers 25 synthetic cases with
    pinned hledger 1.52 / Ledger 3.3.2 captures and a live differential command.
 2. Add a lossless syntax tree and include graph. The initial read-only,
    [source-preserving line tree](syntax.md) now shares a streaming scanner with
@@ -49,6 +49,9 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    an explicit allowed-root policy; broader include syntax and root selection remain.
 3. Implement commodity styles, grouping/decimal marks, balance assertions,
    aliases/default-year rules, and posting/secondary dates with tested semantics.
+   [Plain assertions](assertions.md) with explicit amounts are now supported and
+   tested against hledger 1.52. Assignment/total/inclusive forms remain errors;
+   commodity styles and posting-date support are the next compatibility slices.
 4. Make account typing configurable and support account hierarchy rollups.
    Never guess all account types from English labels when computing statements.
 5. Add date ranges, account trees, saved filter presets, explicit query chips,

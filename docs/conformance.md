@@ -16,20 +16,26 @@ Three separate questions are tested:
    account balances. Hierarchical reports, query languages, valuation, text layout,
    status inheritance, and rounding/display precision are outside this comparison.
 
-| Cases                                                                                                        | jledger                           | hledger 1.52 / Ledger 3.3.2 |
-| ------------------------------------------------------------------------------------------------------------ | --------------------------------- | --------------------------- |
-| Salary, groceries, refund; exact decimals; separate currencies; large exact quantity; simple/nested includes | Posting and direct-balance parity | Accepted                    |
-| Commodity format, valid assertion, cost, posting date; repeated includes                                     | Reports disabled                  | Accepted                    |
-| Unbalanced postings, failed assertion, missing include                                                       | Reports disabled                  | Rejected                    |
+| Cases                                                                                          | jledger                           | hledger 1.52 | Ledger 3.3.2 |
+| ---------------------------------------------------------------------------------------------- | --------------------------------- | ------------ | ------------ |
+| Salary, refunds, exact quantities, currencies, simple/nested includes, common plain assertions | Posting and direct-balance parity | Accepted     | Accepted     |
+| Out-of-source-date or single-commodity assertion differences                                   | hledger semantics                 | Accepted     | Rejected     |
+| Commodity format, costs, posting dates, repeated includes, balance assignment                  | Reports disabled                  | Accepted     | Accepted     |
+| Total/inclusive assertion samples                                                              | Reports disabled                  | Accepted     | Rejected     |
+| Unbalanced postings, failed/precision/unitless assertions, missing include                     | Reports disabled                  | Rejected     | Rejected     |
 
-Quantities are canonical decimal strings; scale differences such as `0.30` and
-`0.3` are ignored. hledger JSON mantissas are read as strings before JSON parsing,
-never rounded through JavaScript numbers. Ledger CSV and both flat balance reports
-are decoded separately. The first corpus uses one commodity per account and
-nonzero final balances; mixed-commodity account report formatting, zero omission,
-and more date/status variants remain gaps. Simple and nested include cases now
-compare selected-source bundles with reference execution of the root journal. Unsupported cases
-record acceptance only, with no suggestion their financial semantics are supported.
+Chronological posting projections use a stable date sort; original source order
+is tested separately in core. Quantities are canonical decimal strings; scale
+differences such as `0.30` and `0.3` are ignored. hledger JSON mantissas are read as
+strings before JSON parsing, never rounded through JavaScript numbers. Ledger CSV
+and both flat balance reports are decoded separately. The corpus includes a
+mixed-commodity account in the hledger assertion cases. Supported mixed amounts
+are decoded separately from CSV, and Ledger direct reports use `amount` rather
+than inclusive `total`. Zero omission, broader commodity styles, and more
+date/status variants remain gaps. Simple and nested include cases compare
+selected-source bundles with reference execution of the root journal. Unsupported
+cases record acceptance only, with no suggestion their financial semantics are
+supported.
 
 ## Reproduce
 
@@ -61,7 +67,7 @@ are evidence from the tools, never generated from jledger's own expected results
 ## Selected-source includes and remaining scope
 
 The [source-preserving syntax layer](syntax.md) and [selected-source include graph](includes.md)
-are implemented. The corpus now contains 14 cases, including posting and direct
+are implemented. The corpus now contains 25 cases, including posting and direct
 balance parity for simple and nested includes, plus acceptance-only captures for
 missing and repeated includes. Included sources are supplied explicitly in fixture
 metadata; each reference still reads the root journal and follows its real relative
@@ -77,3 +83,14 @@ filesystem traversal under a permitted root. Optional CLI directory discovery wo
 need explicit allowed-root authorization and additional containment tests. Globs,
 quoted names, repeat-inclusion semantics, and explicit root selection remain future
 work. No authoring feature is enabled by retaining source text or resolving includes.
+
+## Plain assertions and explicit reference differences
+
+The [plain assertion slice](assertions.md) adds valid/failed checks, split postings,
+direct accounts with subaccounts, precision failures, commodityless assertions,
+assertions across includes, and continued rejection of assignment/total/inclusive
+forms. Two accepted jledger cases explicitly declare `referenceAcceptance`:
+hledger accepts their chronological or single-commodity checks, while Ledger 3.3.2
+rejects them. The live command enforces these declared acceptance results; ordinary
+core tests compare accepted cases with the accepting reference captures. These
+cases establish hledger behavior and documented differences, not Ledger parity.

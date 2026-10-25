@@ -1,0 +1,7 @@
+2026-01-01 Child
+  assets:cash:child  10 USD
+  equity:opening
+
+2026-01-02 Parent
+  assets:cash  1 USD = 1 USD
+  equity:opening
