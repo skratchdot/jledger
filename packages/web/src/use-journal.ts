@@ -25,6 +25,8 @@ const emptyAccountView: AccountView & { id: number } = {
   mode: 'inclusive',
   count: 0,
   total: 0,
+  query: '',
+  matchCount: 0,
   canExpand: false,
   canCollapse: false,
   resetScroll: false,
@@ -42,6 +44,7 @@ export function useJournal(
     committedLoad = useRef(0),
     latestAccountView = useRef(0),
     latestAccountRows = useRef(0);
+  const [accountSearch, setAccountSearch] = useState('');
   const [accountView, setAccountView] = useState(emptyAccountView);
   const [accountWindow, setAccountWindow] = useState<AccountWindow>({
     start: 0,
@@ -73,6 +76,7 @@ export function useJournal(
     instance.onmessage = ({ data }) => {
       if (data.type === 'loaded' && data.id === latestLoad.current) {
         committedLoad.current = data.id;
+        setAccountSearch('');
         setAccountView(emptyAccountView);
         setAccountWindow({ start: 0, rows: [] });
         setLoading(false);
@@ -117,7 +121,7 @@ export function useJournal(
         (data.id === latestLoad.current || data.id === latestQuery.current)
       ) {
         setLoading(false);
-        setAccountBusy(false);
+        if (data.id === latestLoad.current) setAccountBusy(false);
         if (data.code !== 'date-range') setMessage(data.message);
         setReport(emptyReport);
         setWindow({ start: 0, rows: [] });
@@ -137,27 +141,42 @@ export function useJournal(
       worker.current = null;
     };
   }, []);
-  const changeAccounts = useCallback(
-    (action?: AccountAction) => {
+  const requestAccounts = useCallback(
+    (action?: AccountAction, delay = 0) => {
       if (!committedLoad.current || loading) return;
       const id = ++sequence.current;
       latestAccountView.current = id;
       latestAccountRows.current = 0;
       setAccountBusy(true);
       setAccountWindow({ start: 0, rows: [] });
-      post({
+      const request: Request = {
         type: 'account-view',
         id,
         loadId: committedLoad.current,
         mode: includeSubaccounts ? 'inclusive' : 'direct',
         ...(action ? { action } : {}),
-      });
+      };
+      const send = () => {
+        if (latestAccountView.current === id) post(request);
+      };
+      if (delay) {
+        const timer = setTimeout(send, delay);
+        return () => clearTimeout(timer);
+      }
+      send();
     },
     [post, loading, includeSubaccounts],
   );
+  const changeAccounts = useCallback(
+    (action?: AccountAction) => {
+      requestAccounts(action);
+    },
+    [requestAccounts],
+  );
   useEffect(() => {
-    if (revision && !loading) changeAccounts();
-  }, [revision, loading, changeAccounts]);
+    if (revision && !loading)
+      return requestAccounts({ type: 'search', query: accountSearch }, 100);
+  }, [revision, loading, accountSearch, requestAccounts]);
   useEffect(() => {
     if (
       loading ||
@@ -239,6 +258,8 @@ export function useJournal(
   return {
     summary,
     journalRevision: revision,
+    accountSearch,
+    setAccountSearch,
     accountView,
     accountWindow,
     accountBusy,

@@ -33,8 +33,11 @@ in the worker, keeping large payload decoding off the UI thread.
 and built in the worker, together with a subtree/fold index. Summaries expose counts;
 the virtualized account list requests bounded row windows for inclusive or direct
 mode. Expand/collapse changes visibility without changing balances or report scope.
-Independent load/view/window IDs discard stale account responses without cancelling
-financial queries. The committed load ID remains usable after failed replacement
+Account-name search uses a normalized worker-side name cache and parent indices,
+revealing matches with ancestor context without changing balances or register scope.
+It debounces for 100 ms, invalidating pending view/window IDs immediately. Clearing
+search restores the prior folds. Independent load/view/window IDs discard stale
+account responses without cancelling financial queries. The committed load ID remains usable after failed replacement
 attempts. Import state commits atomically after report/index construction;
 hierarchy-limit errors retain the previous complete import and folds with a warning.
 [Journal-defined account types](account-types.md) retain declaration/tag provenance

@@ -67,8 +67,9 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    and bounded, in-memory named filter presets now support reusable exploration,
    keyboard save/apply/remove, and complete filter restoration. Account disclosures
    now fold branches in the worker with bounded row windows, preserved child state,
-   and native keyboard controls. Next add broader keyboard navigation, account
-   search, and accessible chart/table equivalents. Specify hledger
+   and native keyboard controls. Account-name search now reveals matching paths
+   with ancestor context while preserving folds and full-journal amounts. Next add
+   broader keyboard navigation and accessible chart/table equivalents. Specify hledger
    query compatibility separately from simple free-text search.
 6. Extend the existing worker and virtualization foundation with streaming/incremental
    parsing, indexed queries, realistic multi-file benchmarks, and memory budgets.

@@ -59,6 +59,35 @@ closing/reloading journals, or a page refresh resets it, even with identical sou
 names. Failed reads/report construction retain the previous complete hierarchy and
 its folds. There is no URL or browser-storage persistence.
 
+## Finding accounts
+
+**Find an account** searches full account paths by a literal, case-insensitive
+substring. Surrounding query whitespace is ignored. Dots and other punctuation
+are literal text, not regular expressions or hledger query syntax. Unicode case
+matching uses JavaScript's lowercase rules; no accent folding is implied.
+
+In inclusive mode, matches are shown with their ancestors for context. Ancestor
+rows are labelled separately, and the result counter distinguishes matches from
+context rows. A match inside a folded branch is temporarily revealed. Fold controls
+are disabled while searching; clearing search restores the exact prior fold state.
+A matching parent also matches its descendants because their full paths contain
+that parent path. Direct mode searches only posted account names and adds no
+implicit parents. Search persists when switching modes or Overview/Accounts.
+
+Search changes **row visibility only**. Every amount, including ancestor amounts,
+retains its full-journal direct/inclusive scope and all commodities. For example,
+searching for checking can show a 2 USD checking match beneath its 13 USD bank
+parent; that parent still includes its other children and direct postings.
+Searching does not change register filters, transaction counts, totals, or saved
+filter snapshots. Selecting a result still applies the usual account/descendant
+register filter. **Clear account search** returns focus to the search field.
+
+Queries stay in memory. Successful journal replacement/reload (including identical
+source names), closing journals or a page refresh resets search. Failed reads/report
+construction retain the prior session and query. An empty result has an explicit
+message and can be cleared without reimporting. No search state enters URLs,
+application storage, offline caches or network requests.
+
 ## Core API and worker behavior
 
 `accountHierarchy(journal)` returns `direct` balances and `inclusive` rows. Each
@@ -78,6 +107,13 @@ The browser computes the hierarchy and presentation index in its worker. Import
 summaries contain `accountCount` and `accountRollupCount`, not complete balance
 arrays. The worker indexes contiguous subtrees in one iterative pass and uses
 collapsed-branch indices to build the visible sequence without recalculating money.
+Normalized names, parent indices and direct-to-inclusive lookup indices support
+account search. A reverse pass propagates matching-node context to ancestors in
+linear node order, without walking every match's full ancestor chain. Queries are
+debounced for 100 ms; IDs are invalidated immediately so earlier replies cannot
+replace a newer query while its debounce timer is pending. Already-started account
+projections are synchronous within the worker; this is stale-result rejection,
+not preemptive cancellation. Financial query cancellation remains independent.
 React receives view metadata and requested account windows, with at most 200 rows
 per response. This bounds a transfer, not the browsable result set; scrolling can
 reach the final row. TanStack Virtual bounds the mounted rows with a small overscan.
@@ -104,7 +140,9 @@ balances. Preparing an import temporarily retains the old journal alongside the
 new input, increasing peak memory. Financial diagnostics still commit a diagnostic-only import and disable
 all reports. Both balance arrays and the new presentation index remain in the
 worker. Subtree ends, visible indices, branch lookup and fold state add memory
-proportional to account nodes; bounded windows avoid cloning the complete arrays
+proportional to account nodes. The normalized-name cache also retains text
+proportional to the complete account paths; search adds temporary match/context
+flags. Bounded windows avoid cloning the complete arrays
 into React. This does not establish a lower overall-memory or device-wide limit.
 
 ## Evidence and remaining work
@@ -130,5 +168,9 @@ account rows, bounded worker payloads, and browsing through the final leaf after
 collapse/expand cycles. These are regression scenarios, not device-wide guarantees.
 
 [Journal-defined account types](account-types.md) and [saved filters](explorer-filters.md)
-are implemented separately. Broader keyboard tree navigation, account search,
-financial statements and collapse-state persistence remain future work.
+are implemented separately. Broader keyboard tree navigation, financial statements
+and collapse/search-state persistence remain future work. Search regressions also
+cover case/punctuation, implicit ancestors, preserved folds, exact context balances,
+direct-mode parity, final-match paging, rapid queries, rejected old replies,
+failed-read/same-name replacement recovery, narrow Unicode controls and an offline
+refresh without persisted queries.

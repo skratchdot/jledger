@@ -80,11 +80,14 @@ export function Explorer() {
   const currency = commodities.includes(commodity)
     ? commodity
     : (commodities[0] ?? '');
+  const accountMatches = engine.accountView.matchCount;
+  const accountAncestors = engine.accountView.count - accountMatches;
   const categories = report.categories.slice(0, 30);
   const biggest = Math.max(
     1,
     ...categories.map(([, value]) => Math.abs(Number(value))),
   );
+  const accountSearchInput = useRef<HTMLInputElement>(null);
   const searchInput = useRef<HTMLInputElement>(null);
   const fromDateInput = useRef<HTMLInputElement>(null);
   const statusInput = useRef<HTMLSelectElement>(null);
@@ -692,6 +695,41 @@ export function Explorer() {
                             />{' '}
                             Include subaccounts
                           </label>
+                          <div className="account-search-controls">
+                            <label>
+                              <span>Find an account</span>
+                              <input
+                                ref={accountSearchInput}
+                                type="search"
+                                autoComplete="off"
+                                aria-label="Search accounts"
+                                aria-describedby="account-search-help"
+                                placeholder="Account name…"
+                                value={engine.accountSearch}
+                                onChange={(event) =>
+                                  engine.setAccountSearch(event.target.value)
+                                }
+                              />
+                            </label>
+                            {engine.accountSearch && (
+                              <Button
+                                variant="ghost"
+                                onClick={() => {
+                                  engine.setAccountSearch('');
+                                  accountSearchInput.current?.focus();
+                                }}
+                              >
+                                Clear account search
+                              </Button>
+                            )}
+                          </div>
+                          <p id="account-search-help" className="muted">
+                            Search account names without changing balances or
+                            register filters.
+                            {includeSubaccounts
+                              ? ' Matches reveal their ancestors; clear search to restore and change folds.'
+                              : ' Only directly posted accounts are searched in this mode.'}
+                          </p>
                           {includeSubaccounts && (
                             <div className="account-tree-controls">
                               <Button
@@ -722,12 +760,26 @@ export function Explorer() {
                               >
                                 Collapse all accounts
                               </Button>
-                              <span>
-                                {engine.accountView.count} of {accountCount}{' '}
-                                account rows shown
-                              </span>
                             </div>
                           )}
+                          <p
+                            className="account-view-count"
+                            role="status"
+                            aria-label="Account search results"
+                          >
+                            {engine.accountBusy
+                              ? 'Searching accounts…'
+                              : engine.accountView.query
+                                ? `${accountMatches} matching ${accountMatches === 1 ? 'account' : 'accounts'} · ${accountAncestors} ancestor ${accountAncestors === 1 ? 'row' : 'rows'}`
+                                : `${engine.accountView.count} of ${accountCount} account rows shown`}
+                          </p>
+                          {!engine.accountBusy &&
+                            engine.accountView.query &&
+                            !engine.accountView.count && (
+                              <p className="muted">
+                                No accounts match this search.
+                              </p>
+                            )}
                           <VirtualAccounts
                             key={`${journalRevision}-${includeSubaccounts ? 'inclusive' : 'direct'}`}
                             view={

@@ -164,3 +164,163 @@ describe('worker account presentation', () => {
     expect(engine.accountRows(0, 200).rows).toEqual([]);
   });
 });
+
+describe('worker account-name search', () => {
+  it('reveals a folded match with ancestor context while retaining complete parent balances', () => {
+    const view = make();
+    view.configure('inclusive', { type: 'toggle', account: 'assets:bank' });
+    expect(
+      view.configure('inclusive', { type: 'search', query: '  CHECKING  ' }),
+    ).toMatchObject({
+      query: 'CHECKING',
+      count: 3,
+      matchCount: 1,
+      canExpand: false,
+      canCollapse: false,
+      resetScroll: true,
+    });
+    expect(names(view)).toEqual([
+      'assets',
+      'assets:bank',
+      'assets:bank:checking',
+    ]);
+    expect(view.rows(0, 200).rows.map((row) => row.searchMatch)).toEqual([
+      false,
+      false,
+      true,
+    ]);
+    expect(view.rows(0, 200).rows[1]).toMatchObject({
+      amounts: [{ commodity: 'USD', quantity: '13' }],
+      directAmounts: [{ commodity: 'USD', quantity: '8' }],
+      expanded: true,
+    });
+    view.configure('inclusive', { type: 'search', query: '' });
+    expect(names(view)).not.toContain('assets:bank:checking');
+    expect(
+      view.rows(0, 200).rows.find((row) => row.account === 'assets:bank')!
+        .expanded,
+    ).toBe(false);
+  });
+  it('matches literal punctuation and case-insensitive Unicode without regex interpretation', () => {
+    const view = new AccountExplorer(
+      accountHierarchy(
+        parseJournal([
+          {
+            name: 'unicode',
+            text: '2026-01-01 Synthetic\n  assets:Épargne.cash  2 USD\n  equity\n\n2026-01-02 Synthetic\n  assets:ÉpargneXcash  3 USD\n  equity',
+          },
+        ]),
+      ),
+    );
+    expect(
+      view.configure('inclusive', { type: 'search', query: 'épargne.cash' }),
+    ).toMatchObject({ count: 2, matchCount: 1 });
+    expect(names(view)).toEqual(['assets', 'assets:Épargne.cash']);
+    expect(view.rows(0, 200).rows[0]!.amounts).toEqual([
+      { commodity: 'USD', quantity: '5' },
+    ]);
+  });
+  it('matches full paths and labels matching parents independently from ancestor context', () => {
+    const view = make();
+    expect(
+      view.configure('inclusive', { type: 'search', query: 'bank' }),
+    ).toMatchObject({ count: 5, matchCount: 4 });
+    expect(
+      view
+        .rows(0, 200)
+        .rows.filter((row) => row.searchMatch)
+        .map((row) => row.account),
+    ).toEqual([
+      'assets:bank',
+      'assets:bank:checking',
+      'assets:bank:savings',
+      'assets:banking',
+    ]);
+  });
+  it('searches direct accounts without adding implicit parents and preserves folds across modes', () => {
+    const view = make();
+    view.configure('inclusive', { type: 'collapse-all' });
+    view.configure('inclusive', { type: 'search', query: 'bank' });
+    expect(view.configure('direct')).toMatchObject({
+      count: 4,
+      matchCount: 4,
+      query: 'bank',
+    });
+    expect(
+      view
+        .rows(0, 200)
+        .rows.every(
+          (row) => row.searchMatch && !row.hasChildren && row.depth === 0,
+        ),
+    ).toBe(true);
+    expect(
+      view.rows(0, 200).rows.find((row) => row.account === 'assets:bank')!
+        .amounts,
+    ).toEqual([{ commodity: 'USD', quantity: '8' }]);
+    view.configure('inclusive');
+    view.configure('inclusive', { type: 'search', query: '' });
+    expect(names(view)).toEqual(['assets', 'equity', 'expenses']);
+  });
+  it('returns no rows for misses and ignores fold actions until search is cleared', () => {
+    const view = make();
+    view.configure('inclusive', { type: 'toggle', account: 'assets:bank' });
+    const original = names(view);
+    expect(
+      view.configure('inclusive', { type: 'search', query: 'no such account' }),
+    ).toMatchObject({ count: 0, matchCount: 0 });
+    expect(view.rows(0, 200).rows).toEqual([]);
+    view.configure('inclusive', { type: 'collapse-all' });
+    view.configure('inclusive', { type: 'search', query: '   ' });
+    expect(names(view)).toEqual(original);
+  });
+  it('keeps large search windows bounded while reaching the last matching leaf', () => {
+    const text = Array.from(
+      { length: 1000 },
+      (_, index) =>
+        `2026-01-01 Synthetic\n  expenses:match:leaf${String(index).padStart(5, '0')}  0.01 USD\n  assets:cash\n`,
+    ).join('\n');
+    const view = new AccountExplorer(
+      accountHierarchy(parseJournal([{ name: 'many', text }])),
+    );
+    const result = view.configure('inclusive', {
+      type: 'search',
+      query: 'match',
+    });
+    expect(result).toMatchObject({ count: 1002, matchCount: 1001 });
+    expect(view.rows(0, 10000).rows).toHaveLength(MAX_ACCOUNT_WINDOW);
+    expect(view.rows(result.count - 1, result.count).rows[0]!.account).toBe(
+      'expenses:match:leaf00999',
+    );
+    expect(view.configure('direct').count).toBe(1000);
+    expect(view.rows(999, 1000).rows[0]!.account).toBe(
+      'expenses:match:leaf00999',
+    );
+  });
+  it('retains search on failed imports and resets it on successful replacement or diagnostics', () => {
+    const engine = new JournalEngine();
+    engine.load(fixture('account-hierarchy.journal'));
+    engine.configureAccounts('inclusive', {
+      type: 'search',
+      query: 'checking',
+    });
+    expect(() =>
+      engine.load([
+        {
+          name: 'deep',
+          text: `2026-01-01\n  ${Array(65).fill('deep').join(':')}  1 USD\n  equity`,
+        },
+      ]),
+    ).toThrow('hierarchy');
+    expect(engine.configureAccounts('inclusive')).toMatchObject({
+      query: 'checking',
+      count: 3,
+    });
+    engine.load(fixture('account-hierarchy.journal'));
+    expect(engine.configureAccounts('inclusive').query).toBe('');
+    engine.load([{ name: 'invalid', text: 'include missing' }]);
+    expect(engine.configureAccounts('inclusive')).toMatchObject({
+      query: '',
+      count: 0,
+    });
+  });
+});
