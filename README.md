@@ -18,7 +18,7 @@ after a maintainer runs the manual [Pages workflow](.github/workflows/pages.yml)
 It is not published automatically when changes merge. Once deployed, choose
 **Explore sample journal** to try it without installing anything.
 
-Use Node **24.x** (see `.node-version`) and **pnpm 11.25.0** (see `packageManager`).
+Use Node **24.x** (see `.node-version`) and **pnpm 12.15.0** (see `packageManager`).
 Run these commands at the repository root:
 
 ```sh
