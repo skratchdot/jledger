@@ -1,0 +1,14 @@
+1/2 Inherited
+  expenses:food  1 USD
+  assets:cash
+
+year 2025
+1/3 Child override
+  expenses:food  1 USD
+  assets:cash
+
+include default-year-grandchild.journal
+1/5 Child after
+  expenses:food  1 USD
+  assets:cash
+

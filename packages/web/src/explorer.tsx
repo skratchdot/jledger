@@ -866,6 +866,13 @@ export function Explorer() {
             Transaction date {selected.date} · {selected.source.file}:
             {selected.source.line}
           </p>
+          {selected.inferredYear && (
+            <p className="muted">
+              Year {selected.inferredYear.year} supplied by{' '}
+              {selected.inferredYear.source.file}:
+              {selected.inferredYear.source.line}.
+            </p>
+          )}
           {selected.postings.some((p) => p.date) && (
             <p className="muted">
               Postings without their own date use the transaction date.

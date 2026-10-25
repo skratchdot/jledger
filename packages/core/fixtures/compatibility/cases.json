@@ -434,5 +434,162 @@
       "hledger": true,
       "ledger": true
     }
+  },
+  {
+    "id": "default-year-basic",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
+  },
+  {
+    "id": "default-year-no-rollover",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
+  },
+  {
+    "id": "default-year-full-override",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
+  },
+  {
+    "id": "default-year-reset",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
+  },
+  {
+    "id": "default-year-include",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    },
+    "sources": [
+      "default-year-include.journal",
+      "default-year-child.journal",
+      "default-year-grandchild.journal"
+    ]
+  },
+  {
+    "id": "default-year-roots",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    },
+    "sources": [
+      "default-year-roots.journal",
+      "default-year-other-root.journal"
+    ],
+    "referenceFiles": [
+      "default-year-roots.journal",
+      "default-year-other-root.journal"
+    ]
+  },
+  {
+    "id": "default-year-assertion-order",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "default-year-posting-full",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
+  },
+  {
+    "id": "default-year-inline-comment",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "default-year-minimum",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "default-year-maximum",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
+  },
+  {
+    "id": "default-year-missing",
+    "supported": false,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
+  },
+  {
+    "id": "default-year-full-not-anchor",
+    "supported": false,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
+  },
+  {
+    "id": "default-year-bad-leap",
+    "supported": false,
+    "referenceAcceptance": {
+      "hledger": false,
+      "ledger": false
+    }
+  },
+  {
+    "id": "default-year-zero",
+    "supported": false,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "default-year-wide",
+    "supported": false,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "default-year-short",
+    "supported": false,
+    "referenceAcceptance": {
+      "hledger": false,
+      "ledger": false
+    }
+  },
+  {
+    "id": "default-year-posting-partial",
+    "supported": false,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
   }
 ]

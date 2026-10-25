@@ -108,6 +108,9 @@ installation is a later milestone.
   Transaction details explain the classification source.
 - [Active filter chips and named presets](docs/explorer-filters.md) make report
   scopes visible and reusable. Presets stay in memory for the open journal only.
+- [Explicit default years](docs/default-years.md) for month/day transaction headers,
+  with include inheritance and directive source explanations. No clock-based year
+  guess or automatic rollover is applied.
 - [Primary posting dates](docs/posting-dates.md) for month filters, monthly charts,
   and assertion checks; transaction and posting dates remain visible in drill-down.
 - A transaction register with posting amounts and source references, transaction

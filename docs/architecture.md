@@ -56,6 +56,11 @@ through include expansion in source order. No format context is transferred to t
 UI or applied as rounding to financial report quantities.
 [Plain balance assertions](assertions.md) are checked after successful parsing and
 transaction balancing, in effective posting-date order across the expanded bundle.
+[Explicit default years](default-years.md) resolve month/day transaction headers
+from file/include context without consulting the clock. Includes inherit the year
+and restore their parent on return; independent roots start unset. Canonical dates
+are established before assertions/reports, while optional inferred-year provenance
+reaches on-demand transaction details. Partial posting overrides remain errors.
 [Primary posting dates](posting-dates.md) also drive monthly charts and filters;
 transaction rows retain their original date and expose posting overrides.
 The running-balance pass is skipped when no assertions are present. Assertion

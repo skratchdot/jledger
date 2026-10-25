@@ -13,6 +13,20 @@ export function parseFullDate(text: string): string | null {
     : null;
 }
 
+/** Resolve a header date only from an explicit year; never consult the clock. */
+export function parseTransactionDate(
+  text: string,
+  defaultYear?: string,
+): string | null {
+  if (/^\d{4}[-/.]/.test(text)) return parseFullDate(text);
+  const partial = text.match(/^(\d{1,2})([-/.])(\d{1,2})$/);
+  return partial && defaultYear
+    ? parseFullDate(
+        `${defaultYear}${partial[2]}${partial[1]}${partial[2]}${partial[3]}`,
+      )
+    : null;
+}
+
 export function effectivePostingDate(
   posting: Pick<Posting, 'date'>,
   transactionDate: string,

@@ -84,7 +84,7 @@ are evidence from the tools, never generated from jledger's own expected results
 ## Selected-source includes and remaining scope
 
 The [source-preserving syntax layer](syntax.md) and [selected-source include graph](includes.md)
-are implemented. The corpus now contains 71 cases, including posting and direct
+are implemented. The corpus now contains 89 cases, including posting and direct
 balance parity for simple and nested includes, plus acceptance-only captures for
 missing and repeated includes. Included sources are supplied explicitly in fixture
 metadata; references read the root journal and follow its real relative paths.
@@ -146,3 +146,15 @@ implicit nodes, while Ledger's flat `total` projection covers posted accounts fo
 the single-commodity case. Core compares matching inclusive nodes and keeps all
 existing direct comparisons. This does not claim Ledger implicit-parent layout or
 mixed-commodity hierarchy parity, and zero omission remains a corpus gap.
+
+## Explicit default years
+
+The [default-year slice](default-years.md) adds 18 cases covering Y/word directives,
+three month/day separators, leap years, explicit year resets, no automatic rollover,
+unchanged defaults after full headers, nested includes, independent roots, canonical
+year boundaries and full posting overrides. Supported fixtures compare resolved
+posting dates and exact direct balances. Inline directive comments, year 0001 and
+out-of-source-date assertions explicitly mark Ledger rejection; supported hledger
+projections still compare completely. Y0000/Y10000, short years, missing defaults,
+invalid leap days and partial posting overrides keep reports disabled. Unanchored
+reference samples record acceptance only, without clock-dependent date captures.

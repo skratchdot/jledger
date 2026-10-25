@@ -19,6 +19,11 @@ parsing or aggregation acceptable.
   declarations for every posting. Classification metadata crosses to React only
   in on-demand details. Cached paths add memory proportional to distinct accounts
   and their ancestors; this is not a new account-count or memory guarantee.
+- Explicit default years add a small source-bearing value to file context, inherited
+  by includes. Yearless transactions reference that value rather than copying a
+  directive object for every row. Calendar normalization stays in the worker; full
+  headers retain their existing data shape. This adds no streaming or device-wide
+  memory guarantee for yearless journals.
 - Core streams source-span line nodes while parsing, without retaining an extra
   syntax tree or split-line array. Explicit syntax inspection can opt into a tree.
 - File decoding, local API fetching/JSON decoding, parsing, direct balances,
