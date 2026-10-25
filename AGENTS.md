@@ -29,4 +29,5 @@
 - Commit messages use Conventional Commits: short, lowercase initial subject
   (prefer <=72 characters), then a blank line and a detailed, helpful body with
   rationale and validation. Example: feat(web): add spending filters
-- Do not publish or deploy automatically. The Pages workflow is manually triggered.
+- GitHub Pages deploys automatically on pushes to main after validation. Keep
+  manual workflow dispatch available on main for recovery.
