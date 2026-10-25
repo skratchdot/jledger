@@ -1,13 +1,16 @@
 import {
+  AccountExplorer,
+  type AccountAction,
+  type AccountMode,
+} from './account-view';
+import {
   add,
   effectivePostingDate,
   accountHierarchy,
   createAccountTypeResolver,
   matchesAccountType,
   type AccountClassification,
-  type AccountRollup,
   parseJournal,
-  type Balance,
   type Diagnostic,
   type Journal,
   type Source,
@@ -26,8 +29,8 @@ export interface Summary {
   diagnostics: Diagnostic[];
   diagnosticCount: number;
   transactionCount: number;
-  accounts: Balance[];
-  accountRollups: AccountRollup[];
+  accountCount: number;
+  accountRollupCount: number;
   commodities: string[];
   months: string[];
 }
@@ -55,6 +58,7 @@ export class JournalEngine {
     diagnostics: [],
     accountDeclarations: [],
   };
+  private accounts = new AccountExplorer({ direct: [], inclusive: [] });
   private classify: ((account: string) => AccountClassification) | undefined;
   private index: { id: number; text: string }[] = [];
   private matches: number[] = [];
@@ -63,8 +67,8 @@ export class JournalEngine {
     diagnostics: [],
     diagnosticCount: 0,
     transactionCount: 0,
-    accounts: [],
-    accountRollups: [],
+    accountCount: 0,
+    accountRollupCount: 0,
     commodities: [],
     months: [],
   };
@@ -77,6 +81,7 @@ export class JournalEngine {
     const hierarchy = valid
       ? accountHierarchy(journal)
       : { direct: [], inclusive: [] };
+    const accounts = new AccountExplorer(hierarchy);
     const classify = valid ? createAccountTypeResolver(journal) : undefined;
     const index = valid
       ? journal.transactions
@@ -102,17 +107,25 @@ export class JournalEngine {
       diagnostics: journal.diagnostics.slice(0, 200),
       diagnosticCount: journal.diagnostics.length,
       transactionCount: journal.transactions.length,
-      accounts: hierarchy.direct,
-      accountRollups: hierarchy.inclusive,
+      accountCount: hierarchy.direct.length,
+      accountRollupCount: hierarchy.inclusive.length,
       commodities: [...commodities].sort(),
       months: [...months].sort(),
     };
     this.journal = journal;
+    this.accounts = accounts;
     this.classify = classify;
     this.index = index;
     this.matches = [];
     this.summary = summary;
     return summary;
+  }
+
+  configureAccounts(mode: AccountMode, action?: AccountAction) {
+    return this.accounts.configure(mode, action);
+  }
+  accountRows(start: number, end: number) {
+    return this.accounts.rows(start, end);
   }
 
   async query(

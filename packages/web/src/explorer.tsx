@@ -28,6 +28,16 @@ export function Explorer() {
   const [includeSubaccounts, setIncludeSubaccounts] = useState(true);
   const [offline, setOffline] = useState(false),
     [local, setLocal] = useState(false);
+  const [accountRange, updateAccountRange] = useState({ start: 0, end: 40 });
+  const setAccountRange = useCallback(
+    (next: { start: number; end: number }) =>
+      updateAccountRange((previous) =>
+        previous.start === next.start && previous.end === next.end
+          ? previous
+          : next,
+      ),
+    [],
+  );
   const [range, updateRange] = useState({ start: 0, end: 40 });
   const setRange = useCallback(
     (next: { start: number; end: number }) =>
@@ -48,7 +58,7 @@ export function Explorer() {
     status,
   };
   const invalidDateRange = dateRangeError(dateFrom, dateTo);
-  const engine = useJournal(filters, range);
+  const engine = useJournal(filters, range, accountRange, includeSubaccounts);
   const {
     summary,
     journalRevision,
@@ -62,9 +72,9 @@ export function Explorer() {
   } = engine;
   const sources = summary.names.map((name) => ({ name }));
   const valid = !summary.diagnosticCount;
-  const allBalances = includeSubaccounts
-    ? summary.accountRollups
-    : summary.accounts;
+  const accountCount = includeSubaccounts
+    ? summary.accountRollupCount
+    : summary.accountCount;
   const commodities = summary.commodities,
     months = summary.months;
   const currency = commodities.includes(commodity)
@@ -193,7 +203,7 @@ export function Explorer() {
           className={`nav-item ${view === 'accounts' ? 'active' : ''}`}
           onClick={() => setView('accounts')}
         >
-          <span>≡</span> Accounts <small>{allBalances.length}</small>
+          <span>≡</span> Accounts <small>{accountCount}</small>
         </Button>
         <div className="sidebar-divider" />
         <p className="nav-label">
@@ -682,9 +692,56 @@ export function Explorer() {
                             />{' '}
                             Include subaccounts
                           </label>
+                          {includeSubaccounts && (
+                            <div className="account-tree-controls">
+                              <Button
+                                variant="outline"
+                                disabled={
+                                  busy ||
+                                  engine.accountBusy ||
+                                  !engine.accountView.canExpand
+                                }
+                                onClick={() =>
+                                  engine.changeAccounts({ type: 'expand-all' })
+                                }
+                              >
+                                Expand all accounts
+                              </Button>
+                              <Button
+                                variant="outline"
+                                disabled={
+                                  busy ||
+                                  engine.accountBusy ||
+                                  !engine.accountView.canCollapse
+                                }
+                                onClick={() =>
+                                  engine.changeAccounts({
+                                    type: 'collapse-all',
+                                  })
+                                }
+                              >
+                                Collapse all accounts
+                              </Button>
+                              <span>
+                                {engine.accountView.count} of {accountCount}{' '}
+                                account rows shown
+                              </span>
+                            </div>
+                          )}
                           <VirtualAccounts
-                            key={includeSubaccounts ? 'inclusive' : 'direct'}
-                            accounts={allBalances}
+                            key={`${journalRevision}-${includeSubaccounts ? 'inclusive' : 'direct'}`}
+                            view={
+                              engine.accountView.mode ===
+                              (includeSubaccounts ? 'inclusive' : 'direct')
+                                ? engine.accountView
+                                : { ...engine.accountView, count: 0 }
+                            }
+                            window={engine.accountWindow}
+                            busy={engine.accountBusy}
+                            onRangeChange={setAccountRange}
+                            onToggle={(account) =>
+                              engine.changeAccounts({ type: 'toggle', account })
+                            }
                             onSelect={setAccount}
                           />
                         </section>

@@ -728,14 +728,49 @@ tr:last-child td {
 .account-row {
   display: flex;
   width: 100%;
-  gap: 20px;
-  justify-content: space-between;
+  gap: 4px;
+  align-items: center;
   background: none;
   border: 0;
   border-bottom: 1px solid var(--line);
   text-align: left;
-  padding: 14px 0;
+  padding: 8px 0;
   font-family: ui-monospace, monospace;
+  font-size: 11px;
+}
+.account-select {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  text-align: left;
+  background: none;
+  border: 0;
+  font: inherit;
+  color: inherit;
+}
+.account-select strong {
+  flex-shrink: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.account-disclosure {
+  display: flex;
+  flex-shrink: 0;
+}
+.account-expand,
+.account-leaf-spacer {
+  width: 32px;
+  min-height: 32px;
+}
+.account-tree-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin: 12px 0;
   font-size: 11px;
 }
 .account-row:hover {
@@ -754,7 +789,7 @@ tr:last-child td {
 .account-row .account-parent {
   font-weight: 600;
 }
-.account-row > span {
+.account-select > span {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1159,6 +1194,8 @@ footer {
   }
   .account-row {
     font-size: 10px;
+  }
+  .account-select {
     flex-wrap: wrap;
     gap: 6px;
   }
