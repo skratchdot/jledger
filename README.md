@@ -4,7 +4,11 @@ Private, local-first plain text accounting tools in JavaScript and TypeScript.
 The web explorer is the primary product: open journal files, understand your money,
 and keep your financial data on your own device.
 
-![jledger explorer using synthetic sample data](docs/images/explorer.png)
+**[Open jledger →](https://skratchdot.github.io/jledger/)** ·
+[Supported journal syntax](docs/compatibility.md) · [Run locally](#run-locally) ·
+[CLI](#cli)
+
+[![jledger explorer using synthetic sample data](docs/images/explorer.png)](https://skratchdot.github.io/jledger/)
 
 **Early prototype:** this is a working foundation, not a Ledger or hledger replacement.
 The parser implements a small, strict subset of hledger's journal format.
@@ -13,10 +17,14 @@ Read the [compatibility contract](docs/compatibility.md) before using real journ
 
 ## Get started
 
-The [GitHub Pages explorer](https://skratchdot.github.io/jledger/) is available
-after a maintainer runs the manual [Pages workflow](.github/workflows/pages.yml).
-It is not published automatically when changes merge. Once deployed, choose
-**Explore sample journal** to try it without installing anything.
+1. **[Open the explorer](https://skratchdot.github.io/jledger/)** in your browser. No installation or account needed.
+2. Choose **Explore sample journal** to try it with synthetic data.
+3. Import your own journals when ready. Files are processed on your device and are never uploaded.
+
+The application shell works offline after the first successful load. Imported
+journals stay in memory; reimport them after a reload.
+
+### Run locally
 
 Use Node **24.x** (see `.node-version`) and **pnpm 12.15.0** (see `packageManager`).
 Run these commands at the repository root:
@@ -27,7 +35,9 @@ pnpm build
 pnpm dev
 ```
 
-Choose **Explore sample journal**, or import/drop one or more UTF-8 journals.
+### Import journals
+
+Import/drop one or more UTF-8 journals.
 Imports replace the currently open set; choose all files together. The current
 limit is 256 MiB total and 4,096 files. Literal relative includes resolve only
 among selected files; select the root and every referenced journal together.
@@ -156,12 +166,16 @@ before the first typecheck so TanStack can generate its route tree.
 
 ## Static deployment
 
-The manual GitHub Actions [Pages workflow](.github/workflows/pages.yml) builds
-for `/jledger/` and uploads **only** `packages/web/dist/client`.
-Enable GitHub Pages with GitHub Actions as the source, then manually run the
-[deploy pages workflow](https://github.com/skratchdot/jledger/actions/workflows/pages.yml)
-from `main` to publish or update <https://skratchdot.github.io/jledger/>.
-Merging a pull request does not trigger a deployment.
+The [live explorer](https://skratchdot.github.io/jledger/) updates automatically
+on every push to `main`, including merged pull requests. The
+[Pages workflow](.github/workflows/pages.yml) runs project checks and browser tests
+against the `/jledger/` production build before deploying. Failed validation leaves
+the current site in place. Only `packages/web/dist/client` is published.
+
+One-time repository setup: in **Settings → Pages → Build and deployment**, choose
+**GitHub Actions** as the source. Follow deployments in
+[Actions](https://github.com/skratchdot/jledger/actions/workflows/pages.yml).
+To retry a deployment, use **Run workflow** with the `main` branch selected.
 For a custom domain or a `*.github.io` root site, change the base path to `/`.
 Keep personal journals outside this checkout or under ignored `private/`.
 Never include them in a public directory, examples, build artifacts, or a commit.

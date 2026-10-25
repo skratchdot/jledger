@@ -1,19 +1,17 @@
 name: deploy pages
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
-  pages: write
-  id-token: write
 concurrency:
   group: pages
   cancel-in-progress: false
 jobs:
-  deploy:
+  build:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
@@ -22,13 +20,34 @@ jobs:
           node-version-file: .node-version
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @jledger/core build
-      - run: pnpm --filter @jledger/web build
+      - run: pnpm build
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm format:check
+      - name: Build for GitHub Pages
+        run: pnpm --filter @jledger/web build
         env:
           JLEDGER_BASE_PATH: /jledger/
-      - uses: actions/configure-pages@v6
+      - run: pnpm exec playwright install --with-deps chromium
+      - name: Test the Pages artifact
+        run: pnpm test:browser
+        env:
+          JLEDGER_TEST_BASE_PATH: /jledger/
       - uses: actions/upload-pages-artifact@v5
         with:
           path: packages/web/dist/client
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v6
       - uses: actions/deploy-pages@v5
         id: deployment
