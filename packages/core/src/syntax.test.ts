@@ -131,7 +131,7 @@ describe('source-preserving journal syntax', () => {
   it('does not treat recognized source shapes as supported financial syntax', () => {
     for (const text of [
       'include child.journal\n',
-      'commodity 1.000,00 EUR\n',
+      'commodity "quoted commodity"\n',
       '2026-02-30 Invalid date\n  a  1 USD\n  b\n',
       '2026-01-01 Cost\n  a  1 USD @ 2 EUR\n  b\n',
       '2026-01-01 Total assertion\n  a  1 USD == 2 USD\n  b\n',

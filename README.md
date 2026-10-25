@@ -82,6 +82,8 @@ installation is a later milestone.
 
 - Browser-only imports and drag-and-drop, with no upload or account requirement.
 - Exact decimal balances, separated by commodity; no floating-point money arithmetic.
+- [Explicit amount formats](docs/amount-formats.md): decimal marks, commodity format
+  examples/blocks, and three-digit grouping, with canonical exact report amounts.
 - [Plain balance assertions](docs/assertions.md) with expected/calculated diagnostics;
   a failed assertion disables every report. Assignments and total/inclusive forms
   remain unsupported.

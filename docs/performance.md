@@ -11,6 +11,9 @@ parsing or aggregation acceptable.
 - Plain assertion validation runs in the worker in effective posting-date order,
   only for journals containing assertions. It retains posting references and effective dates for a stable
   chronological sort and running direct balances; ordinary imports skip this pass.
+- Explicit format state stays in the worker parser. Compiled amount patterns are
+  reused; normalization removes grouping with string operations and uses exact
+  decimals. Includes share commodity formats while copying the small file context.
 - Core streams source-span line nodes while parsing, without retaining an extra
   syntax tree or split-line array. Explicit syntax inspection can opt into a tree.
 - File decoding, local API fetching/JSON decoding, parsing, direct balances,
@@ -50,7 +53,8 @@ a substitute for diverse real-world journals or a cross-device benchmark.
 ## Multi-file regression
 
 The browser suite also imports a synthetic 13-file monthly include bundle with
-24,000 transactions: salary with monthly bank-balance assertions, explicit primary
+24,000 transactions: grouped salary under an inherited explicit USD format,
+monthly bank-balance assertions, explicit primary
 posting dates on purchases, alternating
 purchases/refunds, inline Unicode comments, block comments containing include-shaped
 text, and mixed LF/CRLF/BOM inputs.

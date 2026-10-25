@@ -25,6 +25,10 @@ Core consumes named UTF-8 source strings and returns transactions and diagnostic
 Source files remain authoritative; derived reports are disposable. Locations retain
 file names and line numbers. Quantities are decimal strings with exact BigInt-backed
 addition, so JSON and browser/Node boundaries do not lose precision.
+[Explicit amount formats](amount-formats.md) normalize input punctuation using
+string operations. Decimal marks follow file/include scope; commodity styles flow
+through include expansion in source order. No format context is transferred to the
+UI or applied as rounding to financial report quantities.
 [Plain balance assertions](assertions.md) are checked after successful parsing and
 transaction balancing, in effective posting-date order across the expanded bundle.
 [Primary posting dates](posting-dates.md) also drive monthly charts and filters;

@@ -15,8 +15,8 @@ and flat direct balances have parity evidence.
 | Indented postings, colon-separated account names         | Supported, including single spaces in names                                                                                                             |
 | Account/amount separator                                 | Two or more spaces or a tab                                                                                                                             |
 | Posting status                                           | Preserved                                                                                                                                               |
-| Decimal quantities                                       | Exact signed decimal integers/fractions; dot decimal mark only                                                                                          |
-| Commodities                                              | `$`, `€`, `£` prefixes, or unquoted suffix identifiers/symbols; also no commodity                                                                       |
+| Decimal quantities                                       | Exact signed integers/fractions; strict dot decimals by default, explicit dot/comma marks supported                                                     |
+| Commodities                                              | Unquoted identifier/symbol prefixes or suffixes; also no commodity. Quoted names remain errors                                                          |
 | One omitted amount                                       | Inferred when explicit amounts use exactly one commodity                                                                                                |
 | Explicit multi-commodity postings                        | Accepted only if each commodity independently sums to zero                                                                                              |
 | Line comments, inline semicolon comments, block comments | Accepted; original source retained; no general tag query semantics                                                                                      |
@@ -24,8 +24,10 @@ and flat direct balances have parity evidence.
 | Multiple independently selected files                    | Supported; no inference across file boundaries                                                                                                          |
 | Includes                                                 | Selected-source literal relative paths; see [include policy](includes.md)                                                                               |
 | Primary posting date override comments                   | Full inline bracket dates and restricted lowercase `date:` tags; see [posting dates](posting-dates.md). Partial/secondary/continuation forms are errors |
-| Grouping separators, decimal commas, quoted commodities  | Error                                                                                                                                                   |
-| Commodity/decimal/default-year directives                | Error                                                                                                                                                   |
+| Grouping separators and decimal commas                   | Require compatible explicit formats; three-digit groups only; see [amount formats](amount-formats.md)                                                   |
+| Quoted commodities                                       | Error                                                                                                                                                   |
+| Commodity and decimal-mark directives                    | Simple unquoted declarations, numeric examples and matching format blocks; file/include scope is documented in [amount formats](amount-formats.md)      |
+| Default-year directives                                  | Error                                                                                                                                                   |
 | Costs (`@`, `@@`), market prices, lots                   | Error                                                                                                                                                   |
 | Plain balance assertions (`=`)                           | Explicit posting amounts; exact direct-account, single-commodity checks in effective posting-date order; see [semantics](assertions.md)                 |
 | Balance assignments, total/inclusive assertions          | Error                                                                                                                                                   |
@@ -48,6 +50,12 @@ see [date interoperability](posting-dates.md).
 Plain assertions follow hledger effective posting-date ordering and commodity-specific semantics.
 Ledger 3.3.2 differs on the sampled out-of-order and mixed-commodity cases; see the
 [assertion interoperability notes](assertions.md). No broad assertion parity is implied.
+
+Amount formats are applied in source order. Decimal marks are file-local and
+inherited by includes; commodity format changes flow through the expanded include
+stream. Independent roots start fresh. Ledger can accept some directives but
+produce different values; the corpus declares those differences explicitly. The
+explorer displays canonical exact quantities rather than localized report styles.
 
 Unknown syntax yields source-located diagnostics. Core report functions refuse any
 journal containing diagnostics, and the web hides all reports for that import.

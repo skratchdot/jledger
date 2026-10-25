@@ -73,7 +73,7 @@ describe('journal subset', () => {
     ['2024-01-01\n  a  1 USD = 10 USD\n  b', 'balance-assertion'],
     ['2024-01-01\n  (a)  1 USD\n  b', 'account'],
     ['include other.journal', 'include-missing'],
-    ['commodity $1,000.00', 'unsupported'],
+    ['commodity "quoted commodity"', 'commodity-format'],
     ['2024-01-01\n  a  1 USD ; date2:2024-02-01\n  b', 'posting-date'],
     ['comment\nunclosed', 'comment'],
   ])('fails closed on %s', (text, code) => {

@@ -34,7 +34,7 @@
   },
   {
     "id": "commodity-format",
-    "supported": false
+    "supported": true
   },
   {
     "id": "assertion-failure",
@@ -164,5 +164,72 @@
     "id": "posting-date-includes",
     "supported": true,
     "sources": ["posting-date-includes.journal", "parts/dated-child.journal"]
+  },
+  {
+    "id": "format-source-order-comma",
+    "supported": true,
+    "ledgerParity": false
+  },
+  {
+    "id": "format-source-order-dot",
+    "supported": true
+  },
+  {
+    "id": "format-changing",
+    "supported": true,
+    "ledgerParity": false
+  },
+  {
+    "id": "decimal-mark-comma",
+    "supported": true,
+    "ledgerParity": false
+  },
+  {
+    "id": "decimal-mark-dot",
+    "supported": true
+  },
+  {
+    "id": "decimal-mark-fraction",
+    "supported": true
+  },
+  {
+    "id": "format-prefix",
+    "supported": true
+  },
+  {
+    "id": "format-dollar",
+    "supported": true
+  },
+  {
+    "id": "format-subdirective",
+    "supported": true
+  },
+  {
+    "id": "format-exact-precision",
+    "supported": true
+  },
+  {
+    "id": "format-grouping-rejected",
+    "supported": false
+  },
+  {
+    "id": "format-conflict-rejected",
+    "supported": false
+  },
+  {
+    "id": "format-includes",
+    "supported": true,
+    "sources": ["format-includes.journal", "parts/formatted-child.journal"],
+    "ledgerParity": false
+  },
+  {
+    "id": "format-include-styles",
+    "supported": true,
+    "sources": [
+      "format-include-styles.journal",
+      "parts/inherited-format.journal",
+      "parts/reset-format.journal"
+    ],
+    "ledgerParity": false
   }
 ]

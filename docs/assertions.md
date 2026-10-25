@@ -46,9 +46,10 @@ incremental assertion algorithm.
 ## Unsupported forms
 
 Balance assignments (an omitted posting amount before `=`), total assertions
-(`==`), inclusive assertions (`=*`, `==*`), costs, grouped/decimal-comma quantities,
-and expressions remain errors. These forms change semantics and are never treated
-as plain assertions or ignored. Commodity directives, secondary/partial/
+(`==`), inclusive assertions (`=*`, `==*`), costs, and expressions remain errors.
+Grouped/comma quantities require a compatible [explicit amount format](amount-formats.md)
+on both sides; undeclared grouping is not guessed. These forms change semantics and are never treated
+as plain assertions or ignored. Unsupported format directives, secondary/partial/
 continuation posting dates, and other unsupported financial syntax remain errors too.
 
 ## Ledger differences and evidence
