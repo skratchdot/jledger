@@ -2669,5 +2669,535 @@
       "V": [],
       "G": []
     }
+  },
+  "default-year-basic": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-02-29",
+        "description": "Leap",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2024-02-29",
+        "description": "Leap",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2025-01-02",
+        "description": "Dash",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2025-01-02",
+        "description": "Dash",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2026-03-04",
+        "description": "Dot",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-03-04",
+        "description": "Dot",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-3"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "3"
+      }
+    ]
+  },
+  "default-year-no-rollover": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "January",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "January",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2024-12-31",
+        "description": "December",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2024-12-31",
+        "description": "December",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "2"
+      }
+    ]
+  },
+  "default-year-full-override": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-02",
+        "description": "Still default",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Still default",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2025-12-31",
+        "description": "Explicit",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2025-12-31",
+        "description": "Explicit",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "2"
+      }
+    ]
+  },
+  "default-year-reset": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-02-29",
+        "description": "First leap",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-02-29",
+        "description": "First leap",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2028-02-29",
+        "description": "Second leap",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.2"
+      },
+      {
+        "date": "2028-02-29",
+        "description": "Second leap",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.3"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.3"
+      }
+    ]
+  },
+  "default-year-include": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Parent before",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Parent before",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Inherited",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Inherited",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2024-01-04",
+        "description": "Parent after",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2024-01-04",
+        "description": "Parent after",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2025-01-03",
+        "description": "Child override",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2025-01-03",
+        "description": "Child override",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2025-01-05",
+        "description": "Child after",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2025-01-05",
+        "description": "Child after",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2028-02-29",
+        "description": "Grandchild override",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2028-02-29",
+        "description": "Grandchild override",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-6"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "6"
+      }
+    ]
+  },
+  "default-year-roots": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "First root",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "First root",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2025-01-02",
+        "description": "Second root",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2025-01-02",
+        "description": "Second root",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "2"
+      }
+    ]
+  },
+  "default-year-assertion-order": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "January",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "January",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2024-12-31",
+        "description": "December",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "date": "2024-12-31",
+        "description": "December",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "3"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-3"
+      }
+    ]
+  },
+  "default-year-posting-full": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-02-29",
+        "description": "Partial header",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2025-03-01",
+        "description": "Partial header",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      }
+    ]
+  },
+  "default-year-inline-comment": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-02-29",
+        "description": "Leap",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2024-02-29",
+        "description": "Leap",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      }
+    ]
+  },
+  "default-year-minimum": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "0001-01-02",
+        "description": "Minimum",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "0001-01-02",
+        "description": "Minimum",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      }
+    ]
+  },
+  "default-year-maximum": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "9999-12-31",
+        "description": "Maximum",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "9999-12-31",
+        "description": "Maximum",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      }
+    ]
+  },
+  "default-year-missing": {
+    "accepted": true
+  },
+  "default-year-full-not-anchor": {
+    "accepted": true
+  },
+  "default-year-bad-leap": {
+    "accepted": false
+  },
+  "default-year-zero": {
+    "accepted": true
+  },
+  "default-year-wide": {
+    "accepted": true
+  },
+  "default-year-short": {
+    "accepted": false
+  },
+  "default-year-posting-partial": {
+    "accepted": true
   }
 }

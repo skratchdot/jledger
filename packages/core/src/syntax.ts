@@ -30,9 +30,9 @@ export interface JournalSyntax {
   readonly lines: readonly SyntaxLine[];
 }
 
-const transactionStart = /^(\d{4}[-/.]\d{1,2}[-/.]\d{1,2})(?:\s|$)/;
+const transactionStart = /^((?:\d{4}[-/.])?\d{1,2}[-/.]\d{1,2})(?:\s|$)/;
 const directiveStart =
-  /^(?:account|include|commodity|decimal-mark|alias|apply|end|payee|tag|D|P|Y)(?:\s|$)/;
+  /^(?:(?:account|include|commodity|decimal-mark|alias|apply|end|payee|tag|D|P|Y|year)(?:\s|$)|Y\d)/;
 
 /**
  * Stream source-shaped lines without allocating a retained tree or split-line array.

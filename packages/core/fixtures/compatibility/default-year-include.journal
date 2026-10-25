@@ -1,0 +1,10 @@
+Y2024
+1/1 Parent before
+  expenses:food  1 USD
+  assets:cash
+
+include default-year-child.journal
+1/4 Parent after
+  expenses:food  1 USD
+  assets:cash
+

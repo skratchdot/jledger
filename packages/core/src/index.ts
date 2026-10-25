@@ -30,7 +30,7 @@ export { parseAmount } from './amounts.js';
 export type { AmountContext, CommodityFormat, DecimalMark } from './amounts.js';
 import {
   hasPostingDateSyntax,
-  parseFullDate,
+  parseTransactionDate,
   parsePostingDateComment,
 } from './dates.js';
 export { effectivePostingDate } from './dates.js';
@@ -78,6 +78,8 @@ export interface Posting {
 }
 export interface Transaction {
   date: string;
+  /** Present only when a yearless header used an explicit year directive. */
+  inferredYear?: { year: string; source: Location };
   status: Status;
   code: string;
   description: string;
@@ -155,11 +157,12 @@ export function parseJournal(sources: Source[]): Journal {
     if (!previous) typedDeclarations.set(declaration.account, declaration);
   };
   interface ParsingContext {
+    defaultYear?: NonNullable<Transaction['inferredYear']>;
     decimalMark?: DecimalMark;
     commodityFormats: Map<string, CommodityFormat>;
   }
   function parseSource(source: Source, inherited: ParsingContext) {
-    // Decimal marks are file-scoped; commodity formats flow through expanded includes.
+    // Years and decimal marks are file-scoped and inherited by includes; commodity formats flow through them.
     const context = { ...inherited };
     let commodityBlock: string | undefined;
     let accountBlock: AccountDeclaration | undefined;
@@ -290,6 +293,18 @@ export function parseJournal(sources: Source[]): Journal {
           parseSource(byName.get(child)!, context);
           continue;
         }
+        if (/^(?:Y(?=\s|\d|$)|year(?:\s|$))/.test(content)) {
+          const declaration = content.match(/^(?:Y\s*|year\s+)(\d{4})$/);
+          if (!declaration || declaration[1] === '0000')
+            error(
+              location,
+              'default-year',
+              'Use Y2024, Y 2024, or year 2024 with a four-digit year from 0001 through 9999.',
+            );
+          else
+            context.defaultYear = { year: declaration[1]!, source: location };
+          continue;
+        }
         if (/^decimal-mark(?:\s|$)/.test(content)) {
           const match = content.match(/^decimal-mark\s+([.,])$/);
           if (!match)
@@ -351,7 +366,7 @@ export function parseJournal(sources: Source[]): Journal {
           continue;
         }
         const header = content.match(
-          /^(\d{4}[-/.]\d{1,2}[-/.]\d{1,2})(?:\s+(.*))?$/,
+          /^((?:\d{4}[-/.])?\d{1,2}[-/.]\d{1,2})(?:\s+(.*))?$/,
         );
         if (!header) {
           error(
@@ -361,7 +376,19 @@ export function parseJournal(sources: Source[]): Journal {
           );
           continue;
         }
-        const date = parseFullDate(header[1]!);
+        const partial = !/^\d{4}[-/.]/.test(header[1]!);
+        if (partial && !context.defaultYear) {
+          error(
+            location,
+            'default-year-required',
+            'Yearless transaction dates require an earlier explicit Y2024 or year 2024 directive in this file or an including parent. Full dates do not set a default year.',
+          );
+          continue;
+        }
+        const date = parseTransactionDate(
+          header[1]!,
+          context.defaultYear?.year,
+        );
         if (!date) {
           error(location, 'date', 'Invalid calendar date.');
           continue;
@@ -385,6 +412,7 @@ export function parseJournal(sources: Source[]): Journal {
         txErrors = journal.diagnostics.length;
         tx = {
           date,
+          ...(partial ? { inferredYear: context.defaultYear! } : {}),
           status,
           code,
           description: rest,

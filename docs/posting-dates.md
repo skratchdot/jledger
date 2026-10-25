@@ -46,13 +46,15 @@ optional date field; core's `effectivePostingDate` helper provides the shared fa
 
 ## Unsupported date forms
 
-Partial dates/default-year inference, secondary dates (`date2:`, `[=DATE]`, or
+Partial posting dates, secondary dates (`date2:`, `[=DATE]`, or
 `[DATE=DATE2]`), multiple date markers, and dates on continuation comment lines are
 explicit errors. Secondary bracket syntax is detected instead of being silently
 ignored. Date-shaped malformed comments are conservative errors; jledger does not
 try to guess whether they are intended as inert prose. Embedded `date:` tokens that
 do not follow the supported tag placement are errors too. Other transaction date
-forms and secondary transaction dates remain unsupported.
+forms and secondary transaction dates remain unsupported, except the explicit
+[default-year/month-day transaction header subset](default-years.md). A default
+year on a header does not enable partial posting overrides.
 
 ## Reference evidence
 
