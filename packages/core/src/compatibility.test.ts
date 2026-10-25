@@ -3,7 +3,13 @@ import { describe, expect, it } from 'vitest';
 import cases from '../fixtures/compatibility/cases.json';
 import hledger from '../fixtures/compatibility/hledger-1.json';
 import ledger from '../fixtures/compatibility/ledger-1.json';
-import { add, balances, effectivePostingDate, parseJournal } from './index.js';
+import {
+  add,
+  accountHierarchy,
+  balances,
+  effectivePostingDate,
+  parseJournal,
+} from './index.js';
 
 const canonical = (value: string) => {
   const exact = add('0', value);
@@ -82,6 +88,27 @@ describe('compatibility corpus v1 (captured hledger 1.52 / Ledger 3.3.2)', () =>
         expect(report).toEqual(
           'balances' in expected ? expected.balances : undefined,
         );
+        if (fixture.hierarchy?.includes(tool)) {
+          const hierarchy = accountHierarchy(journal);
+          const posted = new Set(hierarchy.direct.map((b) => b.account));
+          const rollups = hierarchy.inclusive
+            .filter((b) => tool !== 'ledger' || posted.has(b.account))
+            .flatMap((b) =>
+              b.amounts.map((a) => ({
+                account: b.account,
+                commodity: a.commodity,
+                quantity: canonical(a.quantity),
+              })),
+            )
+            .sort(
+              (a, b) =>
+                a.account.localeCompare(b.account) ||
+                a.commodity.localeCompare(b.commodity),
+            );
+          expect(rollups).toEqual(
+            'rollups' in expected ? expected.rollups : undefined,
+          );
+        }
       }
     });
   }

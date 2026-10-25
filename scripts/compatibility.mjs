@@ -174,6 +174,44 @@ for (const tool of tools) {
           a.account.localeCompare(b.account) ||
           a.commodity.localeCompare(b.commodity),
       );
+      if (fixture.hierarchy?.includes(tool.name)) {
+        const rollup = run(tool, [
+          ...prefix,
+          'balance',
+          '--no-total',
+          '--empty',
+          ...(tool.name === 'ledger'
+            ? [
+                '--flat',
+                '--format',
+                '%(quoted(account)),%(quoted(quantity(total))),%(quoted(commodity(total)))\n',
+              ]
+            : ['--tree', '--no-elide', '-O', 'json']),
+        ]);
+        assert.equal(rollup.status, 0, rollup.stderr);
+        // Ledger projection covers explicitly posted accounts; hledger also
+        // exposes the implicit parents. Neither projection sums report rows.
+        entry.rollups =
+          tool.name === 'ledger'
+            ? csv(rollup.stdout).map(([account, q, commodity]) => ({
+                account,
+                commodity,
+                quantity: quantity(q),
+              }))
+            : JSON.parse(
+                rollup.stdout.replace(
+                  /("decimalMantissa"\s*:\s*)(-?\d+)/g,
+                  '$1"$2"',
+                ),
+              )[0].flatMap(([account, , , amounts]) =>
+                amounts.map((a) => ({ account, ...hledgerAmount(a) })),
+              );
+        entry.rollups.sort(
+          (a, b) =>
+            a.account.localeCompare(b.account) ||
+            a.commodity.localeCompare(b.commodity),
+        );
+      }
     }
     observed[fixture.id] = entry;
   }

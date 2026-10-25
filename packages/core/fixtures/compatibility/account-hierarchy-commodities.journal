@@ -1,0 +1,11 @@
+2026-01-01 Parent
+  assets:cash  1 USD
+  equity:usd
+
+2026-01-02 Dollars
+  assets:cash:usd  2 USD
+  equity:usd
+
+2026-01-03 Euros
+  assets:cash:eur  3 EUR
+  equity:eur

@@ -23,6 +23,12 @@ range errors are validated independently of journal diagnostics. Searches deboun
 for 100 ms; worker scans yield between chunks so newer searches cancel stale work. Files and local-server JSON are read
 in the worker, keeping large payload decoding off the UI thread.
 
+[Account rollups](account-hierarchy.md) are computed from direct balances in core
+and built in the worker. The UI switches aggregate arrays without recomputing
+financial totals, and the account list remains virtualized. Import state commits
+atomically after report construction; hierarchy-limit errors retain the previous
+complete import with a warning.
+
 Core consumes named UTF-8 source strings and returns transactions and diagnostics.
 Source files remain authoritative; derived reports are disposable. Locations retain
 file names and line numbers. Quantities are decimal strings with exact BigInt-backed

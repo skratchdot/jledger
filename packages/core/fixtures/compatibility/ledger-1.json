@@ -1172,5 +1172,218 @@
         "quantity": "3.702"
       }
     ]
+  },
+  "account-hierarchy": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Bank",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Bank",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-10"
+      },
+      {
+        "date": "2026-01-02",
+        "description": "Checking",
+        "account": "assets:bank:checking",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "date": "2026-01-02",
+        "description": "Checking",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "date": "2026-01-03",
+        "description": "Savings",
+        "account": "assets:bank:savings",
+        "commodity": "USD",
+        "quantity": "3"
+      },
+      {
+        "date": "2026-01-03",
+        "description": "Savings",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-3"
+      },
+      {
+        "date": "2026-01-04",
+        "description": "Separate prefix",
+        "account": "assets:banking",
+        "commodity": "USD",
+        "quantity": "7"
+      },
+      {
+        "date": "2026-01-04",
+        "description": "Separate prefix",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-7"
+      },
+      {
+        "date": "2026-01-05",
+        "description": "Food",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "date": "2026-01-05",
+        "description": "Food",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "-2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "8"
+      },
+      {
+        "account": "assets:bank:checking",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "account": "assets:bank:savings",
+        "commodity": "USD",
+        "quantity": "3"
+      },
+      {
+        "account": "assets:banking",
+        "commodity": "USD",
+        "quantity": "7"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-22"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "2"
+      }
+    ],
+    "rollups": [
+      {
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "13"
+      },
+      {
+        "account": "assets:bank:checking",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "account": "assets:bank:savings",
+        "commodity": "USD",
+        "quantity": "3"
+      },
+      {
+        "account": "assets:banking",
+        "commodity": "USD",
+        "quantity": "7"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-22"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "2"
+      }
+    ]
+  },
+  "account-hierarchy-commodities": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Parent",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Parent",
+        "account": "equity:usd",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2026-01-02",
+        "description": "Dollars",
+        "account": "assets:cash:usd",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "date": "2026-01-02",
+        "description": "Dollars",
+        "account": "equity:usd",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "date": "2026-01-03",
+        "description": "Euros",
+        "account": "assets:cash:eur",
+        "commodity": "EUR",
+        "quantity": "3"
+      },
+      {
+        "date": "2026-01-03",
+        "description": "Euros",
+        "account": "equity:eur",
+        "commodity": "EUR",
+        "quantity": "-3"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "assets:cash:eur",
+        "commodity": "EUR",
+        "quantity": "3"
+      },
+      {
+        "account": "assets:cash:usd",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "account": "equity:eur",
+        "commodity": "EUR",
+        "quantity": "-3"
+      },
+      {
+        "account": "equity:usd",
+        "commodity": "USD",
+        "quantity": "-3"
+      }
+    ]
   }
 }

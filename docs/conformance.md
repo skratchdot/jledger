@@ -13,7 +13,8 @@ Three separate questions are tested:
 2. **Accounting semantics:** supported fixtures compare the ordered posting date,
    description, account, commodity, and exact quantity, including inferred amounts.
 3. **Report parity:** supported fixtures compare flat, direct, commodity-specific
-   account balances. Hierarchical reports, query languages, valuation, text layout,
+   balances; marked fixtures also compare inclusive rollups with explicit scope.
+   General hierarchical presentation, query languages, valuation, text layout,
    status inheritance, and rounding/display precision are outside this comparison.
 
 | Cases                                                                                                                                              | jledger                                        | hledger 1.52 | Ledger 3.3.2                   |
@@ -73,7 +74,7 @@ are evidence from the tools, never generated from jledger's own expected results
 ## Selected-source includes and remaining scope
 
 The [source-preserving syntax layer](syntax.md) and [selected-source include graph](includes.md)
-are implemented. The corpus now contains 49 cases, including posting and direct
+are implemented. The corpus now contains 51 cases, including posting and direct
 balance parity for simple and nested includes, plus acceptance-only captures for
 missing and repeated includes. Included sources are supplied explicitly in fixture
 metadata; each reference still reads the root journal and follows its real relative
@@ -123,3 +124,13 @@ and the live runner still verifies every captured Ledger value. Agreement for th
 sample format block is tested rather than inferred from inline-declaration behavior.
 Report captures now bypass localized display strings and precision. UI reports
 remain canonical, with source formatting preserved separately.
+
+## Account hierarchy values
+
+Two [hierarchy cases](account-hierarchy.md) add parent postings plus descendants,
+similar prefix names, implicit parents, and separate commodity quantities. Fixture
+`hierarchy` metadata selects the live report projections: hledger tree JSON includes
+implicit nodes, while Ledger's flat `total` projection covers posted accounts for
+the single-commodity case. Core compares matching inclusive nodes and keeps all
+existing direct comparisons. This does not claim Ledger implicit-parent layout or
+mixed-commodity hierarchy parity, and zero omission remains a corpus gap.

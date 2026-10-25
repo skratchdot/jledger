@@ -30,7 +30,8 @@ balance and the original source when the journal is valid.
   Assertions are checked only after syntax, include graph, and transaction balancing
   succeed. Unsupported syntax anywhere still disables all reports.
 - Plain `=` checks the **direct account**, excluding subaccounts, and only the
-  assertion's commodity. Other commodities in that account are unchecked. An absent
+  assertion's commodity. The Accounts view's inclusive display does not change
+  assertion scope. Other commodities in that account are unchecked. An absent
   commodity has a zero balance; a quantity without a commodity checks the literal
   empty commodity, not an inferred currency from the posting.
 - Comparisons use exact decimal arithmetic. There is no rounding, tolerance, or

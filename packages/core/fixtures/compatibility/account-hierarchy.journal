@@ -1,0 +1,19 @@
+2026-01-01 Bank
+  assets:bank  10 USD
+  equity:opening
+
+2026-01-02 Checking
+  assets:bank:checking  2 USD
+  equity:opening
+
+2026-01-03 Savings
+  assets:bank:savings  3 USD
+  equity:opening
+
+2026-01-04 Separate prefix
+  assets:banking  7 USD
+  equity:opening
+
+2026-01-05 Food
+  expenses:food  2 USD
+  assets:bank

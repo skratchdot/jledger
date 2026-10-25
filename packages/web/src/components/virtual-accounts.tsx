@@ -1,11 +1,11 @@
 import { useRef } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { formatAmount, type Balance } from '@jledger/core';
+import { formatAmount, type Balance, type AccountRollup } from '@jledger/core';
 export function VirtualAccounts({
   accounts,
   onSelect,
 }: {
-  accounts: Balance[];
+  accounts: (Balance | AccountRollup)[];
   onSelect: (name: string) => void;
 }) {
   const scroll = useRef<HTMLDivElement>(null);
@@ -37,9 +37,26 @@ export function VirtualAccounts({
                 left: 0,
                 transform: `translateY(${item.start}px)`,
               }}
+              title={
+                'directAmounts' in balance
+                  ? `${balance.account} · direct postings: ${balance.directAmounts.length ? balance.directAmounts.map(formatAmount).join(' · ') : 'none'}`
+                  : balance.account
+              }
               onClick={() => onSelect(balance.account)}
             >
-              <span>{balance.account}</span>
+              <span
+                className={
+                  'hasChildren' in balance && balance.hasChildren
+                    ? 'account-parent'
+                    : undefined
+                }
+                style={{
+                  paddingInlineStart:
+                    'depth' in balance ? Math.min(balance.depth, 8) * 12 : 0,
+                }}
+              >
+                {balance.account}
+              </span>
               <strong>{balance.amounts.map(formatAmount).join(' · ')}</strong>
             </button>
           );

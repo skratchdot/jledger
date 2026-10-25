@@ -8,6 +8,7 @@ const emptySummary: Summary = {
   diagnosticCount: 0,
   transactionCount: 0,
   accounts: [],
+  accountRollups: [],
   commodities: [],
   months: [],
 };

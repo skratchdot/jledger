@@ -18,6 +18,9 @@ parsing or aggregation acceptable.
   syntax tree or split-line array. Explicit syntax inspection can opt into a tree.
 - File decoding, local API fetching/JSON decoding, parsing, direct balances,
   substring searching, and exact filtered totals run in that worker.
+- Full-journal direct and inclusive account arrays are built in the worker. The
+  hierarchy uses iterative traversal and explicit depth/node limits; both arrays
+  still cross in the summary, so high account counts remain a memory concern.
 - React receives a summary and report aggregates, not the entire transaction set.
   The register requests only the visible window, with a small overscan.
 - TanStack Virtual renders the register and account balances. The register has no
@@ -65,6 +68,15 @@ transaction's original file, line number, and source excerpt. The files are
 all explicitly selected; a root manifest includes the 12 monthly children once.
 Like the larger scenario, it is a regression case, not a memory budget or a
 device-wide performance promise.
+
+## Account hierarchy regression
+
+A separate production-browser case loads 1,000 expense leaves plus their implicit
+parents, verifies the exact inclusive expense total, scrolls to the final account,
+and requires fewer than 50 mounted account rows. Switching to direct mode resets
+the scroller. Core tests enforce depth and node limits without partial results; a
+worker/browser case protects atomic failure when a new import exceeds the limit.
+These cases do not establish a high-account-count memory SLA.
 
 ## Next improvements
 

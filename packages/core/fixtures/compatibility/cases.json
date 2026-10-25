@@ -231,5 +231,15 @@
       "parts/reset-format.journal"
     ],
     "ledgerParity": false
+  },
+  {
+    "id": "account-hierarchy",
+    "supported": true,
+    "hierarchy": ["hledger", "ledger"]
+  },
+  {
+    "id": "account-hierarchy-commodities",
+    "supported": true,
+    "hierarchy": ["hledger"]
   }
 ]

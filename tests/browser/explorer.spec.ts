@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { expect, test } from '@playwright/test';
 const journal =
@@ -646,4 +646,133 @@ test('date range controls remain labelled and within a narrow viewport', async (
   await page.getByLabel('Through date', { exact: true }).fill('2024-02-02');
   await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '2');
   await expect(page.getByLabel('Filtered totals')).toContainText('4.25 USD');
+});
+
+test('inclusive account balances include descendants once and keep their full-journal scope', async ({
+  page,
+}) => {
+  const buffer = await readFile(
+    new URL(
+      '../../packages/core/fixtures/compatibility/account-hierarchy.journal',
+      import.meta.url,
+    ),
+  );
+  await page.goto('./');
+  await page.getByLabel('Import journal files').setInputFiles({
+    name: 'hierarchy.journal',
+    mimeType: 'text/plain',
+    buffer,
+  });
+  await page.getByRole('button', { name: /Accounts/ }).click();
+  await expect(
+    page.getByLabel('Include subaccounts', { exact: true }),
+  ).toBeChecked();
+  const bank = page.getByRole('button', {
+    name: 'assets:bank 13 USD',
+    exact: true,
+  });
+  await expect(bank).toBeVisible();
+  await expect(bank).toHaveAttribute('title', /direct postings: 8 USD/);
+  await expect(
+    page.getByRole('button', { name: 'assets 20 USD', exact: true }),
+  ).toBeVisible();
+  await page.getByLabel('Include subaccounts', { exact: true }).uncheck();
+  await expect(
+    page.getByRole('button', { name: 'assets:bank 8 USD', exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'assets 20 USD', exact: true }),
+  ).toHaveCount(0);
+  await page.getByLabel('Include subaccounts', { exact: true }).check();
+  await bank.click();
+  await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '5');
+  await expect(page.getByRole('table')).not.toContainText('Separate prefix');
+  await page.getByLabel('From date', { exact: true }).fill('2026-01-03');
+  await page.getByLabel('Through date', { exact: true }).fill('2026-01-05');
+  await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '3');
+  await expect(bank).toContainText('13 USD');
+  await page.getByRole('button', { name: '· Food', exact: true }).click();
+  await expect(page.getByRole('dialog')).toContainText('hierarchy.journal:17');
+  await page.getByRole('button', { name: 'Close', exact: true }).click();
+  const mixed = await readFile(
+    new URL(
+      '../../packages/core/fixtures/compatibility/account-hierarchy-commodities.journal',
+      import.meta.url,
+    ),
+  );
+  await page.getByLabel('Import journal files').setInputFiles({
+    name: 'mixed.journal',
+    mimeType: 'text/plain',
+    buffer: mixed,
+  });
+  await expect(
+    page.getByRole('button', {
+      name: 'assets:cash 3 EUR · 3 USD',
+      exact: true,
+    }),
+  ).toBeVisible();
+});
+
+test('account hierarchy remains virtualized and reaches the final account', async ({
+  page,
+}) => {
+  const text = Array.from(
+    { length: 1000 },
+    (_, i) =>
+      `2026-01-01 Item ${i}\n  expenses:group${i}:leaf  0.01 USD\n  assets:cash\n\n`,
+  ).join('');
+  await page.goto('./');
+  await page.getByLabel('Import journal files').setInputFiles({
+    name: 'many-accounts.journal',
+    mimeType: 'text/plain',
+    buffer: Buffer.from(text),
+  });
+  await page.getByRole('button', { name: /Accounts/ }).click();
+  await expect(
+    page.getByRole('button', { name: 'expenses 10.00 USD', exact: true }),
+  ).toBeVisible();
+  expect(await page.locator('.account-row').count()).toBeLessThan(50);
+  await page
+    .getByLabel('Account balances', { exact: true })
+    .evaluate((node) => {
+      node.scrollTop = node.scrollHeight;
+    });
+  await expect(
+    page.getByRole('button', {
+      name: 'expenses:group999:leaf 0.01 USD',
+      exact: true,
+    }),
+  ).toBeVisible();
+  expect(await page.locator('.account-row').count()).toBeLessThan(50);
+  await page.getByLabel('Include subaccounts', { exact: true }).uncheck();
+  await expect(
+    page.getByRole('button', { name: 'assets:cash -10.00 USD', exact: true }),
+  ).toBeVisible();
+});
+
+test('hierarchy limit errors preserve the previous complete import with a warning', async ({
+  page,
+}) => {
+  await page.goto('./');
+  await page.getByLabel('Import journal files').setInputFiles({
+    name: 'previous.journal',
+    mimeType: 'text/plain',
+    buffer: Buffer.from(journal),
+  });
+  await expect(page.getByRole('table')).toContainText('Coffee');
+  const deep = Array(65).fill('deep').join(':');
+  await page.getByLabel('Import journal files').setInputFiles({
+    name: 'too-deep.journal',
+    mimeType: 'text/plain',
+    buffer: Buffer.from(`2026-01-01 New\n  ${deep}  999 USD\n  equity\n`),
+  });
+  await expect(page.getByRole('alert')).toContainText(
+    'Account hierarchy supports at most 64',
+  );
+  await expect(page.locator('.source-list')).toContainText('previous.journal');
+  await expect(page.locator('.source-list')).not.toContainText(
+    'too-deep.journal',
+  );
+  await expect(page.getByRole('table')).toContainText('Coffee');
+  await expect(page.getByRole('table')).not.toContainText('999 USD');
 });
