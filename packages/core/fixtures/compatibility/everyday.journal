@@ -1,0 +1,11 @@
+2026-01-01 * (pay) Salary
+  assets:bank  2500.00 USD
+  income:salary
+
+2026-01-02 Shop | groceries
+  expenses:food  12.34 USD
+  assets:bank
+
+2026-01-03 Refund
+  expenses:food  -0.10 USD
+  assets:bank

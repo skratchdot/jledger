@@ -110,6 +110,10 @@ pnpm test:browser            # production imports, filters, details, privacy, of
 pnpm format:check            # oxfmt; pnpm format applies formatting
 ```
 
+The [compatibility corpus](docs/conformance.md) runs offline in `pnpm test`.
+Use `pnpm test:compatibility` with pinned hledger 1.52 and Ledger 3.3.2
+executables to verify live reference results.
+
 To use an installed Chromium, set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` to its path.
 The browser suite starts its own loopback server. The standalone subpath check is:
 

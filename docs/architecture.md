@@ -98,9 +98,10 @@ file selection, and HTTP privacy controls. Playwright exercises the built client
 including import, filters, drill-down, diagnostics, offline reload, and selected
 server journals. The static subpath run exercises a GitHub Pages-style location.
 
-Next add a versioned conformance corpus with expected hledger 1.52 and Ledger
-outputs, and differential tests against pinned reference executables. Separate
-syntactic acceptance, balancing semantics, and report parity. Neither a shared
+The [versioned conformance corpus](conformance.md) compares a small synthetic
+subset with pinned hledger 1.52 and Ledger 3.3.2 executables. It separates
+reference acceptance, posting semantics, and direct report parity. Extend its
+coverage alongside each parser change. Neither a shared
 file extension nor a passing demo constitutes full compatibility.
 
 Large-journal checks and current limits are documented in [performance](performance.md).

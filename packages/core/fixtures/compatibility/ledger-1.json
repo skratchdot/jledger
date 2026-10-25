@@ -1,0 +1,218 @@
+{
+  "everyday": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Salary",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "2500"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Salary",
+        "account": "income:salary",
+        "commodity": "USD",
+        "quantity": "-2500"
+      },
+      {
+        "date": "2026-01-02",
+        "description": "Shop | groceries",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "12.34"
+      },
+      {
+        "date": "2026-01-02",
+        "description": "Shop | groceries",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "-12.34"
+      },
+      {
+        "date": "2026-01-03",
+        "description": "Refund",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2026-01-03",
+        "description": "Refund",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "0.1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "2487.76"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "12.24"
+      },
+      {
+        "account": "income:salary",
+        "commodity": "USD",
+        "quantity": "-2500"
+      }
+    ]
+  },
+  "exact-decimals": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-02-01",
+        "description": "Precision",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2026-02-01",
+        "description": "Precision",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2026-02-02",
+        "description": "Precision",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.2"
+      },
+      {
+        "date": "2026-02-02",
+        "description": "Precision",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.3"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.3"
+      }
+    ]
+  },
+  "commodities": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Dollars",
+        "account": "assets:usd",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Dollars",
+        "account": "equity:usd",
+        "commodity": "USD",
+        "quantity": "-10"
+      },
+      {
+        "date": "2026-01-02",
+        "description": "Euros",
+        "account": "assets:eur",
+        "commodity": "EUR",
+        "quantity": "20"
+      },
+      {
+        "date": "2026-01-02",
+        "description": "Euros",
+        "account": "equity:eur",
+        "commodity": "EUR",
+        "quantity": "-20"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:eur",
+        "commodity": "EUR",
+        "quantity": "20"
+      },
+      {
+        "account": "assets:usd",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "account": "equity:eur",
+        "commodity": "EUR",
+        "quantity": "-20"
+      },
+      {
+        "account": "equity:usd",
+        "commodity": "USD",
+        "quantity": "-10"
+      }
+    ]
+  },
+  "assertion": {
+    "accepted": true
+  },
+  "cost": {
+    "accepted": true
+  },
+  "posting-date": {
+    "accepted": true
+  },
+  "unbalanced": {
+    "accepted": false
+  },
+  "include": {
+    "accepted": true
+  },
+  "commodity-format": {
+    "accepted": true
+  },
+  "assertion-failure": {
+    "accepted": false
+  },
+  "large-exact": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Large quantity",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "9007199254740993.01"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Large quantity",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-9007199254740993.01"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "9007199254740993.01"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-9007199254740993.01"
+      }
+    ]
+  }
+}
