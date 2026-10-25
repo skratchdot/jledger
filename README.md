@@ -113,7 +113,8 @@ installation is a later milestone.
 - A transaction register with posting amounts and source references, transaction
   details, inferred amounts, and original source snippets.
 - An [account hierarchy](docs/account-hierarchy.md) with exact inclusive parent
-  balances, branch/all-account disclosure controls, and a direct-posting toggle.
+  balances, branch/all-account disclosure controls, account-name search with ancestor
+  context, and a direct-posting toggle. Search preserves the prior folds and totals.
   Account rows are fetched from the worker in bounded windows. Both modes are full-journal views, independent
   of register filters; parent and child rows overlap and must not be added together.
 - The same production client served statically or through the local CLI.

@@ -28,6 +28,12 @@ parsing or aggregation acceptable.
   summaries carry counts; account window responses contain at most 200 rows. The
   UI neither receives full account balance arrays nor flattens hidden branches. The added
   index uses memory proportional to nodes, so high account counts remain a concern.
+- Account search scans cached normalized names in the worker. A reverse pass marks
+  ancestor context in linear node order; direct mode uses a compact lookup into
+  that same name cache. Debounce and stale-response guards avoid committing old
+  queries; already-started projections run synchronously in the worker. Cached
+  path text, parent/direct indices and match/context flags add memory. This is not
+  a new account-count, latency or memory guarantee.
 - React receives a summary and report aggregates, not the entire transaction set.
 - Named filter presets retain at most 20 seven-field configurations with 80-character
   names per open journal. Copying/comparing this bounded metadata does not scan
@@ -91,7 +97,10 @@ Additional browser cases fold/unfold a 10,003-row hierarchy from 5,000 synthetic
 transactions, reach the final leaf, assert fewer than 50 mounted account rows and
 at most 200 rows per worker response, and reject stale responses after replacement.
 They also preserve nested fold state, source-context recovery and narrow-screen
-controls. These cases do not establish a high-account-count memory SLA.
+controls. Search cases additionally browse the final match among 2,501 matching
+paths from 5,000 transactions, reject stale view/window replies, retain full-journal
+parent amounts and register totals, and keep input responsive with fewer than 50
+mounted account rows. These cases do not establish a high-account-count memory SLA.
 
 ## Next improvements
 

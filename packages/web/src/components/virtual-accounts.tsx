@@ -103,7 +103,7 @@ export function VirtualAccounts({
                         data-account-toggle={balance.account}
                         aria-label={`${balance.expanded ? 'Collapse' : 'Expand'} ${balance.account}`}
                         aria-expanded={balance.expanded}
-                        disabled={busy}
+                        disabled={busy || Boolean(view.query)}
                         onClick={() => onToggle(balance.account)}
                       >
                         <span aria-hidden="true">
@@ -128,10 +128,15 @@ export function VirtualAccounts({
                   >
                     <span
                       className={
-                        balance.hasChildren ? 'account-parent' : undefined
+                        balance.hasChildren || balance.searchMatch
+                          ? 'account-parent'
+                          : undefined
                       }
                     >
                       {balance.account}
+                      {view.query && !balance.searchMatch && (
+                        <small className="account-context"> · ancestor</small>
+                      )}
                     </span>
                     <strong>
                       {balance.amounts.map(formatAmount).join(' · ')}
