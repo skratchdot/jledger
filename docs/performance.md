@@ -46,13 +46,13 @@ a substitute for diverse real-world journals or a cross-device benchmark.
 
 ## Multi-file regression
 
-The browser suite also imports a synthetic 12-file monthly bundle with 24,000
-transactions: salary, alternating purchases/refunds, inline Unicode comments,
+The browser suite also imports a synthetic 13-file monthly include bundle with
+24,000 transactions: salary, alternating purchases/refunds, inline Unicode comments,
 block comments containing include-shaped text, and mixed LF/CRLF/BOM inputs.
 It checks exact full-year and monthly totals, bounded register rows, and a final
 transaction's original file, line number, and source excerpt. The files are
-independently selected; this is not include resolution. Like the larger scenario,
-it is a regression case, not a memory budget or a device-wide performance promise.
+all explicitly selected; a root manifest includes the 12 monthly children once.
+Like the larger scenario, it is a regression case, not a memory budget or a device-wide performance promise.
 
 ## Next improvements
 

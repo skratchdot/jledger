@@ -25,7 +25,7 @@ program.option(
 );
 program.addHelpText(
   'after',
-  '\nFile precedence: explicit -f/--file > nonempty LEDGER_FILE > ~/.hledger.journal.\nLEDGER_FILE glob patterns select the alphabetically first matching file.\nUnsupported journal syntax is an error; see docs/compatibility.md.',
+  '\nFile precedence: explicit -f/--file > nonempty LEDGER_FILE > ~/.hledger.journal.\nLEDGER_FILE glob patterns select the alphabetically first matching file.\nInclude targets must also be explicitly selected with -f/--file. No files are discovered.\nUnsupported journal syntax is an error; see docs/compatibility.md.',
 );
 
 async function journal() {

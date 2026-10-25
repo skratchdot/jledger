@@ -1,5 +1,12 @@
 import { add, isZero, negate } from './decimal.js';
 import { scanJournalLines } from './syntax.js';
+import { resolveIncludes } from './includes.js';
+export {
+  resolveIncludes,
+  MAX_INCLUDE_DEPTH,
+  MAX_JOURNAL_SOURCES,
+} from './includes.js';
+export type { IncludeEdge, IncludeGraph } from './includes.js';
 export {
   scanJournalLines,
   parseJournalSyntax,
@@ -90,15 +97,17 @@ export function parseJournal(sources: Source[]): Journal {
   const journal: Journal = { transactions: [], diagnostics: [], sources };
   const error = (where: Location, code: string, message: string) =>
     journal.diagnostics.push({ ...where, code, message });
-  const names = new Set<string>();
-  for (const source of sources) {
-    if (names.has(source.name))
-      error(
-        { file: source.name, line: 1 },
-        'duplicate-source',
-        'Duplicate source name; import each file once.',
-      );
-    names.add(source.name);
+  const graph = resolveIncludes(sources);
+  journal.diagnostics.push(...graph.diagnostics);
+  if (journal.diagnostics.length) return journal;
+  const byName = new Map(sources.map((source) => [source.name, source]));
+  const includes = new Map<string, Map<number, string>>();
+  for (const edge of graph.edges) {
+    const lines = includes.get(edge.from) ?? new Map<number, string>();
+    lines.set(edge.line, edge.to);
+    includes.set(edge.from, lines);
+  }
+  function parseSource(source: Source) {
     let tx: PendingTransaction | null = null;
     let txErrors = 0;
     let blockComment = false;
@@ -188,6 +197,11 @@ export function parseJournal(sources: Source[]): Journal {
       const content = raw.split(';')[0]!.trimEnd();
       if (!/^\s/.test(raw)) {
         finish();
+        const child = includes.get(source.name)?.get(node.line);
+        if (child !== undefined) {
+          parseSource(byName.get(child)!);
+          continue;
+        }
         if (/^account\s+\S/.test(content)) continue;
         const header = content.match(
           /^(\d{4}[-/.]\d{1,2}[-/.]\d{1,2})(?:\s+(.*))?$/,
@@ -285,6 +299,7 @@ export function parseJournal(sources: Source[]): Journal {
         'Unterminated comment block.',
       );
   }
+  for (const name of graph.entryPoints) parseSource(byName.get(name)!);
   return journal;
 }
 

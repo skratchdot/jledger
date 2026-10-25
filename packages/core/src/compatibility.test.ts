@@ -16,15 +16,15 @@ describe('compatibility corpus v1 (captured hledger 1.52 / Ledger 3.3.2)', () =>
   for (const fixture of cases) {
     it(`${fixture.id}: ${fixture.supported ? 'posting semantics and direct report parity' : 'rejects input and disables reports'}`, () => {
       const name = `${fixture.id}.journal`;
-      const journal = parseJournal([
-        {
-          name,
+      const journal = parseJournal(
+        (fixture.sources ?? [name]).map((sourceName) => ({
+          name: sourceName,
           text: readFileSync(
-            new URL(`../fixtures/compatibility/${name}`, import.meta.url),
+            new URL(`../fixtures/compatibility/${sourceName}`, import.meta.url),
             'utf8',
           ),
-        },
-      ]);
+        })),
+      );
       if (!fixture.supported) {
         expect(journal.diagnostics.length).toBeGreaterThan(0);
         expect(

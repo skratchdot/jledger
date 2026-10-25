@@ -1,0 +1,5 @@
+include ../include-child.journal
+
+2026-01-01 Nested
+  expenses:food  0.10 USD
+  assets:cash

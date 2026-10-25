@@ -176,7 +176,35 @@
     "accepted": false
   },
   "include": {
-    "accepted": true
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Included",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Included",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-10"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-10"
+      }
+    ]
   },
   "commodity-format": {
     "accepted": true
@@ -214,5 +242,89 @@
         "quantity": "-9007199254740993.01"
       }
     ]
+  },
+  "include-nested": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Before",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "100"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Before",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-100"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Included",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Included",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-10"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Nested",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Nested",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "After",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "2.34"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "After",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2.34"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "107.56"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-110"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "2.44"
+      }
+    ]
+  },
+  "include-repeat": {
+    "accepted": true
+  },
+  "include-missing": {
+    "accepted": false
   }
 }

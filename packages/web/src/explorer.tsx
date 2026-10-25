@@ -58,6 +58,7 @@ export function Explorer() {
     ...categories.map(([, value]) => Math.abs(Number(value))),
   );
   const fileInput = useRef<HTMLInputElement>(null);
+  const folderInput = useRef<HTMLInputElement>(null);
   function resetFilters() {
     setQuery('');
     setAccount('');
@@ -156,6 +157,13 @@ export function Explorer() {
         >
           ＋ Import journals
         </Button>
+        <Button
+          className="sidebar-import"
+          disabled={busy}
+          onClick={() => folderInput.current?.click()}
+        >
+          ＋ Import journal folder
+        </Button>
         {local && (
           <Button
             className="sidebar-import"
@@ -215,6 +223,18 @@ export function Explorer() {
             type="file"
             multiple
             accept=".journal,.ledger,.hledger,.j,.txt"
+            onChange={(e) => {
+              void importFiles(Array.from(e.target.files ?? []));
+              e.target.value = '';
+            }}
+          />
+          <input
+            ref={folderInput}
+            aria-label="Import journal folder"
+            className="file-input"
+            type="file"
+            multiple
+            {...{ webkitdirectory: '' }}
             onChange={(e) => {
               void importFiles(Array.from(e.target.files ?? []));
               e.target.value = '';

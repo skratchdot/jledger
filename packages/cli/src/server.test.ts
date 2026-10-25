@@ -3,6 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { request, type Server } from 'node:http';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { parseJournal } from '@jledger/core';
 import { createJournalServer } from './server.js';
 let root: string, base: string, server: Server;
 beforeEach(async () => {
@@ -77,5 +78,32 @@ describe('private read-only server', () => {
   it('does not follow static symlinks outside the asset directory', async () => {
     await symlink(join(root, 'private.journal'), join(root, 'public/leak.js'));
     expect((await fetch(`${base}/leak.js`)).status).toBe(404);
+  });
+  it('serves selected include bundles but never discovers new include targets on reload', async () => {
+    await new Promise<void>((resolve) => server.close(() => resolve()));
+    const main = join(root, 'main.journal');
+    const child = join(root, 'child.journal');
+    await writeFile(main, 'include child.journal\n');
+    await writeFile(child, '2026-01-01 Included\n  a  1 USD\n  b\n');
+    server = await createJournalServer([main, child], join(root, 'public'));
+    await new Promise<void>((resolve) =>
+      server.listen(0, '127.0.0.1', resolve),
+    );
+    const address = server.address();
+    const url = `http://127.0.0.1:${typeof address === 'object' && address ? address.port : 0}/api/journals`;
+    const sources = await (await fetch(url)).json();
+    expect(parseJournal(sources).diagnostics).toEqual([]);
+    expect(parseJournal(sources).transactions).toHaveLength(1);
+    await writeFile(join(root, 'unselected.journal'), 'must never be served');
+    await writeFile(main, 'include unselected.journal\n');
+    const response = await fetch(url);
+    expect(response.headers.get('cache-control')).toBe('no-store');
+    const reloaded = await response.json();
+    expect(reloaded.map((s: { name: string }) => s.name)).toEqual([
+      'main.journal',
+      'child.journal',
+    ]);
+    expect(JSON.stringify(reloaded)).not.toContain('must never be served');
+    expect(parseJournal(reloaded).diagnostics[0]!.code).toBe('include-missing');
   });
 });

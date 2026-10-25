@@ -22,7 +22,7 @@ and flat direct balances have parity evidence.
 | Line comments, inline semicolon comments, block comments | Accepted; original source retained; no general tag query semantics                |
 | Simple `account NAME` declarations                       | Accepted; no declaration enforcement or account type tags yet                     |
 | Multiple independently selected files                    | Supported; no inference across file boundaries                                    |
-| Includes                                                 | Error, even if all related files were selected manually; resolution is next       |
+| Includes                                                 | Selected-source literal relative paths; see [include policy](includes.md)         |
 | Posting date override comments                           | Error; not silently treated as inert comments                                     |
 | Grouping separators, decimal commas, quoted commodities  | Error                                                                             |
 | Commodity/decimal/default-year directives                | Error                                                                             |
@@ -31,6 +31,14 @@ and flat direct balances have parity evidence.
 | Virtual/balanced virtual postings                        | Error                                                                             |
 | Secondary/partial dates, automatic/periodic transactions | Error                                                                             |
 | Aliases, apply blocks, expressions                       | Error                                                                             |
+
+Include graph roots are inferred from selected files without incoming includes;
+other selected sources are expanded once at their directive location. This differs
+from passing both parent and child as independent `-f` entry points to a reference
+tool. Repeated includes are an intentional error, even where hledger/Ledger would
+accept them and count the child again. Missing targets, invalid paths, cycles,
+normalized source collisions, and graph limits disable all reports. Include support
+does not enable unsupported directives or financial syntax in any child.
 
 Unknown syntax yields source-located diagnostics. Core report functions refuse any
 journal containing diagnostics, and the web hides all reports for that import.

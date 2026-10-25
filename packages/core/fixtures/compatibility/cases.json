@@ -29,7 +29,8 @@
   },
   {
     "id": "include",
-    "supported": false
+    "supported": true,
+    "sources": ["include.journal", "include-child.journal"]
   },
   {
     "id": "commodity-format",
@@ -42,5 +43,23 @@
   {
     "id": "large-exact",
     "supported": true
+  },
+  {
+    "id": "include-nested",
+    "supported": true,
+    "sources": [
+      "include-nested.journal",
+      "parts/child.journal",
+      "include-child.journal"
+    ]
+  },
+  {
+    "id": "include-repeat",
+    "supported": false,
+    "sources": ["include-repeat.journal", "include-child.journal"]
+  },
+  {
+    "id": "include-missing",
+    "supported": false
   }
 ]

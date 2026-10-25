@@ -24,7 +24,13 @@ pnpm dev
 
 Choose **Explore sample journal**, or import/drop one or more UTF-8 journals.
 Imports replace the currently open set; choose all files together. The current
-limit is 256 MiB total. Includes are not resolved yet and produce errors.
+limit is 256 MiB total and 4,096 files. Literal relative includes resolve only
+among selected files; select the root and every referenced journal together.
+For nested folders, choose **Import journal folder** where supported, preserving
+relative paths. The folder picker imports every file: choose a journal-only folder.
+Missing targets, cycles, ambiguous paths, and repeated includes disable reports.
+Globs, quoted include paths, and automatic disk/network discovery are not supported.
+See [include resolution](docs/includes.md) for the supported path subset.
 The development server listens on all interfaces for cloud development; it serves
 only the app and synthetic demo, and never automatically reads `LEDGER_FILE`.
 Use the loopback CLI server below for personal journals.
@@ -42,7 +48,8 @@ node packages/cli/dist/index.js -f packages/examples/demo.journal server
 ```
 
 The server prints its local address. Open it in a browser on the same machine.
-It serves the production explorer and only the selected journal files. It binds
+It serves the production explorer and only the selected journal files. Include targets must also be selected with
+`-f`; no include target is discovered on disk. It binds
 to `127.0.0.1`, is read-only, and has no arbitrary file browser or upload endpoint.
 After editing a journal in your editor, choose **Reload files**. There is no file
 watcher yet. The server requires a root-path web build (`pnpm build`).
@@ -61,7 +68,11 @@ pnpm jledger server --file "$HOME/finance/personal.journal" --port 4000
 
 `~/` expansion is supported. Quote shell glob patterns if you intend them to be
 resolved by `LEDGER_FILE`; explicit `-f` arguments are literal file paths.
-Duplicate files (including symlink aliases) are rejected. A missing selected file
+Duplicate files (including symlink aliases) are rejected. CLI source names retain
+paths relative to the selected files’ common directory so nested includes resolve.
+For example, select both `-f main.journal -f parts/child.journal` when the root
+contains `include parts/child.journal`. A selected child is counted through its
+include, rather than again as an independent root. A missing selected file
 is an error; it never silently falls back to a different journal.
 The `jledger` executable belongs to the CLI package; the root `pnpm jledger`
 script is the source-development entry point. npm publication/standalone
