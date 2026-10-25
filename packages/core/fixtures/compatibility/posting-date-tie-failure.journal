@@ -1,0 +1,7 @@
+2026-01-03 Later source first
+  assets:cash  -1 USD = 9 USD ; [2026-01-02]
+  expenses:food
+
+2026-01-01 Earlier source second
+  assets:cash  10 USD ; [2026-01-02]
+  equity:opening

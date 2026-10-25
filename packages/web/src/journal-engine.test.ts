@@ -46,4 +46,58 @@ describe('worker report engine', () => {
       spending: '0',
     });
   });
+  it('filters and totals the same postings by effective date, account and commodity', async () => {
+    const engine = new JournalEngine();
+    const text =
+      '2026-01-01 Split months\n  expenses:food  2 USD ; [2026-02-01]\n  assets:cash\n';
+    const summary = engine.load([{ name: 'dated', text }]);
+    expect(summary.months).toEqual(['2026-01', '2026-02']);
+    expect(await engine.query(filters)).toMatchObject({
+      count: 1,
+      spending: '2',
+      monthly: [
+        { month: '2026-01', value: '0' },
+        { month: '2026-02', value: '2' },
+      ],
+    });
+    expect(await engine.query({ ...filters, month: '2026-01' })).toMatchObject({
+      count: 1,
+      spending: '0',
+    });
+    expect(
+      await engine.query({ ...filters, month: '2026-01', account: 'expenses' }),
+    ).toMatchObject({ count: 0, spending: '0' });
+    expect(
+      await engine.query({ ...filters, month: '2026-02', account: 'assets' }),
+    ).toMatchObject({ count: 0, spending: '0' });
+    expect(
+      await engine.query({ ...filters, month: '2026-02', account: 'expenses' }),
+    ).toMatchObject({ count: 1, spending: '2' });
+    expect(engine.detail(engine.rows(0, 1)[0]!.id)!.postings[0]!.date).toBe(
+      '2026-02-01',
+    );
+    // Direct account balances retain their full-journal scope regardless of month.
+    expect(
+      engine.summary.accounts.find((b) => b.account === 'assets:cash')!
+        .amounts[0]!.quantity,
+    ).toBe('-2');
+  });
+
+  it('counts a transaction once when matching postings span multiple months', async () => {
+    const engine = new JournalEngine();
+    engine.load([
+      {
+        name: 'a',
+        text: '2026-01-01 Split\n  expenses:food  2 USD ; [2026-02-01]\n  expenses:food  -0.25 USD ; [2026-03-01]\n  assets:cash\n',
+      },
+    ]);
+    expect(await engine.query(filters)).toMatchObject({
+      count: 1,
+      spending: '1.75',
+    });
+    expect(await engine.query({ ...filters, month: '2026-03' })).toMatchObject({
+      count: 1,
+      spending: '-0.25',
+    });
+  });
 });

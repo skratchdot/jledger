@@ -16,26 +16,28 @@ Three separate questions are tested:
    account balances. Hierarchical reports, query languages, valuation, text layout,
    status inheritance, and rounding/display precision are outside this comparison.
 
-| Cases                                                                                          | jledger                           | hledger 1.52 | Ledger 3.3.2 |
-| ---------------------------------------------------------------------------------------------- | --------------------------------- | ------------ | ------------ |
-| Salary, refunds, exact quantities, currencies, simple/nested includes, common plain assertions | Posting and direct-balance parity | Accepted     | Accepted     |
-| Out-of-source-date or single-commodity assertion differences                                   | hledger semantics                 | Accepted     | Rejected     |
-| Commodity format, costs, posting dates, repeated includes, balance assignment                  | Reports disabled                  | Accepted     | Accepted     |
-| Total/inclusive assertion samples                                                              | Reports disabled                  | Accepted     | Rejected     |
-| Unbalanced postings, failed/precision/unitless assertions, missing include                     | Reports disabled                  | Rejected     | Rejected     |
+| Cases                                                                                                                 | jledger                                   | hledger 1.52 | Ledger 3.3.2          |
+| --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- | ------------ | --------------------- |
+| Salary, refunds, exact quantities, currencies, simple/nested includes, common plain assertions; bracket posting dates | Posting and direct-balance parity         | Accepted     | Accepted              |
+| Out-of-source-date, single-commodity, or posting-date assertion differences                                           | hledger semantics                         | Accepted     | Rejected              |
+| Commodity format, costs, repeated includes, balance assignment; partial/secondary/continuation/duplicate date samples | Reports disabled                          | Accepted     | Accepted              |
+| Hledger `date:` posting tag                                                                                           | hledger dates; explicit Ledger difference | Accepted     | Accepted, tag ignored |
+| Total/inclusive assertion samples                                                                                     | Reports disabled                          | Accepted     | Rejected              |
+| Unbalanced postings, failed/precision/unitless assertions, missing include                                            | Reports disabled                          | Rejected     | Rejected              |
 
-Chronological posting projections use a stable date sort; original source order
-is tested separately in core. Quantities are canonical decimal strings; scale
-differences such as `0.30` and `0.3` are ignored. hledger JSON mantissas are read as
-strings before JSON parsing, never rounded through JavaScript numbers. Ledger CSV
-and both flat balance reports are decoded separately. The corpus includes a
-mixed-commodity account in the hledger assertion cases. Supported mixed amounts
-are decoded separately from CSV, and Ledger direct reports use `amount` rather
-than inclusive `total`. Zero omission, broader commodity styles, and more
-date/status variants remain gaps. Simple and nested include cases compare
-selected-source bundles with reference execution of the root journal. Unsupported
-cases record acceptance only, with no suggestion their financial semantics are
-supported.
+Posting projections use a stable effective-date sort. hledger transaction indices
+restore expanded source order before normalization; core tests separately check
+that original parse order is preserved. The captured `date` is a primary posting
+date, defaulting to the transaction date when no override exists.
+
+Quantities are canonical decimal strings; scale differences such as `0.30` and
+`0.3` are ignored. hledger JSON mantissas are read as strings before JSON parsing,
+never rounded through JavaScript numbers. Supported mixed amounts are decoded
+separately from CSV; Ledger direct reports use `amount` rather than inclusive
+`total`. Zero omission, broader commodity styles, and more date/status variants
+remain gaps. Include cases compare selected-source bundles with reference
+execution of the root journal. Unsupported cases record acceptance only, with no
+suggestion their financial semantics are supported.
 
 ## Reproduce
 
@@ -67,7 +69,7 @@ are evidence from the tools, never generated from jledger's own expected results
 ## Selected-source includes and remaining scope
 
 The [source-preserving syntax layer](syntax.md) and [selected-source include graph](includes.md)
-are implemented. The corpus now contains 25 cases, including posting and direct
+are implemented. The corpus now contains 35 cases, including posting and direct
 balance parity for simple and nested includes, plus acceptance-only captures for
 missing and repeated includes. Included sources are supplied explicitly in fixture
 metadata; each reference still reads the root journal and follows its real relative
@@ -94,3 +96,15 @@ hledger accepts their chronological or single-commodity checks, while Ledger 3.3
 rejects them. The live command enforces these declared acceptance results; ordinary
 core tests compare accepted cases with the accepting reference captures. These
 cases establish hledger behavior and documented differences, not Ledger parity.
+
+## Primary posting dates
+
+The [posting-date slice](posting-dates.md) adds full inline primary bracket dates,
+restricted hledger `date:` tags, include provenance, date-sensitive assertions, and
+explicit date-form rejection. `ledgerUsesTransactionDates` marks the tag fixture:
+Ledger accepts that comment but ignores its date meaning. Tests compare Ledger's
+transaction-date projection and hledger's effective-date projection explicitly,
+while still checking exact quantities and direct balances against both captures.
+Date-shifted assertion cases declare their acceptance differences using the existing
+reference metadata. Worker tests cover posting-scoped filters/totals separately;
+no general hledger query/report parity is implied.

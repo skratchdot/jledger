@@ -131,16 +131,18 @@ for (const tool of tools) {
                 /("decimalMantissa"\s*:\s*)(-?\d+)/g,
                 '$1"$2"',
               ),
-            ).flatMap((t) =>
-              t.tpostings.flatMap((p) =>
-                p.pamount.map((a) => ({
-                  date: t.tdate,
-                  description: t.tdescription,
-                  account: p.paccount,
-                  ...hledgerAmount(a),
-                })),
-              ),
-            );
+            )
+              .sort((a, b) => a.tindex - b.tindex)
+              .flatMap((t) =>
+                t.tpostings.flatMap((p) =>
+                  p.pamount.map((a) => ({
+                    date: p.pdate ?? t.tdate,
+                    description: t.tdescription,
+                    account: p.paccount,
+                    ...hledgerAmount(a),
+                  })),
+                ),
+              );
       entry.postings.sort((a, b) => a.date.localeCompare(b.date));
       const report = run(tool, [
         ...prefix,

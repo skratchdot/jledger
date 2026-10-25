@@ -1,0 +1,7 @@
+2026-01-01 Future
+  assets:cash  10 USD ; [2026-02-01]
+  equity:opening
+
+2026-01-02 Current
+  assets:cash  1 USD = 1 USD
+  equity:opening

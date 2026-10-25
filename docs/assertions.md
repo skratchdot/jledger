@@ -21,10 +21,11 @@ balance and the original source when the journal is valid.
 
 ## Semantics
 
-- Validation follows **hledger 1.52**: transactions are checked in ascending date
-  order, with expanded source order breaking ties. Postings within a transaction
-  are checked in posting order, immediately after each posting. Parsing preserves
-  source order; the validation pass does not reorder the public transaction array.
+- Validation follows **hledger 1.52**: individual postings are checked in ascending
+  [effective primary posting-date](posting-dates.md) order, with expanded source/
+  posting order breaking ties. A posting without an override inherits its
+  transaction date. Overrides can reorder postings within a transaction. Parsing
+  preserves source order; the validation pass does not reorder the public transaction array.
 - All postings count, including amounts inferred by ordinary transaction balancing.
   Assertions are checked only after syntax, include graph, and transaction balancing
   succeed. Unsupported syntax anywhere still disables all reports.
@@ -37,7 +38,7 @@ balance and the original source when the journal is valid.
 - Running balances cover all selected roots and expanded include children. Filters
   in the explorer do not change validation scope or turn an invalid journal valid.
 
-The checker retains a chronological transaction-reference array and running balances
+The checker retains posting references with effective dates and running balances
 only when an assertion is present. The browser performs this work in its existing
 worker. Large journals still consume memory and CPU; this is not a streaming or
 incremental assertion algorithm.
@@ -47,8 +48,8 @@ incremental assertion algorithm.
 Balance assignments (an omitted posting amount before `=`), total assertions
 (`==`), inclusive assertions (`=*`, `==*`), costs, grouped/decimal-comma quantities,
 and expressions remain errors. These forms change semantics and are never treated
-as plain assertions or ignored. Commodity directives, posting date overrides, and
-other unsupported financial syntax remain errors too.
+as plain assertions or ignored. Commodity directives, secondary/partial/
+continuation posting dates, and other unsupported financial syntax remain errors too.
 
 ## Ledger differences and evidence
 
@@ -64,7 +65,7 @@ Two sampled differences are explicit rather than hidden behind a parity claim:
 The fixtures declare expected reference acceptance for these differences, and live
 verification enforces those expectations. Ledger rejection does not disable the
 hledger-compatible jledger import. For comparisons, posting projections are sorted
-chronologically with stable same-date order; original source order has separate
+by effective date with stable same-date source/posting order; original source order has separate
 core coverage. Direct Ledger reports use its `amount` expression rather than the
 inclusive `total` expression. Supported mixed-commodity CSV amounts are decoded
 separately; no currency conversion occurs.

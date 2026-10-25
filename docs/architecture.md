@@ -26,7 +26,9 @@ Source files remain authoritative; derived reports are disposable. Locations ret
 file names and line numbers. Quantities are decimal strings with exact BigInt-backed
 addition, so JSON and browser/Node boundaries do not lose precision.
 [Plain balance assertions](assertions.md) are checked after successful parsing and
-transaction balancing, in stable chronological order across the expanded bundle.
+transaction balancing, in effective posting-date order across the expanded bundle.
+[Primary posting dates](posting-dates.md) also drive monthly charts and filters;
+transaction rows retain their original date and expose posting overrides.
 The running-balance pass is skipped when no assertions are present. Assertion
 failures disable the complete report set.
 The present accounting parser is a strict subset, not a complete journal grammar.

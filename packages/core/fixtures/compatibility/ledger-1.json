@@ -198,7 +198,35 @@
     "accepted": true
   },
   "posting-date": {
-    "accepted": true
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Pending",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "date": "2026-01-02",
+        "description": "Pending",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "2"
+      }
+    ]
   },
   "unbalanced": {
     "accepted": false
@@ -575,6 +603,111 @@
         "account": "expenses:food",
         "commodity": "USD",
         "quantity": "1"
+      }
+    ]
+  },
+  "posting-date-assertion": {
+    "accepted": false
+  },
+  "posting-date-assertion-split": {
+    "accepted": false
+  },
+  "posting-date-partial": {
+    "accepted": true
+  },
+  "posting-date-secondary": {
+    "accepted": true
+  },
+  "posting-date-continuation": {
+    "accepted": true
+  },
+  "posting-date-tie-failure": {
+    "accepted": false
+  },
+  "posting-date-tag": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Tag date",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Tag date",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "2"
+      }
+    ]
+  },
+  "posting-date-invalid": {
+    "accepted": false
+  },
+  "posting-date-duplicate": {
+    "accepted": true
+  },
+  "posting-date-includes": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Opening",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-10"
+      },
+      {
+        "date": "2026-01-02",
+        "description": "Spend",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "date": "2026-02-01",
+        "description": "Opening",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "date": "2026-03-01",
+        "description": "Spend",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "8"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-10"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "2"
       }
     ]
   }

@@ -1,0 +1,5 @@
+2026-01-01 Opening
+  assets:cash  10 USD ; [2026-02-01]
+  equity:opening
+
+include parts/dated-child.journal
