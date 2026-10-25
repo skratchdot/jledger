@@ -4,6 +4,8 @@ The Accounts view now starts with **Include subaccounts** enabled. It shows an
 indented hierarchy of posted accounts and any parent paths needed to connect them.
 A parent row includes its own direct postings and all descendants, separately for
 each commodity. Turning the option off restores the flat direct-posting view.
+Separate disclosure buttons expand/collapse branches without filtering the register.
+Account names and amounts remain drill-down buttons.
 
 For example, if `assets:bank` has 8 USD of direct postings, checking has 2 USD and
 savings has 3 USD, the inclusive bank row is 13 USD. Its direct-posting tooltip is
@@ -30,6 +32,33 @@ Plain `=` balance assertions continue to check direct account balances, regardle
 of the display option. Inclusive/total assertion forms are still unsupported.
 Account typing is unchanged; no accounting category is guessed for these rollups.
 
+## Folding and keyboard controls
+
+A newly loaded journal starts fully expanded. Use the disclosure beside a parent
+to hide or show its descendants; its inclusive amount always includes the complete
+subtree. Closing/reopening an ancestor preserves its children's previous folds.
+**Collapse all accounts** closes every branch and shows only top-level rows;
+opening one then reveals its still-collapsed child branches. **Expand all accounts**
+opens every branch. A counter distinguishes shown rows from total hierarchy rows.
+
+Direct-posting mode is flat and shows all posted accounts. Switching back restores
+the hierarchy's folds. Switching modes or using an all-accounts action resets the
+scroller; a single-branch action keeps the parent in view. Folding and display mode
+do not change any register filter or saved preset.
+
+Native disclosure buttons support Tab, Enter and Space and expose `aria-expanded`.
+The virtualized list exposes each mounted row's position and total visible row
+count. Focus returns to the initiating disclosure after its updated row arrives,
+unless the user moved focus elsewhere. Full account names remain in button text
+and titles even when visually clipped. This is a disclosure list, not an ARIA tree
+widget; arrow-key/roving-focus tree navigation is not claimed.
+
+Fold state stays in the worker's memory for the loaded journal. Switching between
+Overview/Accounts or changing report filters preserves it. Successful replacement,
+closing/reloading journals, or a page refresh resets it, even with identical source
+names. Failed reads/report construction retain the previous complete hierarchy and
+its folds. There is no URL or browser-storage persistence.
+
 ## Core API and worker behavior
 
 `accountHierarchy(journal)` returns `direct` balances and `inclusive` rows. Each
@@ -45,11 +74,19 @@ boundaries. Nodes are returned in deterministic segment preorder; descendants re
 contiguous even where a whole-path lexical sort would interleave sibling names.
 Traversal is iterative rather than recursive.
 
-The browser computes the hierarchy in its worker and receives aggregate rows, not
-transactions for a UI-thread rollup. TanStack Virtual bounds mounted account rows.
-Switching display modes resets the account scroller. The initial hierarchy is an
-expanded, indented list of buttons; collapse/expand and a keyboard tree widget are
-not implemented, so it is not exposed as an ARIA tree.
+The browser computes the hierarchy and presentation index in its worker. Import
+summaries contain `accountCount` and `accountRollupCount`, not complete balance
+arrays. The worker indexes contiguous subtrees in one iterative pass and uses
+collapsed-branch indices to build the visible sequence without recalculating money.
+React receives view metadata and requested account windows, with at most 200 rows
+per response. This bounds a transfer, not the browsable result set; scrolling can
+reach the final row. TanStack Virtual bounds the mounted rows with a small overscan.
+
+The worker checks committed load IDs and active account-view IDs. The client also
+checks the latest row-request ID, rejecting stale context/window responses.
+Presentation requests do not cancel financial queries. The client tracks the committed load separately from a failed replacement
+attempt, so the prior hierarchy remains interactive after a failed import. UI code
+neither flattens the complete hierarchy nor performs accounting sums.
 
 ## Limits and failed imports
 
@@ -65,8 +102,10 @@ result IDs. A hierarchy-limit failure retains the previous complete import with 
 visible warning, like a failed file read; it cannot mix new transactions with old
 balances. Preparing an import temporarily retains the old journal alongside the
 new input, increasing peak memory. Financial diagnostics still commit a diagnostic-only import and disable
-all reports. A future account-window protocol may reduce aggregate transfer and
-memory needs for very high account counts; current summaries retain both arrays.
+all reports. Both balance arrays and the new presentation index remain in the
+worker. Subtree ends, visible indices, branch lookup and fold state add memory
+proportional to account nodes; bounded windows avoid cloning the complete arrays
+into React. This does not establish a lower overall-memory or device-wide limit.
 
 ## Evidence and remaining work
 
@@ -83,7 +122,13 @@ Unit tests cover direct parent postings, deep nesting, prefix boundaries, case,
 multiple commodities, large exact amounts, zero totals, diagnostics and limits.
 Browser tests cover both modes, full-journal versus filtered scope, original source
 drill-down, mixed quantities, final-account browsing with bounded DOM rows, atomic
-failed imports, and the existing 200,000-transaction regression.
+failed imports, and the existing 200,000-transaction regression. The disclosure
+cases also cover nested fold retention, keyboard focus, mode round trips,
+same-name replacements, rejected stale responses, narrow layouts and a synthetic
+5,000-transaction/10,003-hierarchy-row journal. They require fewer than 50 mounted
+account rows, bounded worker payloads, and browsing through the final leaf after
+collapse/expand cycles. These are regression scenarios, not device-wide guarantees.
 
-Configurable account types, collapsible account trees, saved filters and broader
-financial statements remain later slices.
+[Journal-defined account types](account-types.md) and [saved filters](explorer-filters.md)
+are implemented separately. Broader keyboard tree navigation, account search,
+financial statements and collapse-state persistence remain future work.

@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { MAX_ACCOUNT_DEPTH } from '@jledger/core';
 import { JournalEngine, type Filters } from './journal-engine';
+import type { AccountMode } from './account-view';
+const accountRows = (engine: JournalEngine, mode: AccountMode) => {
+  engine.configureAccounts(mode);
+  return engine.accountRows(0, 200).rows;
+};
 const filters: Filters = {
   query: '',
   account: '',
@@ -81,7 +86,7 @@ describe('worker report engine', () => {
     );
     // Direct account balances retain their full-journal scope regardless of month.
     expect(
-      engine.summary.accounts.find((b) => b.account === 'assets:cash')!
+      accountRows(engine, 'direct').find((b) => b.account === 'assets:cash')!
         .amounts[0]!.quantity,
     ).toBe('-2');
   });
@@ -158,7 +163,7 @@ describe('worker report engine', () => {
       spending: '-0.05',
     });
     expect(
-      engine.summary.accounts.find((b) => b.account === 'assets:cash')!
+      accountRows(engine, 'direct').find((b) => b.account === 'assets:cash')!
         .amounts[0]!.quantity,
     ).toBe('-100.48');
   });
@@ -242,13 +247,18 @@ describe('worker report engine', () => {
         text: '2024-01-01 Parent\n  expenses:food  1.00 USD\n  assets:cash\n\n2024-02-01 Child\n  expenses:food:coffee  2.00 USD\n  assets:cash\n',
       },
     ]);
+    expect(summary.accountCount).toBe(3);
+    expect(summary.accountRollupCount).toBe(5);
+    expect(summary).not.toHaveProperty('accounts');
+    expect(summary).not.toHaveProperty('accountRollups');
     expect(
-      summary.accounts.find((b) => b.account === 'expenses:food')!.amounts[0]!
-        .quantity,
+      accountRows(engine, 'direct').find((b) => b.account === 'expenses:food')!
+        .amounts[0]!.quantity,
     ).toBe('1.00');
     expect(
-      summary.accountRollups.find((b) => b.account === 'expenses:food')!
-        .amounts[0]!.quantity,
+      accountRows(engine, 'inclusive').find(
+        (b) => b.account === 'expenses:food',
+      )!.amounts[0]!.quantity,
     ).toBe('3.00');
     expect(
       await engine.query({ ...filters, account: 'expenses:food' }),
@@ -261,7 +271,7 @@ describe('worker report engine', () => {
       }),
     ).toMatchObject({ count: 1, spending: '2.00' });
     expect(
-      engine.summary.accountRollups.find((b) => b.account === 'expenses')!
+      accountRows(engine, 'inclusive').find((b) => b.account === 'expenses')!
         .amounts[0]!.quantity,
     ).toBe('3.00');
   });
@@ -290,8 +300,8 @@ describe('worker report engine', () => {
     });
     expect(
       engine.load([{ name: 'invalid', text: 'include missing\n' }])
-        .accountRollups,
-    ).toEqual([]);
+        .accountRollupCount,
+    ).toBe(0);
   });
 });
 
@@ -370,7 +380,7 @@ describe('journal-defined income and spending', () => {
         code: 'account-type',
       }),
     ]);
-    expect(summary.accounts).toEqual([]);
+    expect(summary.accountCount).toBe(0);
     expect(await engine.query(filters)).toMatchObject({
       count: 0,
       income: '0',

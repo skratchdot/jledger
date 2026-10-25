@@ -23,15 +23,17 @@ parsing or aggregation acceptable.
   syntax tree or split-line array. Explicit syntax inspection can opt into a tree.
 - File decoding, local API fetching/JSON decoding, parsing, direct balances,
   substring searching, and exact filtered totals run in that worker.
-- Full-journal direct and inclusive account arrays are built in the worker. The
-  hierarchy uses iterative traversal and explicit depth/node limits; both arrays
-  still cross in the summary, so high account counts remain a memory concern.
+- Full-journal direct and inclusive account arrays stay in the worker. A subtree
+  index and collapsed-branch set build the visible account sequence there. Import
+  summaries carry counts; account window responses contain at most 200 rows. The
+  UI neither receives full account balance arrays nor flattens hidden branches. The added
+  index uses memory proportional to nodes, so high account counts remain a concern.
 - React receives a summary and report aggregates, not the entire transaction set.
 - Named filter presets retain at most 20 seven-field configurations with 80-character
   names per open journal. Copying/comparing this bounded metadata does not scan
   postings or compute totals on the UI thread. Applying uses the existing worker
   query path; chips and preset controls do not add mounted register/account rows.
-  The register requests only the visible window, with a small overscan.
+  The register and account list request only visible windows, with a small overscan.
 - TanStack Virtual renders the register and account balances. The register has no
   arbitrary first-200-result limit; the entire result set remains browsable.
 - Search debounces for 100 ms. Queries yield every 8,192 records to allow newer
@@ -85,7 +87,11 @@ parents, verifies the exact inclusive expense total, scrolls to the final accoun
 and requires fewer than 50 mounted account rows. Switching to direct mode resets
 the scroller. Core tests enforce depth and node limits without partial results; a
 worker/browser case protects atomic failure when a new import exceeds the limit.
-These cases do not establish a high-account-count memory SLA.
+Additional browser cases fold/unfold a 10,003-row hierarchy from 5,000 synthetic
+transactions, reach the final leaf, assert fewer than 50 mounted account rows and
+at most 200 rows per worker response, and reject stale responses after replacement.
+They also preserve nested fold state, source-context recovery and narrow-screen
+controls. These cases do not establish a high-account-count memory SLA.
 
 ## Next improvements
 

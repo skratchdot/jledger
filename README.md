@@ -103,7 +103,8 @@ installation is a later milestone.
 - A transaction register with posting amounts and source references, transaction
   details, inferred amounts, and original source snippets.
 - An [account hierarchy](docs/account-hierarchy.md) with exact inclusive parent
-  balances and a direct-posting toggle. Both are full-journal views, independent
+  balances, branch/all-account disclosure controls, and a direct-posting toggle.
+  Account rows are fetched from the worker in bounded windows. Both modes are full-journal views, independent
   of register filters; parent and child rows overlap and must not be added together.
 - The same production client served statically or through the local CLI.
 - An offline application shell after the first successful production load on
@@ -113,7 +114,7 @@ installation is a later milestone.
 Charts use approximate floating-point dimensions only; displayed/report totals
 use exact decimal strings. Parsing, indexing, search, and exact report totals run in a web worker. The register
 and accounts use TanStack Virtual; every result is browsable without rendering
-the entire journal into the DOM. Only visible transaction windows cross to the UI.
+the entire journal into the DOM. Only visible transaction and account windows cross to the UI.
 Search is debounced and stale searches are cancelled. See [performance](docs/performance.md).
 
 ## Workspace

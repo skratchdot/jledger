@@ -1,3 +1,4 @@
+import type { AccountAction, AccountMode } from './account-view';
 import { JournalEngine, type Filters } from './journal-engine';
 import { InvalidDateRangeError } from './report-filters';
 import { MAX_JOURNAL_SOURCES, type Source } from '@jledger/core';
@@ -12,10 +13,27 @@ export type Request =
     }
   | { type: 'query'; id: number; filters: Filters }
   | { type: 'rows'; id: number; start: number; end: number }
-  | { type: 'detail'; id: number };
+  | { type: 'detail'; id: number }
+  | {
+      type: 'account-view';
+      id: number;
+      loadId: number;
+      mode: AccountMode;
+      action?: AccountAction;
+    }
+  | {
+      type: 'account-rows';
+      id: number;
+      loadId: number;
+      viewId: number;
+      start: number;
+      end: number;
+    };
 const engine = new JournalEngine();
 let generation = 0,
-  activeQuery = 0;
+  activeQuery = 0,
+  activeLoad = 0,
+  activeAccountView = 0;
 const MAX_BYTES = 256 * 1024 * 1024;
 self.onmessage = async (event: MessageEvent<Request>) => {
   const request = event.data;
@@ -59,10 +77,29 @@ self.onmessage = async (event: MessageEvent<Request>) => {
         sources = data as Source[];
       }
       if (current !== generation) return;
+      const summary = engine.load(sources);
+      activeLoad = request.id;
+      activeAccountView = 0;
+      self.postMessage({ type: 'loaded', id: request.id, summary });
+    } else if (request.type === 'account-view') {
+      if (request.loadId !== activeLoad) return;
+      const view = engine.configureAccounts(request.mode, request.action);
+      activeAccountView = request.id;
       self.postMessage({
-        type: 'loaded',
+        type: 'account-view',
         id: request.id,
-        summary: engine.load(sources),
+        loadId: activeLoad,
+        view,
+      });
+    } else if (request.type === 'account-rows') {
+      if (request.loadId !== activeLoad || request.viewId !== activeAccountView)
+        return;
+      self.postMessage({
+        type: 'account-rows',
+        id: request.id,
+        loadId: activeLoad,
+        viewId: activeAccountView,
+        window: engine.accountRows(request.start, request.end),
       });
     } else if (request.type === 'query') {
       const current = ++generation;
