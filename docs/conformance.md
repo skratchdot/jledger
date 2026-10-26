@@ -90,7 +90,7 @@ are evidence from the tools, never generated from jledger's own expected results
 ## Selected-source includes and remaining scope
 
 The [source-preserving syntax layer](syntax.md) and [selected-source include graph](includes.md)
-are implemented. The corpus now contains 184 cases, including posting and direct
+are implemented. The corpus now contains 188 cases, including posting and direct
 balance parity for simple and nested includes, plus acceptance-only captures for
 missing and repeated includes. Included sources are supplied explicitly in fixture
 metadata; references read the root journal and follow its real relative paths.
@@ -264,7 +264,7 @@ quantities. Observed probes of `0.010000000000000001` print a JSON quantity of
 The differential residual case uses ten places (`0.0000000001`), below a declared
 two-place display style, and both pinned captures retain it exactly. It would fail
 comparison if a report rounded it away. This is not parity evidence beyond the
-JSON output limit; an exact alternative hledger report capture remains future work.
+JSON output limit. The opt-in CSV capture below provides separate finer-precision evidence.
 Core/browser checks separately protect `0.000000000000000001` in jledger. The failed
 assertion case records reference rejection at that finer precision. No production
 money arithmetic is rounded to accommodate reference output.
@@ -280,3 +280,42 @@ accounts, commodities and exact quantities without dropping any selected posting
 These 21 captures establish the sampled hledger status semantics separately from
 report parity. No Ledger status-query parity is claimed. All previous 177 reference
 captures remain unchanged. General hledger query parsing remains unsupported.
+
+## Exact high-precision reference quantities
+
+Four `exactHledger` fixtures bring the corpus to **188 cases**. They compare both
+pinned tools for a `0.000000000000000001` residual below a declared two-place USD
+style, a unitless 25-place residual beside an amount larger than JavaScript's safe
+integer range, a quoted commodity and CSV-quoted description, and full primary
+posting dates with exact inclusive rollups. All previous 184 captures are unchanged.
+
+For these marked cases, hledger `print --round=none -O csv` supplies exact posting
+quantities. JSON still supplies expanded source order and effective posting dates:
+print CSV's date column contains the transaction date, not each posting override.
+The harness checks row counts and every ordered description/account/commodity
+identity before substituting CSV quantities. Unexpected CSV headers, shapes or
+non-decimal quantities fail rather than silently weakening comparison.
+
+Tree CSV renders indented leaf names rather than full account paths. For inclusive
+captures the harness pairs rows with the JSON report's full identities, checking
+row counts, ordered leaf names and commodity names before retaining CSV quantities.
+
+Direct and inclusive reports use `balance --layout=bare -O csv` with an explicit
+`--commodity-style` for each reference commodity, including the unitless one.
+Each style's precision is the largest canonical posting scale **from the reference
+CSV**, not from jledger. Addition/subtraction cannot require finer scale than the
+input postings, so this retains exact balances while overriding narrower journal
+display styles. Commodity identities remain separate; no totals are reconstructed
+from core or from summed report rows. This method covers the current additive,
+unvalued subset only, not costs, conversions, averaging or arbitrary reference
+reports. Marked status-query captures still use JSON and cannot also select this
+path; the harness rejects that combination until exact membership capture exists.
+
+Large JSON mantissas may use scientific notation. The harness quotes the entire
+numeric token before JSON parsing and expands integer mantissas with string
+operations, preserving all emitted digits. This does not restore digits already
+rounded by hledger JSON. Ordinary fixtures retain the existing JSON path and its
+ten-place fractional limit; selecting exact capture is explicit. Ledger continues
+to use its existing quantity expressions and CSV postings. The fine residuals and
+large quantities agree with core, and mutation checks reject rounded-away balances.
+No product behavior, arithmetic, display precision or storage policy changes.

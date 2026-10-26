@@ -1157,5 +1157,26 @@
     "id": "status-income-refunds",
     "supported": true,
     "postingStatuses": true
+  },
+  {
+    "id": "exact-residual",
+    "supported": true,
+    "exactHledger": true
+  },
+  {
+    "id": "exact-unitless",
+    "supported": true,
+    "exactHledger": true
+  },
+  {
+    "id": "exact-quoted",
+    "supported": true,
+    "exactHledger": true
+  },
+  {
+    "id": "exact-posting-dates",
+    "supported": true,
+    "exactHledger": true,
+    "hierarchy": ["hledger", "ledger"]
   }
 ]

@@ -9,7 +9,8 @@ and explicitly captured direct/inclusive balance arithmetic have parity evidence
 [Zero report rows](conformance.md#closed-accounts-and-zero-report-rows) may be omitted
 or lose commodity labels in reference output. Only exact zero rows are excluded
 from arithmetic comparison; jledger retains them in its complete product reports.
-Reference quantity-output precision and presentation are documented separately.
+Reference quantity-output precision and presentation are documented separately;
+marked high-precision fixtures use exact CSV evidence beyond the JSON limit.
 
 | Feature                                                    | Current behavior                                                                                                                                                           |
 | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

@@ -4975,5 +4975,183 @@
         "quantity": "-10"
       }
     ]
+  },
+  "exact-residual": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Deposit",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "0.010000000000000001"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Deposit",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-0.010000000000000001"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Withdrawal",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.01"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Withdrawal",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "0.01"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "0.000000000000000001"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-0.000000000000000001"
+      }
+    ]
+  },
+  "exact-unitless": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Large exact value",
+        "account": "assets:cash",
+        "commodity": "",
+        "quantity": "9007199254740993.0000000000000000000000001"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Large exact value",
+        "account": "equity:opening",
+        "commodity": "",
+        "quantity": "-9007199254740993.0000000000000000000000001"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Offset",
+        "account": "assets:cash",
+        "commodity": "",
+        "quantity": "-9007199254740993"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Offset",
+        "account": "equity:opening",
+        "commodity": "",
+        "quantity": "9007199254740993"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "",
+        "quantity": "0.0000000000000000000000001"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "",
+        "quantity": "-0.0000000000000000000000001"
+      }
+    ]
+  },
+  "exact-quoted": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "A \"quoted\", description",
+        "account": "assets:points",
+        "commodity": "travel miles",
+        "quantity": "1.000000000000000000001"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "A \"quoted\", description",
+        "account": "equity:opening",
+        "commodity": "travel miles",
+        "quantity": "-1.000000000000000000001"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:points",
+        "commodity": "travel miles",
+        "quantity": "1.000000000000000000001"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "travel miles",
+        "quantity": "-1.000000000000000000001"
+      }
+    ]
+  },
+  "exact-posting-dates": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-02-29",
+        "description": "Split dates",
+        "account": "assets:bank:child",
+        "commodity": "USD",
+        "quantity": "0.010000000000000001"
+      },
+      {
+        "date": "2024-03-01",
+        "description": "Split dates",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-0.010000000000000001"
+      },
+      {
+        "date": "2024-03-02",
+        "description": "Offset",
+        "account": "assets:bank:child",
+        "commodity": "USD",
+        "quantity": "-0.01"
+      },
+      {
+        "date": "2024-03-02",
+        "description": "Offset",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "0.01"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank:child",
+        "commodity": "USD",
+        "quantity": "0.000000000000000001"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-0.000000000000000001"
+      }
+    ],
+    "rollups": [
+      {
+        "account": "assets:bank:child",
+        "commodity": "USD",
+        "quantity": "0.000000000000000001"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-0.000000000000000001"
+      }
+    ]
   }
 }

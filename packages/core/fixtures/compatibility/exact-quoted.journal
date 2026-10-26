@@ -1,0 +1,5 @@
+commodity "travel miles"
+  format 1.00 "travel miles"
+2024-01-01 A "quoted", description
+  assets:points  1.000000000000000000001 "travel miles"
+  equity:opening

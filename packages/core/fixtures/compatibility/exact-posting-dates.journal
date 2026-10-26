@@ -1,0 +1,7 @@
+commodity 1.00 USD
+2024-03-01 Split dates
+  assets:bank:child  0.010000000000000001 USD ; [2024-02-29]
+  equity:opening  -0.010000000000000001 USD
+2024-03-02 Offset
+  assets:bank:child  -0.01 USD
+  equity:opening

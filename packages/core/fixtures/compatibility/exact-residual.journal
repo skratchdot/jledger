@@ -1,0 +1,7 @@
+commodity 1.00 USD
+2024-01-01 Deposit
+  assets:cash  0.010000000000000001 USD
+  equity:opening
+2024-01-02 Withdrawal
+  assets:cash  -0.010000000000000000 USD = 0.000000000000000001 USD
+  equity:opening
