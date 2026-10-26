@@ -16,6 +16,9 @@ jobs:
     container:
       image: ${{ needs.playwright-image.outputs.image }}
       options: --ipc=host
+    env:
+      # Keep Vite preview binding and Node prerender fetches on the same loopback family.
+      NODE_OPTIONS: --dns-result-order=ipv4first
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
