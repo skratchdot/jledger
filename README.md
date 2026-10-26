@@ -195,7 +195,7 @@ and Linux dependencies preinstalled. The shared
 [image resolver](.github/workflows/playwright-image.yml) derives the image tag from
 the exact `@playwright/test` version in `package.json`; no image tag needs updating
 when running `pnpm update @playwright/test`. The resolver uses the hosted runner’s
-Python standard library and needs no mise, Node or browser installation; project
+preinstalled Node and needs no mise or browser installation; project
 checks still use mise-managed Node/pnpm in the selected container. Commit both `package.json` and
 `pnpm-lock.yaml` after an update. Frozen lockfile installs enforce consistency,
 and the resolver rejects version ranges. A new Playwright release must have its
