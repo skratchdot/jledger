@@ -3,7 +3,7 @@ import { formatCommodityName } from './amounts.js';
 import { effectivePostingDate } from './dates.js';
 import type { Diagnostic, Transaction } from './index.js';
 
-/** = / == / =* checks after this posting, in effective posting-date order. */
+/** Exact direct/inclusive checks after each posting, in effective date order. */
 export function checkBalanceAssertions(
   transactions: readonly Transaction[],
 ): Diagnostic[] {
@@ -13,19 +13,25 @@ export function checkBalanceAssertions(
   const nonzeroByAccount = new Map<string, Set<string>>();
   // Stable sorting retains expanded source/posting order for equal effective dates.
   // A date override can reorder postings even within the same transaction.
-  // Index only asserted inclusive account/commodity scopes while collecting
+  // Index asserted inclusive scopes (all commodities for total scopes) while collecting
   // posting references. Resolve each distinct posting account once below.
-  const inclusive = new Map<string, Map<string, string>>();
+  interface InclusiveScope {
+    amounts: Map<string, string>;
+    total: boolean;
+    nonzero?: Set<string>;
+  }
+  const inclusive = new Map<string, InclusiveScope>();
   const ordered = transactions
     .flatMap((transaction) =>
       transaction.postings.map((posting) => {
         if (posting.balanceAssertionInclusive && posting.balanceAssertion) {
-          let amounts = inclusive.get(posting.account);
-          if (!amounts) {
-            amounts = new Map();
-            inclusive.set(posting.account, amounts);
+          let scope = inclusive.get(posting.account);
+          if (!scope) {
+            scope = { amounts: new Map(), total: false };
+            inclusive.set(posting.account, scope);
           }
-          amounts.set(posting.balanceAssertion.commodity, '0');
+          scope.total ||= Boolean(posting.balanceAssertionTotal);
+          scope.amounts.set(posting.balanceAssertion.commodity, '0');
         }
         return {
           posting,
@@ -34,7 +40,7 @@ export function checkBalanceAssertions(
       }),
     )
     .sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
-  const inclusiveTargets = new Map<string, Map<string, string>[]>();
+  const inclusiveTargets = new Map<string, InclusiveScope[]>();
   for (const { posting } of ordered) {
     if (inclusive.size) {
       let targets = inclusiveTargets.get(posting.account);
@@ -42,18 +48,25 @@ export function checkBalanceAssertions(
         targets = [];
         let path = posting.account;
         while (path) {
-          const amounts = inclusive.get(path);
-          if (amounts) targets.push(amounts);
+          const scope = inclusive.get(path);
+          if (scope) targets.push(scope);
           const separator = path.lastIndexOf(':');
           if (separator < 0) break;
           path = path.slice(0, separator);
         }
         inclusiveTargets.set(posting.account, targets);
       }
-      for (const amounts of targets) {
+      for (const scope of targets) {
+        const { amounts } = scope;
         const { commodity, quantity } = posting.amount;
-        if (amounts.has(commodity))
-          amounts.set(commodity, add(amounts.get(commodity)!, quantity));
+        if (scope.total || amounts.has(commodity)) {
+          const next = add(amounts.get(commodity) ?? '0', quantity);
+          amounts.set(commodity, next);
+          if (scope.nonzero) {
+            if (isZero(next)) scope.nonzero.delete(commodity);
+            else scope.nonzero.add(commodity);
+          }
+        }
       }
     }
     let amounts = accounts.get(posting.account);
@@ -74,24 +87,27 @@ export function checkBalanceAssertions(
     }
     const assertion = posting.balanceAssertion;
     if (!assertion) continue;
-    const checkedAmounts = posting.balanceAssertionInclusive
+    const scope = posting.balanceAssertionInclusive
       ? inclusive.get(posting.account)!
-      : amounts;
+      : undefined;
+    const checkedAmounts = scope?.amounts ?? amounts;
+    if (scope) nonzero = scope.nonzero;
     const actual = checkedAmounts.get(assertion.commodity) ?? '0';
     const otherAmounts: string[] = [];
     let otherCount = 0;
     if (posting.balanceAssertionTotal) {
       if (!nonzero) {
         nonzero = new Set<string>();
-        for (const [name, quantity] of amounts)
+        for (const [name, quantity] of checkedAmounts)
           if (!isZero(quantity)) nonzero.add(name);
-        nonzeroByAccount.set(posting.account, nonzero);
+        if (scope) scope.nonzero = nonzero;
+        else nonzeroByAccount.set(posting.account, nonzero);
       }
       otherCount = nonzero.size - (nonzero.has(assertion.commodity) ? 1 : 0);
       for (const name of nonzero) {
         if (name === assertion.commodity) continue;
         otherAmounts.push(
-          `${amounts.get(name)!}${name ? ` ${formatCommodityName(name)}` : ' (no commodity)'}`,
+          `${checkedAmounts.get(name)!}${name ? ` ${formatCommodityName(name)}` : ' (no commodity)'}`,
         );
         if (otherAmounts.length === 5) break;
       }
@@ -100,11 +116,14 @@ export function checkBalanceAssertions(
       const commodity = assertion.commodity
         ? ` ${formatCommodityName(assertion.commodity)}`
         : ' (no commodity)';
-      const scope = posting.balanceAssertionInclusive
-        ? 'Checks this account and its subaccounts in the asserted commodity after this posting in effective posting-date order.'
-        : posting.balanceAssertionTotal
-          ? 'Checks every commodity in the direct account after this posting in effective posting-date order.'
-          : 'Checks the direct account after this posting in effective posting-date order.';
+      const scope =
+        posting.balanceAssertionInclusive && posting.balanceAssertionTotal
+          ? 'Checks every commodity in this account and its subaccounts after this posting in effective posting-date order.'
+          : posting.balanceAssertionInclusive
+            ? 'Checks this account and its subaccounts in the asserted commodity after this posting in effective posting-date order.'
+            : posting.balanceAssertionTotal
+              ? 'Checks every commodity in the direct account after this posting in effective posting-date order.'
+              : 'Checks the direct account after this posting in effective posting-date order.';
       const extra = otherCount
         ? ` Other nonzero balances: ${otherAmounts.join(', ')}${otherCount > otherAmounts.length ? `; ${otherCount - otherAmounts.length} more` : ''}.`
         : '';

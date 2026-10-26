@@ -179,17 +179,11 @@ describe('single-commodity inclusive balance assertions', () => {
   it.each(['=* 1 USD', '==* 1 USD'])(
     'rejects omitted-amount assignments: %s',
     (amount) => {
-      // Total-inclusive syntax remains unsupported independently of assignment semantics.
-      rejects(
-        tx('assets:bank', amount),
-        amount.startsWith('==')
-          ? 'balance-assertion-syntax'
-          : 'balance-assignment',
-      );
+      rejects(tx('assets:bank', amount), 'balance-assignment');
     },
   );
   it.each([
-    '1 USD ==* 1 USD',
+    '1 USD ==** 1 USD',
     '1 USD = * 1 USD',
     '1 USD =** 1 USD',
     '1 USD =*',

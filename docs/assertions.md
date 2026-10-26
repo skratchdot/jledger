@@ -1,7 +1,7 @@
 # Balance assertions
 
 jledger supports hledger-style direct `=` / `==` and single-commodity inclusive
-`=*` balance assertions on postings
+`=*` and strict total inclusive `==*` balance assertions on postings
 with an explicit amount, using supported [amount formats](amount-formats.md):
 
 ```journal
@@ -24,7 +24,7 @@ checks and retain the original source.
 
 ## Semantics
 
-- Validation follows **hledger 1.52**: individual postings are checked in ascending
+- Posting order follows **hledger 1.52**: individual postings are checked in ascending
   [effective primary posting-date](posting-dates.md) order, with expanded source/
   posting order breaking ties. A posting without an override inherits its
   transaction date. Overrides can reorder postings within a transaction. Parsing
@@ -51,6 +51,12 @@ checks and retain the original source.
   the same commodity can offset each other; distinct commodities never do. This
   check does not depend on the Accounts view's direct/inclusive display option.
   The `*` must directly follow `=`; spaced `= *` is rejected, as in hledger.
+- Strict total inclusive `==*` checks the asserted commodity across this account
+  and every descendant, and requires every other **inclusive commodity balance**
+  to be exactly zero. Same-commodity direct/child amounts can offset; different
+  commodities cannot. Parent/child checks never sum an already rolled-up amount
+  again. This is stricter than the pinned hledger child-only extra-commodity case
+  documented below.
 - Comparisons use exact decimal arithmetic. There is no rounding, tolerance, or
   floating-point comparison; `9.90` equals `9.900`, but `0.004` does not equal `0.00`.
 - Running balances cover all selected roots and expanded include children. Filters
@@ -76,8 +82,8 @@ with no inclusive assertions skip this path. This is not a new depth/memory SLA.
 ## Unsupported forms
 
 Balance assignments (an omitted posting amount before an assertion operator),
-total inclusive assertions (`==*`), costs and expressions remain errors. `==*` needs
-separate compatibility work; do not substitute a direct `==` or partial `=*` check.
+costs and expressions remain errors. Use `==*` without spaces inside the operator;
+spaced `== *`, repeated stars and extra equals signs remain errors.
 Grouped/comma quantities require a compatible [explicit amount format](amount-formats.md)
 on both sides; undeclared grouping is not guessed. These forms change semantics and are never treated
 as plain assertions or ignored. Unsupported format directives, secondary or unattached continuation posting dates and other
@@ -107,7 +113,7 @@ separately; no currency conversion occurs.
 Coverage also includes same-account split postings, direct account/subaccount
 separation, exact precision failures, commodityless assertions, selected includes,
 direct total and partial inclusive assertions, and deliberate rejection of
-assignments/total-inclusive forms. Unit tests cover large quantities beyond JavaScript's safe integer range and unsupported forms.
+assignments/malformed operators. Unit tests cover large quantities beyond JavaScript's safe integer range and unsupported forms.
 Browser tests verify successful inspection, failure disabling reports, the existing
 200,000-transaction regression, and a 24,000-transaction include bundle with a
 checked bank balance at the start of each month.
@@ -148,3 +154,37 @@ with 12,000 purchases and four checked parent statements, exact totals, bounded
 rows, responsive input and final source drill-down. This is regression evidence,
 not a device-wide performance guarantee. Among the previous 145 reference cases,
 only the promoted sample's hledger capture changes.
+
+## Strict total inclusive assertions
+
+The `==*` slice adds 12 cases and promotes `total-inclusive`, bringing the corpus
+to **238**. Supported cases compare complete postings and direct balances against
+hledger 1.52 for nested descendants, exact prefix boundaries, direct/child offsets,
+closed extra commodities, absent zeros, unitless amounts, effective posting-date
+order, aliases, selected includes and default quoted commodities. Ledger 3.3.2
+rejects the sampled `==*` forms, explicitly recorded per case. Other than the
+promoted sample, all previous 225 captures remain unchanged.
+
+**Intentional hledger acceptance difference:** in the pinned
+[child-only extra case](../packages/core/fixtures/compatibility/inclusive-total-child-extra.journal),
+`assets:bank:checking` holds 10 USD and 2 EUR while the parent checks
+`0 USD ==* 10 USD`. hledger 1.52 accepts it despite the nonzero inclusive EUR
+balance. jledger rejects it with the parent assertion location and an extra-balance
+diagnostic, disabling every report. This strict rule applies to every descendant
+commodity. It is not complete hledger `==*` acceptance parity. Direct extras and
+wrong asserted quantities also fail; exactly zero inclusive extras are valid.
+
+The existing checked-ancestor index now marks scopes containing `==*` and retains
+all commodities for those scopes. Partial-only `=*` scopes still retain only their
+requested commodities. A lazy nonzero set per total scope is initialized on its
+first total check and updated as later postings arrive. Repeated checks use that
+set's size and at most five diagnostic samples; all balances participate. Direct
+`==` sets stay separate. This adds memory/work proportional to the commodities and
+checked ancestors involved, without scanning every account at each assertion or
+building full report rollups. No assertion work runs when the journal has none.
+
+Core/worker/browser cases protect repeated and overlapping checks, source order,
+exact fine/large quantities, empty/named commodity separation, bounded diagnostics,
+source drill-down and all-report failure for an extra currency outside the selected
+UI scope. Details label valid checks as including subaccounts and all commodities.
+Assignments, costs, secondary dates and malformed operators remain errors.

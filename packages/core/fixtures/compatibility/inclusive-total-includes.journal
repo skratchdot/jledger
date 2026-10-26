@@ -1,0 +1,6 @@
+D 1.00 "Bank Credits"
+alias bank = assets:bank
+include parts/inclusive-total-child.journal
+2024-01-02 Check
+  bank  0 ==* 0.10
+  equity:opening

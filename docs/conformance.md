@@ -29,7 +29,7 @@ Three separate questions are tested:
 | Hledger `date:` posting tag                                                                                                                        | hledger dates; explicit Ledger difference                 | Accepted     | Accepted, tag ignored          |
 | Some inline commodity examples and decimal-mark cases                                                                                              | hledger quantities; explicit Ledger difference            | Accepted     | Accepted, different quantities |
 | Conflicting format example                                                                                                                         | Reports disabled                                          | Accepted     | Accepted                       |
-| Irregular grouping; total-inclusive assertion samples                                                                                              | Reports disabled                                          | Accepted     | Rejected                       |
+| Irregular grouping; strict child-only extra-commodity assertion sample                                                                             | Reports disabled                                          | Accepted     | Rejected                       |
 | Unbalanced postings, failed/precision/unitless assertions, missing include                                                                         | Reports disabled                                          | Rejected     | Rejected                       |
 
 Account-type fixtures additionally distinguish supported declarations/defaults from
@@ -90,7 +90,7 @@ are evidence from the tools, never generated from jledger's own expected results
 ## Selected-source includes and remaining scope
 
 The [source-preserving syntax layer](syntax.md) and [selected-source include graph](includes.md)
-are implemented. The corpus now contains 226 cases, including posting and direct
+are implemented. The corpus now contains 238 cases, including posting and direct
 balance parity for simple and nested includes, plus acceptance-only captures for
 missing and repeated includes. Included sources are supplied explicitly in fixture
 metadata; references read the root journal and follow its real relative paths.
@@ -222,7 +222,8 @@ cases and promotes the original `assertion-inclusive` sample, bringing the corpu
 to 161 cases. Parent checks include descendant postings exactly once at colon
 boundaries, in effective posting-date order, and only in the asserted commodity.
 Supported projections agree with hledger; each sampled Ledger rejection is explicit.
-Assignments, total-inclusive syntax and malformed operators remain unsupported.
+At that stage, assignments, total-inclusive syntax and malformed operators remained
+unsupported; strict total-inclusive support is described below.
 Only the promoted sample's hledger capture changes among the previous 145 cases.
 
 ## Closed accounts and zero report rows
@@ -361,3 +362,19 @@ separate. The explicit-currency case compares fully against both tools. Unsuppor
 integer/empty/unitless/conflicting directives and costs retain acceptance-only
 captures. Directive provenance is jledger metadata checked in core/worker/browser
 cases, separately from reference arithmetic. No valuation or currency conversion is added.
+
+## Strict total inclusive assertions
+
+Twelve cases bring the corpus to **238**, and `total-inclusive` is promoted to a
+supported case. The other 225 previous captures remain unchanged. Supported cases
+compare complete hledger postings and direct balances for nested scopes, prefix
+boundaries, direct/child offsets, closed/absent/unitless commodities, posting dates,
+aliases, includes and defaults. Ledger rejection is explicit in every sampled
+`==*` case. Invalid quantities, assignments and extra direct commodities retain
+acceptance-only captures.
+
+`inclusive-total-child-extra` explicitly records hledger acceptance and Ledger
+rejection while jledger fails the strict total check. A child-only EUR balance is
+not zero merely because the USD target matches. This is an intentional acceptance
+difference, not a change to report arithmetic or a claim of full hledger `==*`
+compatibility. See [strict total inclusive assertions](assertions.md#strict-total-inclusive-assertions).

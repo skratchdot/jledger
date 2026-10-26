@@ -6035,5 +6035,41 @@
         "quantity": "1234"
       }
     ]
+  },
+  "inclusive-total-nested": {
+    "accepted": false
+  },
+  "inclusive-total-offset": {
+    "accepted": false
+  },
+  "inclusive-total-closed": {
+    "accepted": false
+  },
+  "inclusive-total-boundary": {
+    "accepted": false
+  },
+  "inclusive-total-unitless": {
+    "accepted": false
+  },
+  "inclusive-total-absent": {
+    "accepted": false
+  },
+  "inclusive-total-direct-extra": {
+    "accepted": false
+  },
+  "inclusive-total-child-extra": {
+    "accepted": false
+  },
+  "inclusive-total-failure": {
+    "accepted": false
+  },
+  "inclusive-total-assignment": {
+    "accepted": false
+  },
+  "inclusive-total-dates": {
+    "accepted": false
+  },
+  "inclusive-total-includes": {
+    "accepted": false
   }
 }

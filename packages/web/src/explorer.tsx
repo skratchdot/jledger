@@ -1191,7 +1191,9 @@ export function Explorer() {
                         {' '}
                         · balance checked
                         {p.balanceAssertionInclusive
-                          ? ' (including subaccounts, one commodity)'
+                          ? p.balanceAssertionTotal
+                            ? ' (including subaccounts, all commodities)'
+                            : ' (including subaccounts, one commodity)'
                           : p.balanceAssertionTotal
                             ? ' (direct account, all commodities)'
                             : ''}

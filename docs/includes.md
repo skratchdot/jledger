@@ -52,7 +52,7 @@ privacy boundary described in architecture.md.
   jledger intentionally rejects it to avoid unexpected double counting. Repeat
   semantics and explicit root selection need a separate implementation.
 - Transactions do not span include/file boundaries. Unknown directives, costs,
-  balance assignments, total inclusive `==*` assertions, unsupported date forms,
+  balance assignments, unsupported date forms,
   and other unsupported financial syntax in children still disable every report.
   Plain `=` assertions validate across the expanded bundle in effective posting-date
   order. Includes do not make incomplete totals usable.

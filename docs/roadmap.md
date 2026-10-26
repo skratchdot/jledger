@@ -39,7 +39,7 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    balanced postings, and direct balances against hledger 1.52 and a pinned Ledger
    release; document intentional differences. Prioritize representative journals
    before adding many unrelated features.
-   The initial [corpus v1](conformance.md) now covers 226 synthetic cases with
+   The initial [corpus v1](conformance.md) now covers 238 synthetic cases with
    pinned hledger 1.52 / Ledger 3.3.2 captures and a live differential command.
    [Closed/zero account cases](conformance.md#closed-accounts-and-zero-report-rows)
    now distinguish arithmetic parity from reference omission/commodity-label
@@ -53,9 +53,9 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    an explicit allowed-root policy; broader include syntax and root selection remain.
 3. Implement commodity styles, grouping/decimal marks, balance assertions,
    aliases/default-year rules, and posting/secondary dates with tested semantics.
-   [Direct plain/total and partial inclusive assertions](assertions.md) with explicit
-   amounts are now supported and tested against hledger 1.52. Assignments and total
-   inclusive `==*` remain errors; [full and month/day primary posting dates](posting-dates.md) now drive
+   [Direct plain/total, partial inclusive and strict total inclusive assertions](assertions.md)
+   with explicit amounts now have pinned reference evidence, including a documented
+   stricter policy for child-only extra commodities in `==*`. Assignments remain errors; [full and month/day primary posting dates](posting-dates.md) now drive
    assertions and month reports, including attached continuation comments with
    source provenance. Secondary and unattached continuation dates remain errors. Commodity
    [styles and decimal marks](amount-formats.md) now have an explicit parsing

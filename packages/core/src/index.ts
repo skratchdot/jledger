@@ -88,9 +88,9 @@ export interface Posting {
   inferred: boolean;
   /** The asserted commodity balance; consult scope flags and diagnostics for validity. */
   balanceAssertion?: Amount;
-  /** A == assertion also requires zero balances in every other direct-account commodity. */
+  /** A == or ==* assertion requires zero balances in every other checked commodity. */
   balanceAssertionTotal?: boolean;
-  /** A =* assertion checks this account and its descendants in one commodity. */
+  /** A =* or ==* assertion includes this account and its descendants. */
   balanceAssertionInclusive?: boolean;
   status: Status;
   source: Location;
@@ -589,7 +589,7 @@ export function parseJournal(sources: Source[]): Journal {
         if (amountText.includes('=')) {
           const parts = amountText.match(/^(.*?)(=+)(.*)$/)!;
           balanceAssertionInclusive =
-            parts[2] === '=' && parts[3]!.startsWith('*');
+            parts[2]!.length <= 2 && parts[3]!.startsWith('*');
           if (
             parts[2]!.length > 2 ||
             (parts[3]!.trimStart().startsWith('*') &&
@@ -598,7 +598,7 @@ export function parseJournal(sources: Source[]): Journal {
             error(
               location,
               'balance-assertion-syntax',
-              'Use =, == or =* balance assertions. Total inclusive (==*) and extra assertion operators are not supported yet.',
+              'Use =, ==, =* or ==* balance assertions without spaces inside the operator. Extra operators are not supported.',
             );
             continue;
           }
@@ -608,7 +608,7 @@ export function parseJournal(sources: Source[]): Journal {
             error(
               location,
               'balance-assignment',
-              'Balance assignments are not supported yet. Supply an explicit posting amount before =, == or =*.',
+              'Balance assignments are not supported yet. Supply an explicit posting amount before =, ==, =* or ==*.',
             );
             continue;
           }
@@ -620,7 +620,7 @@ export function parseJournal(sources: Source[]): Journal {
             error(
               location,
               'balance-assertion-syntax',
-              'Use a supported explicit quantity and commodity after =, == or =*. Costs, expressions and extra assertion operators are not supported. Grouping and comma decimals require explicit supported directives.',
+              'Use a supported explicit quantity and commodity after =, ==, =* or ==*. Costs, expressions and extra assertion operators are not supported. Grouping and comma decimals require explicit supported directives.',
             );
             continue;
           }

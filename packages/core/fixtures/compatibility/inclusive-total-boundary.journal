@@ -1,0 +1,11 @@
+2024-01-01 Opening
+  assets:bank:checking  10 USD
+  equity:usd
+
+2024-01-02 Unrelated
+  assets:bankruptcy  2 EUR
+  equity:eur
+
+2024-01-03 Check
+  assets:bank  0 USD ==* 10 USD
+  equity:usd

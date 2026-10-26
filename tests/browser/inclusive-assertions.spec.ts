@@ -55,7 +55,7 @@ test('inclusive assertions explain scope through aliases/includes and fail close
   await upload(child.replace('0,01 "Meal Credits" =*', '=*'));
   await expect(page.getByRole('alert')).toContainText('balance-assignment');
   await expect(page.getByRole('table')).toHaveCount(0);
-  await upload(child.replace('=*', '==*'));
+  await upload(child.replace('=*', '==**'));
   await expect(page.getByRole('alert')).toContainText(
     'balance-assertion-syntax',
   );

@@ -1,0 +1,7 @@
+2024-01-01 Opening
+  assets:bank:checking  0.10
+  equity:opening
+
+2024-01-02 Check
+  assets:bank  0 ==* 0.10
+  equity:opening
