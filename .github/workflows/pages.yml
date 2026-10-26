@@ -9,9 +9,16 @@ concurrency:
   group: pages
   cancel-in-progress: false
 jobs:
+  playwright-image:
+    if: github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/playwright-image.yml
   build:
+    needs: playwright-image
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    container:
+      image: ${{ needs.playwright-image.outputs.image }}
+      options: --ipc=host
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
@@ -29,7 +36,6 @@ jobs:
         run: pnpm --filter @jledger/web build
         env:
           JLEDGER_BASE_PATH: /jledger/
-      - run: pnpm exec playwright install --with-deps chromium
       - name: Test the Pages artifact
         run: pnpm test:browser
         env:

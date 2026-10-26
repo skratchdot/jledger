@@ -4,9 +4,18 @@ on:
   pull_request:
 permissions:
   contents: read
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
+  playwright-image:
+    uses: ./.github/workflows/playwright-image.yml
   check:
+    needs: playwright-image
     runs-on: ubuntu-latest
+    container:
+      image: ${{ needs.playwright-image.outputs.image }}
+      options: --ipc=host
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
@@ -20,7 +29,6 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm format:check
-      - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:browser
       - run: JLEDGER_BASE_PATH=/jledger/ pnpm --filter @jledger/web build
       - run: JLEDGER_TEST_BASE_PATH=/jledger/ pnpm test:browser
@@ -31,6 +39,10 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+          cache: pnpm
       - run: apt-get update && apt-get install -y --no-install-recommends ca-certificates curl ledger=3.3.2-1+b4
       - name: Install pinned hledger
         run: |
