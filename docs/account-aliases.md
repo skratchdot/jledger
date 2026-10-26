@@ -75,7 +75,7 @@ search index. Bounded transaction windows/details carry optional alias metadata.
 This adds memory, not an incremental parser or a new performance guarantee.
 No journal, alias, query or provenance data is persisted or uploaded.
 
-The 131-case corpus adds 17 synthetic alias cases. Supported samples compare
+The 145-case corpus adds 17 synthetic alias cases. Supported samples compare
 canonical posting accounts, exact quantities and direct balances against hledger
 1.52 and Ledger 3.3.2 where their semantics agree. One case separately compares
 hledger account-type classification after aliasing a declaration. Original parse

@@ -3853,5 +3853,47 @@
   },
   "alias-assertion-failure": {
     "accepted": false
+  },
+  "total-extra": {
+    "accepted": false
+  },
+  "total-zero-other": {
+    "accepted": false
+  },
+  "total-direct": {
+    "accepted": false
+  },
+  "total-unitless": {
+    "accepted": false
+  },
+  "total-zero-target": {
+    "accepted": false
+  },
+  "total-quoted-format": {
+    "accepted": false
+  },
+  "total-includes": {
+    "accepted": false
+  },
+  "total-posting-order": {
+    "accepted": false
+  },
+  "total-wrong": {
+    "accepted": false
+  },
+  "total-precision": {
+    "accepted": false
+  },
+  "total-assignment": {
+    "accepted": false
+  },
+  "total-inclusive": {
+    "accepted": false
+  },
+  "total-extra-unitless": {
+    "accepted": false
+  },
+  "total-mixed-offset": {
+    "accepted": false
   }
 }

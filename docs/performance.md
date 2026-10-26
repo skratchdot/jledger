@@ -8,8 +8,12 @@ parsing or aggregation acceptable.
 
 - A dedicated module worker owns source text, the parsed journal, a normalized
   search index, sorted transaction IDs, and the current filtered result IDs.
-- Plain assertion validation runs in the worker in effective posting-date order,
-  only for journals containing assertions. It retains posting references and effective dates for a stable
+- Direct assertion validation runs in the worker in effective posting-date order,
+  only for journals containing assertions. Total checks lazily index nonzero commodities
+  only in accounts using `==`, keeping repeated checks independent of that account's
+  full commodity-map size. The first check scans its map; sets add temporary memory.
+  Diagnostics show at most five extras plus their remaining count, while validating
+  every balance. It retains posting references and effective dates for a stable
   chronological sort and running direct balances; ordinary imports skip this pass.
 - Quoted commodity tokenization and exact-name format lookup stay in the worker
   parser. Amount splitting preserves the original tail rather than rebuilding it.

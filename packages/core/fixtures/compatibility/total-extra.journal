@@ -1,0 +1,8 @@
+2024-01-01 Synthetic
+  assets:cash  1 EUR
+  equity:opening
+
+2024-01-01 Synthetic
+  assets:cash  2 USD == 2 USD
+  equity:opening
+

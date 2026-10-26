@@ -85,7 +85,7 @@ are evidence from the tools, never generated from jledger's own expected results
 ## Selected-source includes and remaining scope
 
 The [source-preserving syntax layer](syntax.md) and [selected-source include graph](includes.md)
-are implemented. The corpus now contains 131 cases, including posting and direct
+are implemented. The corpus now contains 145 cases, including posting and direct
 balance parity for simple and nested includes, plus acceptance-only captures for
 missing and repeated includes. Included sources are supplied explicitly in fixture
 metadata; references read the root journal and follow its real relative paths.
@@ -196,3 +196,13 @@ semantics. Two supported cases explicitly mark Ledger rejection of end/identity
 forms. Unsupported regex, empty-target, semicolon and invalid-name cases retain
 acceptance-only evidence. Previous captures remain unchanged; the corpus now has
 131 cases, with original names and provenance checked separately in core/browser tests.
+
+## Direct total assertions
+
+The [total assertion slice](assertions.md#total-assertion-evidence) adds 14 cases and
+promotes the original `assertion-total` sample. Total checks validate every direct
+commodity without summing currencies together; all extra balances must be zero.
+Ledger rejects the sampled supported `==` forms, so acceptance differences are
+explicit and complete supported projections compare against hledger. Assignment,
+inclusive and failed checks retain separate acceptance-only evidence. Other
+pre-existing captures remain unchanged.

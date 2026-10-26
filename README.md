@@ -105,8 +105,9 @@ installation is a later milestone.
   in amounts, declarations, formats and plain assertions.
 - [Literal account aliases](docs/account-aliases.md) normalize posting/declaration
   names with include scope, original-name search and source explanations.
-- [Plain balance assertions](docs/assertions.md) with expected/calculated diagnostics;
-  a failed assertion disables every report. Assignments and total/inclusive forms
+- [Direct balance assertions](docs/assertions.md) with expected/calculated diagnostics;
+  a failed assertion disables every report. Total `==` checks also require zero
+  balances in all other direct-account commodities. Assignments and inclusive forms
   remain unsupported.
 - Interactive expense categories and monthly charts, plus inclusive [date ranges](docs/explorer-filters.md), status, commodity,
   account, and text filters. Income/spending follows [journal account types](docs/account-types.md),
