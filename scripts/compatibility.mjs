@@ -149,11 +149,14 @@ for (const tool of tools) {
                 ),
               );
       entry.postings.sort((a, b) => a.date.localeCompare(b.date));
+      // Some reference row selection uses inclusive totals even with a direct
+      // amount expression. Marked fixtures request --empty to retain those rows.
       const report = run(tool, [
         ...prefix,
         'balance',
         '--flat',
         '--no-total',
+        ...(fixture.emptyBalances ? ['--empty'] : []),
         ...(tool.name === 'ledger'
           ? [
               '--format',

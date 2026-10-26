@@ -90,8 +90,11 @@ still verify both complete reference captures. The sampled simple format block
 agrees with both tools; no broader Ledger-format compatibility is implied.
 
 Reference balances are captured independently of localized presentation. hledger's
-JSON mantissas preserve exact quantities even when display styles round, and Ledger
-uses direct account `quantity(amount)` / `commodity(amount)` expressions. The
-Ledger report capture currently covers single-commodity account balances; mixed
-account cases accepted only by hledger are compared with its JSON capture. Zero
-omission and broader mixed-commodity Ledger formatting remain corpus gaps.
+JSON mantissas bypass commodity display rounding, within the pinned output's
+[ten-place fractional precision limit](conformance.md#reference-json-precision-limit).
+Ledger uses direct account `quantity(amount)` / `commodity(amount)` expressions.
+Its report capture currently covers at most one nonzero commodity per account;
+mixed account cases accepted only by hledger use its JSON capture. The
+[zero-report comparison](conformance.md#closed-accounts-and-zero-report-rows) keeps
+raw omission/label differences and compares all nonzero rows exactly. Higher-precision
+hledger report capture and broader mixed-commodity Ledger serialization remain gaps.

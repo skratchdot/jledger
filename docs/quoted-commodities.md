@@ -56,7 +56,7 @@ No names or data are written to browser storage, URLs, caches or external servic
 
 ## Pinned reference evidence
 
-The 161-case corpus includes 18 new quoted-name cases. Supported samples compare
+The 177-case corpus includes 18 new quoted-name cases. Supported samples compare
 posting identities, exact quantities and direct balances against hledger 1.52 and
 Ledger 3.3.2, except explicitly declared Ledger quantity differences. Samples cover
 prefix/suffix adjacency, numeric names, Unicode/comma punctuation, significant

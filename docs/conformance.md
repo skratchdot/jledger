@@ -12,11 +12,13 @@ Three separate questions are tested:
    them. jledger rejects every unsupported fixture and disables balance reports.
 2. **Accounting semantics:** supported fixtures compare the ordered posting date,
    description, account, commodity, and exact quantity, including inferred amounts.
-3. **Report parity:** supported fixtures compare flat, direct, commodity-specific
-   balances; marked fixtures also compare inclusive rollups with explicit scope.
+3. **Report arithmetic parity:** supported fixtures compare nonzero flat, direct,
+   commodity-specific balances; marked fixtures also compare inclusive rollups with explicit scope.
    Marked cases separately compare hledger account classification query sets.
    General hierarchical presentation, query languages, valuation, text layout,
-   status inheritance, and rounding/display precision are outside this comparison.
+   status inheritance, zero-row presentation, and rounding/display precision are
+   outside this comparison. Only exact zero report rows are excluded; complete
+   posting projections retain all amounts, accounts and commodity identities.
 
 | Cases                                                                                                                                              | jledger                                                   | hledger 1.52 | Ledger 3.3.2                   |
 | -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | ------------ | ------------------------------ |
@@ -44,11 +46,14 @@ date, defaulting to the transaction date when no override exists.
 Quantities are canonical decimal strings; scale differences such as `0.30` and
 `0.3` are ignored. hledger JSON mantissas are read as strings before JSON parsing,
 never rounded through JavaScript numbers. hledger balance quantities are read from
-exact JSON mantissas, independently of localized display precision. Ledger direct reports use `quantity(amount)` and
+JSON mantissas, independently of localized display precision, up to the output
+limit documented below. Ledger direct reports use `quantity(amount)` and
 `commodity(amount)`, bypassing localized punctuation and inclusive `total`. The
-Ledger report cases currently have single-commodity accounts; hledger-only mixed
-account cases use its JSON capture. Zero omission, broader commodity styles, and
-more date/status variants remain gaps. Include cases compare selected-source bundles with reference
+Ledger report cases currently have at most one nonzero commodity per account;
+hledger-only mixed account cases use its JSON capture. Canceled commodities may
+remain as zero rows in hledger and disappear in Ledger. Broader commodity styles,
+multi-nonzero-commodity Ledger serialization and more date/status variants remain
+gaps. Include cases compare selected-source bundles with reference
 execution of the root journal. Unsupported cases normally record acceptance only. Marked account-type cases
 also capture hledger classification queries, separately from posting/balance parity.
 Supported marked cases compare used-account sets for A/L/E/R/X/C/V/G; unsupported
@@ -85,7 +90,7 @@ are evidence from the tools, never generated from jledger's own expected results
 ## Selected-source includes and remaining scope
 
 The [source-preserving syntax layer](syntax.md) and [selected-source include graph](includes.md)
-are implemented. The corpus now contains 161 cases, including posting and direct
+are implemented. The corpus now contains 177 cases, including posting and direct
 balance parity for simple and nested includes, plus acceptance-only captures for
 missing and repeated includes. Included sources are supplied explicitly in fixture
 metadata; references read the root journal and follow its real relative paths.
@@ -136,8 +141,9 @@ examples/blocks, exact grouping normalization, and include/source-order checks.
 failures: core checks the hledger result, requires the Ledger capture to differ,
 and the live runner still verifies every captured Ledger value. Agreement for the
 sample format block is tested rather than inferred from inline-declaration behavior.
-Report captures now bypass localized display strings and precision. UI reports
-remain canonical, with source formatting preserved separately.
+Report captures bypass localized display strings and commodity display precision,
+subject to the JSON output limit below. UI reports remain exact and canonical,
+with source formatting preserved separately.
 
 ## Account hierarchy values
 
@@ -147,7 +153,8 @@ similar prefix names, implicit parents, and separate commodity quantities. Fixtu
 implicit nodes, while Ledger's flat `total` projection covers posted accounts for
 the single-commodity case. Core compares matching inclusive nodes and keeps all
 existing direct comparisons. This does not claim Ledger implicit-parent layout or
-mixed-commodity hierarchy parity, and zero omission remains a corpus gap.
+mixed-commodity hierarchy parity. The zero-report slice below adds arithmetic
+comparison while keeping raw zero-row representation differences explicit.
 
 ## Explicit default years
 
@@ -217,3 +224,47 @@ boundaries, in effective posting-date order, and only in the asserted commodity.
 Supported projections agree with hledger; each sampled Ledger rejection is explicit.
 Assignments, total-inclusive syntax and malformed operators remain unsupported.
 Only the promoted sample's hledger capture changes among the previous 145 cases.
+
+## Closed accounts and zero report rows
+
+The corpus now has **177 cases**, including 16 new zero/residual cases. Existing
+161-case captures remain unchanged. New cases cover closed accounts, canceled USD
+and EUR, unitless/quoted commodities, zero parents with nonzero direct postings,
+aliases/includes, refunds, direct/total/inclusive assertions, large exact offsets,
+and a small residual below the declared commodity display precision.
+
+Default reference reports can omit accounts with zero balances. `emptyBalances`
+selects `balance --empty` for marked fixtures only; hierarchy captures already use
+`--empty`. Ledger can also omit a directly nonzero parent whose inclusive total is
+zero, even with `--flat` and the direct `amount` expression. The marked parent case
+uses `--empty` to retain its full direct values rather than weaken their comparison.
+Ledger zero rows from this query have no commodity name; hledger retains names.
+Captures preserve all these observed rows, quantities and omissions unchanged.
+
+The offline comparison projects **report rows only**, excluding quantities that
+are exactly zero using decimal-string arithmetic. It does not sum rows, convert
+currencies, round, use tolerances, or remove any posting. Every nonzero account,
+commodity, sign and exact quantity still has to match. An omitted or rounded-away
+nonzero balance fails. This establishes arithmetic parity, not account-presence,
+zero commodity-label or text-layout parity with the reference presentation.
+Mutation checks protect that distinction. Raw captures still have full live
+verification, including all zero rows and their names/omissions.
+
+This projection never runs in product code. jledger retains closed accounts and
+zero commodity identities in direct/inclusive reports. Core/browser checks protect
+zero accounts beside nonzero commodities, purchase/refund drill-down, full-journal
+account scope under date filters, and exact finer residuals.
+
+### Reference JSON precision limit
+
+Pinned hledger 1.52 JSON quantity output limits fractional precision to ten decimal
+places, even though its internal validation and plain/CSV printing retain finer
+quantities. Observed probes of `0.010000000000000001` print a JSON quantity of
+`0.0100000000`; a `0.000000000000000001` assertion against zero still fails.
+The differential residual case uses ten places (`0.0000000001`), below a declared
+two-place display style, and both pinned captures retain it exactly. It would fail
+comparison if a report rounded it away. This is not parity evidence beyond the
+JSON output limit; an exact alternative hledger report capture remains future work.
+Core/browser checks separately protect `0.000000000000000001` in jledger. The failed
+assertion case records reference rejection at that finer precision. No production
+money arithmetic is rounded to accommodate reference output.

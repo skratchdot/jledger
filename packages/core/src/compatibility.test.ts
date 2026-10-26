@@ -5,6 +5,7 @@ import hledger from '../fixtures/compatibility/hledger-1.json';
 import ledger from '../fixtures/compatibility/ledger-1.json';
 import {
   add,
+  isZero,
   accountHierarchy,
   createAccountTypeResolver,
   matchesAccountType,
@@ -19,6 +20,12 @@ const canonical = (value: string) => {
     ? exact.replace(/0+$/, '').replace(/\.$/, '')
     : exact;
 };
+
+// Arithmetic parity treats omitted/commodityless zero report rows as zero.
+// Raw captures and complete posting identities remain untouched. Never apply this
+// projection to product reports or use rounded/display quantities here.
+const nonzeroBalances = <T extends { quantity: string }>(rows: readonly T[]) =>
+  rows.filter((row) => !isZero(row.quantity));
 
 describe('compatibility corpus v1 (captured hledger 1.52 / Ledger 3.3.2)', () => {
   for (const fixture of cases) {
@@ -97,8 +104,9 @@ describe('compatibility corpus v1 (captured hledger 1.52 / Ledger 3.3.2)', () =>
               : postings,
           ).toEqual('postings' in expected ? expected.postings : undefined);
         }
-        expect(report).toEqual(
-          'balances' in expected ? expected.balances : undefined,
+        expect('balances' in expected).toBe(true);
+        expect(nonzeroBalances(report)).toEqual(
+          nonzeroBalances('balances' in expected ? expected.balances : []),
         );
         if (
           tool === 'hledger' &&
@@ -137,8 +145,9 @@ describe('compatibility corpus v1 (captured hledger 1.52 / Ledger 3.3.2)', () =>
                 a.account.localeCompare(b.account) ||
                 a.commodity.localeCompare(b.commodity),
             );
-          expect(rollups).toEqual(
-            'rollups' in expected ? expected.rollups : undefined,
+          expect('rollups' in expected).toBe(true);
+          expect(nonzeroBalances(rollups)).toEqual(
+            nonzeroBalances('rollups' in expected ? expected.rollups : []),
           );
         }
       }
@@ -176,5 +185,79 @@ describe('account classification reference evidence', () => {
     ]);
     expect(hledger['account-type-invalid'].accepted).toBe(false);
     expect(ledger['account-type-invalid'].accepted).toBe(true);
+  });
+});
+
+describe('zero report arithmetic projection', () => {
+  it('retains raw omission and commodity-label differences in reference captures', () => {
+    expect(hledger['zero-closed'].balances).toEqual([]);
+    expect(ledger['zero-closed'].balances).toEqual([]);
+    expect(hledger['zero-empty'].balances).toEqual([
+      { account: 'assets:cash', commodity: 'USD', quantity: '0' },
+      { account: 'equity:opening', commodity: 'USD', quantity: '0' },
+    ]);
+    expect(ledger['zero-empty'].balances).toEqual([
+      { account: 'assets:cash', commodity: '', quantity: '0' },
+      { account: 'equity:opening', commodity: '', quantity: '0' },
+    ]);
+    expect(nonzeroBalances(hledger['zero-empty'].balances)).toEqual([]);
+    expect(nonzeroBalances(ledger['zero-empty'].balances)).toEqual([]);
+  });
+
+  it('does not accept a rounded-away tiny residual or an omitted nonzero account', () => {
+    const exact = nonzeroBalances(hledger['zero-tiny-residual'].balances);
+    expect(exact).toHaveLength(2);
+    expect(exact[0]!.quantity).toBe('0.0000000001');
+    const rounded = exact.map((row) => ({ ...row, quantity: '0.00' }));
+    expect(nonzeroBalances(rounded)).not.toEqual(exact);
+    expect(nonzeroBalances(exact.slice(1))).not.toEqual(exact);
+    // Even quantities finer than the pinned hledger JSON output limit remain
+    // nonzero in this projection. Never use report display precision as tolerance.
+    const finer = exact.map((row) => ({
+      ...row,
+      quantity: '0.000000000000000001',
+    }));
+    expect(nonzeroBalances(finer)).toEqual(finer);
+    expect(nonzeroBalances(finer)).not.toEqual(nonzeroBalances(rounded));
+  });
+
+  it('does not combine currencies, discard signs or hide wrong account identities', () => {
+    const rows = [
+      { account: 'assets:cash', commodity: 'USD', quantity: '1' },
+      { account: 'assets:cash', commodity: 'EUR', quantity: '-1' },
+      { account: 'assets:cash', commodity: 'JPY', quantity: '-0.000' },
+    ];
+    const expected = rows.slice(0, 2);
+    expect(nonzeroBalances(rows)).toEqual(expected);
+    for (const changed of [
+      expected.map((row) => ({ ...row, commodity: 'GBP' })),
+      expected.map((row) => ({ ...row, account: 'assets:other' })),
+      expected.map((row) => ({ ...row, quantity: '1' })),
+      [
+        ...expected,
+        { account: 'assets:hidden', commodity: 'USD', quantity: '0.01' },
+      ],
+    ])
+      expect(nonzeroBalances(changed)).not.toEqual(expected);
+    expect(rows).toHaveLength(3);
+    expect(rows[2]!.quantity).toBe('-0.000');
+  });
+
+  it('captures a nonzero direct parent even when its inclusive balance is zero', () => {
+    expect(ledger['zero-parent-direct'].balances).toContainEqual({
+      account: 'assets:bank',
+      commodity: 'USD',
+      quantity: '10',
+    });
+    expect(ledger['zero-parent-direct'].rollups).toContainEqual({
+      account: 'assets:bank',
+      commodity: '',
+      quantity: '0',
+    });
+    expect(hledger['zero-parent-direct'].rollups).toContainEqual({
+      account: 'assets:bank',
+      commodity: 'USD',
+      quantity: '0',
+    });
   });
 });

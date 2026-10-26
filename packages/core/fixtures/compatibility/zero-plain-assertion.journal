@@ -1,0 +1,8 @@
+2024-01-01 Synthetic
+  assets:cash  0.10 USD
+  equity:opening
+
+2024-01-02 Synthetic
+  assets:cash  -0.10 USD = 0 USD
+  equity:opening
+

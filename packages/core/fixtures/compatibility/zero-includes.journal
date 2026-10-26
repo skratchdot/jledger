@@ -1,0 +1,6 @@
+alias cash = assets:cash
+2024-01-01 Synthetic
+  cash  0.10 USD
+  equity:opening
+
+include parts/zero-child.journal

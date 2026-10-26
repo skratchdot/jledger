@@ -99,6 +99,7 @@ installation is a later milestone.
 
 - Browser-only imports and drag-and-drop, with no upload or account requirement.
 - Exact decimal balances, separated by commodity; no floating-point money arithmetic.
+  Closed accounts and zero commodity balances remain browsable with their transactions.
 - [Explicit amount formats](docs/amount-formats.md): decimal marks, commodity format
   examples/blocks, and three-digit grouping, with canonical exact report amounts.
   [Quoted commodity names](docs/quoted-commodities.md) support literal spaces/digits
