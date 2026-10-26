@@ -1,0 +1,8 @@
+2024-01-03 Synthetic
+  assets:bank  -1 USD =* 9 USD
+  equity:opening
+
+2024-01-01 Synthetic
+  assets:bank:a  10 USD
+  equity:opening
+

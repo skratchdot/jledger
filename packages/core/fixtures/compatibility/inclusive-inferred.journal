@@ -1,0 +1,8 @@
+2024-01-01 Purchase
+  expenses:food  1 USD
+  assets:bank:a
+
+2024-01-01 Synthetic
+  assets:bank  0.10 USD =* -0.90 USD
+  equity:opening
+

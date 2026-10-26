@@ -21,13 +21,13 @@ Three separate questions are tested:
 | Cases                                                                                                                                              | jledger                                                   | hledger 1.52 | Ledger 3.3.2                   |
 | -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | ------------ | ------------------------------ |
 | Salary, refunds, exact quantities, currencies, simple/nested includes, common plain assertions; bracket posting dates; compatible explicit formats | Posting and direct-balance parity                         | Accepted     | Accepted                       |
-| Out-of-source-date, single-commodity, or posting-date assertion differences                                                                        | hledger semantics                                         | Accepted     | Rejected                       |
+| Direct total / partial inclusive assertions; out-of-source-date or single-commodity assertion differences                                          | hledger semantics                                         | Accepted     | Rejected                       |
 | Costs, repeated includes, balance assignment; secondary/continuation/duplicate date samples                                                        | Reports disabled                                          | Accepted     | Accepted                       |
 | Month/day brackets with differing default/transaction years                                                                                        | hledger dates; exact quantities and direct balances agree | Accepted     | Accepted, different year       |
 | Hledger `date:` posting tag                                                                                                                        | hledger dates; explicit Ledger difference                 | Accepted     | Accepted, tag ignored          |
 | Some inline commodity examples and decimal-mark cases                                                                                              | hledger quantities; explicit Ledger difference            | Accepted     | Accepted, different quantities |
 | Conflicting format example                                                                                                                         | Reports disabled                                          | Accepted     | Accepted                       |
-| Irregular grouping; total/inclusive assertion samples                                                                                              | Reports disabled                                          | Accepted     | Rejected                       |
+| Irregular grouping; total-inclusive assertion samples                                                                                              | Reports disabled                                          | Accepted     | Rejected                       |
 | Unbalanced postings, failed/precision/unitless assertions, missing include                                                                         | Reports disabled                                          | Rejected     | Rejected                       |
 
 Account-type fixtures additionally distinguish supported declarations/defaults from
@@ -85,7 +85,7 @@ are evidence from the tools, never generated from jledger's own expected results
 ## Selected-source includes and remaining scope
 
 The [source-preserving syntax layer](syntax.md) and [selected-source include graph](includes.md)
-are implemented. The corpus now contains 145 cases, including posting and direct
+are implemented. The corpus now contains 161 cases, including posting and direct
 balance parity for simple and nested includes, plus acceptance-only captures for
 missing and repeated includes. Included sources are supplied explicitly in fixture
 metadata; references read the root journal and follow its real relative paths.
@@ -108,8 +108,9 @@ work. No authoring feature is enabled by retaining source text or resolving incl
 
 The [plain assertion slice](assertions.md) adds valid/failed checks, split postings,
 direct accounts with subaccounts, precision failures, commodityless assertions,
-assertions across includes, and continued rejection of assignment/total/inclusive
-forms. Two accepted jledger cases explicitly declare `referenceAcceptance`:
+assertions across includes, and initially rejected assignment/total/inclusive
+forms. Later slices below add direct total and partial inclusive checks. Two accepted
+jledger cases explicitly declare `referenceAcceptance`:
 hledger accepts their chronological or single-commodity checks, while Ledger 3.3.2
 rejects them. The live command enforces these declared acceptance results; ordinary
 core tests compare accepted cases with the accepting reference captures. These
@@ -206,3 +207,13 @@ Ledger rejects the sampled supported `==` forms, so acceptance differences are
 explicit and complete supported projections compare against hledger. Assignment,
 inclusive and failed checks retain separate acceptance-only evidence. Other
 pre-existing captures remain unchanged.
+
+## Single-commodity inclusive assertions
+
+The [inclusive assertion slice](assertions.md#inclusive-assertion-evidence) adds 16
+cases and promotes the original `assertion-inclusive` sample, bringing the corpus
+to 161 cases. Parent checks include descendant postings exactly once at colon
+boundaries, in effective posting-date order, and only in the asserted commodity.
+Supported projections agree with hledger; each sampled Ledger rejection is explicit.
+Assignments, total-inclusive syntax and malformed operators remain unsupported.
+Only the promoted sample's hledger capture changes among the previous 145 cases.

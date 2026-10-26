@@ -102,13 +102,14 @@ installation is a later milestone.
 - [Explicit amount formats](docs/amount-formats.md): decimal marks, commodity format
   examples/blocks, and three-digit grouping, with canonical exact report amounts.
   [Quoted commodity names](docs/quoted-commodities.md) support literal spaces/digits
-  in amounts, declarations, formats and plain assertions.
+  in amounts, declarations, formats and balance assertions.
 - [Literal account aliases](docs/account-aliases.md) normalize posting/declaration
   names with include scope, original-name search and source explanations.
-- [Direct balance assertions](docs/assertions.md) with expected/calculated diagnostics;
+- [Balance assertions](docs/assertions.md) with expected/calculated diagnostics;
   a failed assertion disables every report. Total `==` checks also require zero
-  balances in all other direct-account commodities. Assignments and inclusive forms
-  remain unsupported.
+  balances in all other direct-account commodities. Inclusive `=*` checks one
+  commodity across an account and its descendants. Assignments and total inclusive
+  `==*` remain unsupported.
 - Interactive expense categories and monthly charts, plus inclusive [date ranges](docs/explorer-filters.md), status, commodity,
   account, and text filters. Income/spending follows [journal account types](docs/account-types.md),
   with inherited declarations, child overrides, and English-name defaults.

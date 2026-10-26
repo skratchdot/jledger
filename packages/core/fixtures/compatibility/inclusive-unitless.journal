@@ -1,0 +1,8 @@
+2024-01-01 Synthetic
+  assets:bank:a  0.10
+  equity:opening
+
+2024-01-01 Synthetic
+  assets:bank  0.20 =* 0.30
+  equity:opening
+

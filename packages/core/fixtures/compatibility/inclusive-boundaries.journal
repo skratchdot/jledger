@@ -1,0 +1,16 @@
+2024-01-01 Synthetic
+  assets  10 USD
+  equity:opening
+
+2024-01-01 Synthetic
+  assets:bankruptcy  10 USD
+  equity:opening
+
+2024-01-01 Synthetic
+  assets:bank:a  1 USD
+  equity:opening
+
+2024-01-01 Synthetic
+  assets:bank  2 USD =* 3 USD
+  equity:opening
+

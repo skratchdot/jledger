@@ -123,7 +123,7 @@ describe('direct total balance assertions', () => {
   );
   it.each([
     '1 USD ==* 1 USD',
-    '1 USD =* 1 USD',
+    '1 USD =** 1 USD',
     '1 USD === 1 USD',
     '1 USD == 1 USD = 1 USD',
     '1 USD == 1 USD @ 2 EUR',

@@ -1,6 +1,7 @@
-# Direct balance assertions
+# Balance assertions
 
-jledger supports hledger-style direct `=` and `==` balance assertions on postings
+jledger supports hledger-style direct `=` / `==` and single-commodity inclusive
+`=*` balance assertions on postings
 with an explicit amount, using supported [amount formats](amount-formats.md):
 
 ```journal
@@ -18,8 +19,8 @@ never creates an adjustment or changes a posting amount. A failed assertion give
 the original posting file/line, account, expected quantity, and calculated quantity.
 Every report is disabled for the entire import. A failed total check also lists up
 to five other nonzero balances and counts any remainder; all extras participate in
-validation. Transaction details identify the direct/all-commodity scope of a valid
-total check and retain the original source.
+validation. Transaction details identify the scope of valid total and inclusive
+checks and retain the original source.
 
 ## Semantics
 
@@ -41,6 +42,13 @@ total check and retain the original source.
   still excluded. Quantities from different commodities never offset each other.
   Zero balances in other commodities and an absent asserted zero balance are valid.
   Use `==` when a bank/credit statement should describe the complete commodity set.
+- Inclusive `=*` checks the asserted commodity in **this account and all its
+  descendants**, after the posting. Names match at colon boundaries: `assets:bank`
+  includes `assets:bank:checking` but excludes `assets:bankruptcy`, its parents and
+  siblings. Other commodities are unchecked. Direct and descendant quantities in
+  the same commodity can offset each other; distinct commodities never do. This
+  check does not depend on the Accounts view's direct/inclusive display option.
+  The `*` must directly follow `=`; spaced `= *` is rejected, as in hledger.
 - Comparisons use exact decimal arithmetic. There is no rounding, tolerance, or
   floating-point comparison; `9.90` equals `9.900`, but `0.004` does not equal `0.00`.
 - Running balances cover all selected roots and expanded include children. Filters
@@ -54,10 +62,20 @@ nonzero-commodity set is updated as postings are processed. The first total chec
 scans that account's commodity map; repeated checks use the set's size and inspect
 only the bounded diagnostic sample. Plain-only accounts allocate no such set.
 
+For `=*`, collecting posting references also records checked accounts and their
+asserted commodities.
+Each distinct posting account caches its matching checked ancestors using exact
+colon boundaries. The chronological pass updates only those scopes and commodities;
+it never sums all account maps for each check or rolls up an inclusive subtotal
+again. Matching paths, scope maps and cached references add temporary memory;
+processing cost grows with the number of checked ancestors of each posting. Journals
+with no inclusive assertions skip this path. This is not a new depth/memory SLA.
+
 ## Unsupported forms
 
-Balance assignments (an omitted posting amount before `=` or `==`), inclusive
-assertions (`=*`, `==*`), costs and expressions remain errors.
+Balance assignments (an omitted posting amount before an assertion operator),
+total inclusive assertions (`==*`), costs and expressions remain errors. `==*` needs
+separate compatibility work; do not substitute a direct `==` or partial `=*` check.
 Grouped/comma quantities require a compatible [explicit amount format](amount-formats.md)
 on both sides; undeclared grouping is not guessed. These forms change semantics and are never treated
 as plain assertions or ignored. Unsupported format directives, secondary/continuation posting dates and other
@@ -72,7 +90,7 @@ Sampled differences are explicit rather than hidden behind a parity claim:
 
 | Case                                                                                | hledger / jledger                   | Ledger 3.3.2                                                           |
 | ----------------------------------------------------------------------------------- | ----------------------------------- | ---------------------------------------------------------------------- |
-| Direct total `==` assertions                                                        | Supported with explicit amounts     | Sampled forms rejected                                                 |
+| Direct total `==` and partial inclusive `=*` assertions                             | Supported with explicit amounts     | Sampled forms rejected                                                 |
 | A later-dated assertion appears before an earlier opening transaction in the source | Checks in date order; sample passes | Checks during file reading; sample fails                               |
 | A USD assertion on a new EUR posting in an account holding USD                      | Checks USD alone; sample passes     | Sample fails because the other commodity is also relevant to its check |
 
@@ -86,24 +104,43 @@ separately; no currency conversion occurs.
 
 Coverage also includes same-account split postings, direct account/subaccount
 separation, exact precision failures, commodityless assertions, selected includes,
-direct total assertions, and deliberate rejection of assignment/inclusive forms. Unit tests cover
-large quantities beyond JavaScript's safe integer range and unsupported forms.
+direct total and partial inclusive assertions, and deliberate rejection of
+assignments/total-inclusive forms. Unit tests cover large quantities beyond JavaScript's safe integer range and unsupported forms.
 Browser tests verify successful inspection, failure disabling reports, the existing
 200,000-transaction regression, and a 24,000-transaction include bundle with a
 checked bank balance at the start of each month.
 
 ## Total assertion evidence
 
-The 145-case corpus adds 14 total-assertion cases and promotes the original total
-sample to supported status. Accepted hledger captures compare complete postings and
+The total-assertion slice brought the corpus to 145 cases, adding 14 cases and
+promoting the original total sample to supported status. Accepted hledger captures compare complete postings and
 exact direct balances; Ledger rejection is explicitly declared for every supported
 `==` fixture. Failure cases separately record reference acceptance. The checks cover
 other nonzero/zero commodities, unitless balances, direct/descendant scope, absent
 zero targets, quotes/formats, aliases/includes, posting-date order, exact precision
-and continued assignment/inclusive rejection. Only the promoted original total
+and assignment/inclusive rejection at that stage. Partial inclusive support is
+described below. Only the promoted original total
 capture changes among the previous 131 cases.
 
 Ledger 3.3.2 rejects the sampled `==` forms even for a simple single-commodity
 account. This feature establishes the documented hledger subset, not Ledger total
 assertion interoperability. Report-zero omission remains a general corpus gap;
 supported zero-check samples have later nonzero activity for full balance capture.
+
+## Inclusive assertion evidence
+
+The corpus now contains 161 cases: 16 new inclusive cases and the promoted
+`assertion-inclusive` sample. Complete accepted projections compare postings and
+exact direct balances with hledger 1.52; Ledger 3.3.2 rejection is explicit for each
+supported `=*` case. The checked values are running inclusive balances, distinct
+from the corpus's final direct reports. Failure cases have acceptance-only evidence.
+
+Coverage includes nested/overlapping scopes, exact prefix boundaries, other and
+unitless commodities, absent zero targets, inferred amounts, date/source ordering,
+quoted formats, aliases/includes, exact failures, and assignment/operator rejection.
+Core tests additionally cover large quantities and source retention. Production
+browser tests inspect scope and failures and import a synthetic five-file bundle
+with 12,000 purchases and four checked parent statements, exact totals, bounded
+rows, responsive input and final source drill-down. This is regression evidence,
+not a device-wide performance guarantee. Among the previous 145 reference cases,
+only the promoted sample's hledger capture changes.
