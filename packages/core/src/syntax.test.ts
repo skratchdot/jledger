@@ -134,7 +134,7 @@ describe('source-preserving journal syntax', () => {
       'commodity "unterminated\n',
       '2026-02-30 Invalid date\n  a  1 USD\n  b\n',
       '2026-01-01 Cost\n  a  1 USD @ 2 EUR\n  b\n',
-      '2026-01-01 Total assertion\n  a  1 USD == 2 USD\n  b\n',
+      '2026-01-01 Total assertion\n  a  1 USD ==* 2 USD\n  b\n',
     ]) {
       assertLossless(text);
       const journal = parseJournal([{ name: 'test.journal', text }]);

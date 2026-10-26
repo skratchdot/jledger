@@ -1117,7 +1117,11 @@ export function Explorer() {
                     {p.balanceAssertion && (
                       <small>
                         {' '}
-                        · balance checked: {formatAmount(p.balanceAssertion)}
+                        · balance checked
+                        {p.balanceAssertionTotal
+                          ? ' (direct account, all commodities)'
+                          : ''}
+                        : {formatAmount(p.balanceAssertion)}
                       </small>
                     )}
                   </dd>

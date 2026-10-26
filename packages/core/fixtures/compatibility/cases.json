@@ -100,7 +100,11 @@
   },
   {
     "id": "assertion-total",
-    "supported": false
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
   },
   {
     "id": "assertion-inclusive",
@@ -811,6 +815,91 @@
   },
   {
     "id": "alias-assertion-failure",
+    "supported": false
+  },
+  {
+    "id": "total-extra",
+    "supported": false
+  },
+  {
+    "id": "total-zero-other",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "total-direct",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "total-unitless",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "total-zero-target",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "total-quoted-format",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "total-includes",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    },
+    "sources": ["total-includes.journal", "parts/total-child.journal"]
+  },
+  {
+    "id": "total-posting-order",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "total-wrong",
+    "supported": false
+  },
+  {
+    "id": "total-precision",
+    "supported": false
+  },
+  {
+    "id": "total-assignment",
+    "supported": false
+  },
+  {
+    "id": "total-inclusive",
+    "supported": false
+  },
+  {
+    "id": "total-extra-unitless",
+    "supported": false
+  },
+  {
+    "id": "total-mixed-offset",
     "supported": false
   }
 ]

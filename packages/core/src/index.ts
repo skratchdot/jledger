@@ -81,8 +81,10 @@ export interface Posting {
   date?: string;
   amount: Amount;
   inferred: boolean;
-  /** A single-commodity, direct-account plain = assertion; consult diagnostics for validity. */
+  /** The asserted direct-account commodity balance; consult diagnostics for validity. */
   balanceAssertion?: Amount;
+  /** A == assertion also requires zero balances in every other direct-account commodity. */
+  balanceAssertionTotal?: boolean;
   status: Status;
   source: Location;
 }
@@ -527,31 +529,33 @@ export function parseJournal(sources: Source[]): Journal {
           : '';
         let postingAmountText = amountText;
         let balanceAssertion: Amount | null = null;
+        let balanceAssertionTotal = false;
         if (amountText.includes('=')) {
-          const parts = amountText.split('=');
-          if (parts.length !== 2 || parts[1]!.trimStart().startsWith('*')) {
+          const parts = amountText.match(/^(.*?)(=+)(.*)$/)!;
+          if (parts[2]!.length > 2 || parts[3]!.trimStart().startsWith('*')) {
             error(
               location,
               'balance-assertion-syntax',
-              'Only plain = balance assertions are supported. Total (==) and inclusive (=*) assertions are not supported yet.',
+              'Use direct = or == balance assertions. Inclusive (=*, ==*) and extra assertion operators are not supported yet.',
             );
             continue;
           }
-          postingAmountText = parts[0]!.trim();
+          balanceAssertionTotal = parts[2] === '==';
+          postingAmountText = parts[1]!.trim();
           if (!postingAmountText) {
             error(
               location,
               'balance-assignment',
-              'Balance assignments are not supported yet. Supply an explicit posting amount before =.',
+              'Balance assignments are not supported yet. Supply an explicit posting amount before = or ==.',
             );
             continue;
           }
-          balanceAssertion = parseAmount(parts[1]!.trim(), context);
+          balanceAssertion = parseAmount(parts[3]!.trim(), context);
           if (!balanceAssertion) {
             error(
               location,
               'balance-assertion-syntax',
-              'Use a supported explicit quantity and commodity after =. Costs, expressions and extra assertion operators are not supported. Grouping and comma decimals require explicit supported directives.',
+              'Use a supported explicit quantity and commodity after = or ==. Costs, expressions and extra assertion operators are not supported. Grouping and comma decimals require explicit supported directives.',
             );
             continue;
           }
@@ -570,6 +574,7 @@ export function parseJournal(sources: Source[]): Journal {
         if (balanceAssertion) hasAssertions = true;
         tx.postings.push({
           ...(balanceAssertion ? { balanceAssertion } : {}),
+          ...(balanceAssertionTotal ? { balanceAssertionTotal: true } : {}),
           ...(postingDate ? { date: postingDate } : {}),
           account,
           ...(accountAlias ? { accountAlias } : {}),

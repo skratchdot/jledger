@@ -661,7 +661,35 @@
     ]
   },
   "assertion-total": {
-    "accepted": true
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Total",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Total",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-10"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-10"
+      }
+    ]
   },
   "assertion-inclusive": {
     "accepted": true
@@ -4508,6 +4536,362 @@
     ]
   },
   "alias-assertion-failure": {
+    "accepted": false
+  },
+  "total-extra": {
+    "accepted": false
+  },
+  "total-zero-other": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "EUR",
+        "quantity": "-1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "-1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "EUR",
+        "quantity": "1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Synthetic",
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "EUR",
+        "quantity": "-0.1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "EUR",
+        "quantity": "0.1"
+      },
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "EUR",
+        "quantity": "-0.1"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-2"
+      }
+    ]
+  },
+  "total-direct": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:cash:child",
+        "commodity": "EUR",
+        "quantity": "1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "EUR",
+        "quantity": "-1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "account": "assets:cash:child",
+        "commodity": "EUR",
+        "quantity": "1"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "EUR",
+        "quantity": "-1"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-2"
+      }
+    ]
+  },
+  "total-unitless": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:cash",
+        "commodity": "",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "",
+        "quantity": "-0.1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "",
+        "quantity": "0.1"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "",
+        "quantity": "-0.1"
+      }
+    ]
+  },
+  "total-zero-target": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "0"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "0"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Synthetic",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      }
+    ]
+  },
+  "total-quoted-format": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:cash",
+        "commodity": "Meal Credits",
+        "quantity": "1234.56"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "Meal Credits",
+        "quantity": "-1234.56"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "Meal Credits",
+        "quantity": "1234.56"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "Meal Credits",
+        "quantity": "-1234.56"
+      }
+    ]
+  },
+  "total-includes": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Synthetic",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "0.2"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-0.2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "0.3"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-0.3"
+      }
+    ]
+  },
+  "total-posting-order": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-10"
+      },
+      {
+        "date": "2024-01-03",
+        "description": "Synthetic",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2024-01-03",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "9"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-9"
+      }
+    ]
+  },
+  "total-wrong": {
+    "accepted": false
+  },
+  "total-precision": {
+    "accepted": false
+  },
+  "total-assignment": {
+    "accepted": true
+  },
+  "total-inclusive": {
+    "accepted": true
+  },
+  "total-extra-unitless": {
+    "accepted": false
+  },
+  "total-mixed-offset": {
     "accepted": false
   }
 }
