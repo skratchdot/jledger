@@ -65,10 +65,18 @@ format state is temporary parser state in the worker, not data sent to React.
 
 ## Display, interoperability, and validation
 
-The explorer and CLI still show canonical exact dot-decimal quantities with suffix
-commodities. These declarations control reading; their display precision, grouping,
-and prefix preferences are not applied to reports. Original formatting remains in
-source drill-down. A failed declaration, amount, or assertion disables every report.
+The explorer and CLI share English-style display formatting: comma thousands
+separators, a decimal point, and at least the currency's standard decimal places
+(for example, `1,234.50 USD`, `1,234 JPY`, and `1,234.500 KWD`). Common currency
+symbols appear before the quantity, with a leading minus for negatives, such as
+`-$1,234.50`. Currency codes and custom commodity names remain suffixes. Custom
+commodities receive grouping without extra decimal padding. Additional journal
+precision is always preserved, even for currencies; display never rounds or
+converts quantities to floating-point numbers.
+
+Declarations control reading; their display precision, grouping, and prefix
+preferences are not applied to reports. Original formatting remains in source
+drill-down. A failed declaration, amount, or assertion disables every report.
 
 The pinned corpus now covers explicit marks, inline examples, format blocks, named
 and symbol prefixes, declaration changes, includes, and precision beyond a declared

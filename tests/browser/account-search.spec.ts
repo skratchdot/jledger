@@ -14,7 +14,7 @@ async function openAccounts(page: Page) {
   await expect(page.getByRole('table')).toContainText('Food');
   await page.getByRole('button', { name: /Accounts/ }).click();
   await expect(
-    page.getByRole('button', { name: 'assets:bank 13 USD', exact: true }),
+    page.getByRole('button', { name: 'assets:bank 13.00 USD', exact: true }),
   ).toBeVisible();
   return buffer;
 }
@@ -36,11 +36,11 @@ test('account search reveals folded matches and full-balance ancestor context in
     page.getByRole('status', { name: 'Account search results' }),
   ).toHaveText('1 matching account · 2 ancestor rows');
   const bank = page.getByRole('button', {
-    name: 'assets:bank · ancestor 13 USD',
+    name: 'assets:bank · ancestor 13.00 USD',
     exact: true,
   });
   await expect(bank).toBeVisible();
-  await expect(bank).toHaveAttribute('title', /direct postings: 8 USD/);
+  await expect(bank).toHaveAttribute('title', /direct postings: 8.00 USD/);
   await expect(
     page.getByRole('button', { name: 'Collapse assets:bank', exact: true }),
   ).toBeDisabled();
@@ -50,7 +50,7 @@ test('account search reveals folded matches and full-balance ancestor context in
   await expect(page.getByLabel('Search transactions')).toHaveValue('Food');
   await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '2');
   await page
-    .getByRole('button', { name: 'assets:bank:checking 2 USD', exact: true })
+    .getByRole('button', { name: 'assets:bank:checking 2.00 USD', exact: true })
     .click();
   await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '1');
   await expect(page.getByLabel('Search accounts', { exact: true })).toHaveValue(
@@ -67,7 +67,7 @@ test('account search reveals folded matches and full-balance ancestor context in
   await expect(bank).toHaveCount(0);
   await expect(
     page.getByRole('button', {
-      name: 'assets:bank:checking 2 USD',
+      name: 'assets:bank:checking 2.00 USD',
       exact: true,
     }),
   ).toBeVisible();
@@ -94,7 +94,7 @@ test('account search reveals folded matches and full-balance ancestor context in
   ).toBeVisible();
   await expect(
     page.getByRole('button', {
-      name: 'assets:bank:checking 2 USD',
+      name: 'assets:bank:checking 2.00 USD',
       exact: true,
     }),
   ).toHaveCount(0);
@@ -214,7 +214,7 @@ test('failed reads retain search, successful same-name imports reset it, and off
   );
   await expect(
     page.getByRole('button', {
-      name: 'assets:bank:checking 2 USD',
+      name: 'assets:bank:checking 2.00 USD',
       exact: true,
     }),
   ).toBeVisible();
@@ -254,7 +254,7 @@ test('failed reads retain search, successful same-name imports reset it, and off
     '',
   );
   await expect(
-    page.getByRole('button', { name: 'assets:bank 13 USD', exact: true }),
+    page.getByRole('button', { name: 'assets:bank 13.00 USD', exact: true }),
   ).toBeVisible();
 });
 

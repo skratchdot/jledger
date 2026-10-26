@@ -19,7 +19,7 @@ test('declared years flow through selected includes, exact reports and source ex
     },
   ]);
   await expect(page.getByLabel('Filtered totals')).toContainText('0.55 USD');
-  await expect(page.getByLabel('Filtered totals')).toContainText('10 USD');
+  await expect(page.getByLabel('Filtered totals')).toContainText('10.00 USD');
   await page.getByLabel('Month', { exact: true }).selectOption('2024-02');
   await expect(page.getByLabel('Filtered totals')).toContainText('0.30 USD');
   await expect(page.getByRole('table')).toHaveAttribute('aria-rowcount', '3');
@@ -67,7 +67,7 @@ test('unanchored headers and secondary posting dates disable every report until 
     mimeType: 'text/plain',
     buffer: Buffer.from('Y2024\n' + text),
   });
-  await expect(page.getByLabel('Filtered totals')).toContainText('2 USD');
+  await expect(page.getByLabel('Filtered totals')).toContainText('2.00 USD');
   await page.getByLabel('Import journal files').setInputFiles({
     name: 'year.journal',
     mimeType: 'text/plain',
