@@ -1,0 +1,6 @@
+alias food = expenses:parent
+include parts/alias-child.journal
+2024-01-01 Parent
+  food  0.10 USD
+  assets:cash
+

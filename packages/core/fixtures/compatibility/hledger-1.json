@@ -3965,5 +3965,549 @@
   },
   "quoted-assertion-failure": {
     "accepted": false
+  },
+  "alias-basic": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Child",
+        "account": "expenses:food:coffee",
+        "commodity": "USD",
+        "quantity": "0.2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Child",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.3"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "account": "expenses:food:coffee",
+        "commodity": "USD",
+        "quantity": "0.2"
+      }
+    ]
+  },
+  "alias-order": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Before",
+        "account": "food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Before",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "After",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "After",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.2"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "account": "food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      }
+    ]
+  },
+  "alias-boundaries": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Other",
+        "account": "foodie",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Other",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Case",
+        "account": "Food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Case",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.3"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "account": "Food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "account": "foodie",
+        "commodity": "USD",
+        "quantity": "0.1"
+      }
+    ]
+  },
+  "alias-spaces": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "expenses:food shop:tea",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "account": "expenses:food shop:tea",
+        "commodity": "USD",
+        "quantity": "0.1"
+      }
+    ]
+  },
+  "alias-chain": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      }
+    ]
+  },
+  "alias-duplicate": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "expenses:last",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "account": "expenses:last",
+        "commodity": "USD",
+        "quantity": "0.1"
+      }
+    ]
+  },
+  "alias-end": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Before",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Before",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "After",
+        "account": "food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "After",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.2"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "account": "food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      }
+    ]
+  },
+  "alias-includes": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Child",
+        "account": "expenses:child",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Child",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Parent",
+        "account": "expenses:parent",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Parent",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.2"
+      },
+      {
+        "account": "expenses:child",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "account": "expenses:parent",
+        "commodity": "USD",
+        "quantity": "0.1"
+      }
+    ]
+  },
+  "alias-roots": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "First root",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "First root",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Independent root",
+        "account": "food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Independent root",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.2"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "account": "food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      }
+    ]
+  },
+  "alias-types": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "dépenses:repas",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "account": "dépenses:repas",
+        "commodity": "USD",
+        "quantity": "0.1"
+      }
+    ],
+    "accountTypes": {
+      "A": ["assets:cash"],
+      "L": [],
+      "E": [],
+      "R": [],
+      "X": ["dépenses:repas"],
+      "C": ["assets:cash"],
+      "V": [],
+      "G": []
+    }
+  },
+  "alias-identity": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "account": "food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      }
+    ]
+  },
+  "alias-comment": {
+    "accepted": true
+  },
+  "alias-regex": {
+    "accepted": true
+  },
+  "alias-empty": {
+    "accepted": true
+  },
+  "alias-invalid": {
+    "accepted": true
+  },
+  "alias-assertion": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "First",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "First",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Second",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Second",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.3"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.3"
+      }
+    ]
+  },
+  "alias-assertion-failure": {
+    "accepted": false
   }
 }

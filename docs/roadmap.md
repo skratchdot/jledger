@@ -39,7 +39,7 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    balanced postings, and direct balances against hledger 1.52 and a pinned Ledger
    release; document intentional differences. Prioritize representative journals
    before adding many unrelated features.
-   The initial [corpus v1](conformance.md) now covers 114 synthetic cases with
+   The initial [corpus v1](conformance.md) now covers 131 synthetic cases with
    pinned hledger 1.52 / Ledger 3.3.2 captures and a live differential command.
 2. Add a lossless syntax tree and include graph. The initial read-only,
    [source-preserving line tree](syntax.md) now shares a streaming scanner with
@@ -59,8 +59,10 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    dates now resolve from the transaction year with explicit Ledger differences;
    clock-based year inference remains an error. [Quoted commodity names](quoted-commodities.md)
    now support literal identities, explicit formats and plain assertions with pinned
-   Ledger differences. Broader grouping, assignments and aliases remain compatibility
-   work; canonical report display remains exact.
+   Ledger differences. [Literal account aliases](account-aliases.md) now normalize
+   postings/declarations with source provenance and file-local include scope. Regex
+   aliases, broader grouping and assignments remain compatibility work; canonical
+   report display remains exact.
 4. [Account hierarchy rollups](account-hierarchy.md) now provide exact inclusive
    parents and a direct-posting display option. [Journal-defined account types](account-types.md)
    now drive income/spending, with inheritance, child overrides, source explanations,

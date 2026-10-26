@@ -1,0 +1,6 @@
+alias food = expenses:first
+alias food = expenses:last
+2024-01-01 Synthetic
+  food  0.10 USD
+  assets:cash
+

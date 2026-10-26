@@ -91,7 +91,7 @@ The explorer creates its resolver in the worker on import, uses it for exact
 filtered reports, and returns classification metadata only with on-demand details.
 Changing imports replaces the resolver; no financial configuration is cached on disk.
 
-The [114-case conformance corpus](conformance.md) captures hledger 1.52 classification
+The [131-case conformance corpus](conformance.md) captures hledger 1.52 classification
 queries independently from posting and balance parity. Marked supported cases
 compare jledger's used-account sets for A/L/E/R/X/C/V/G against those captures.
 Ledger 3.3.2 acceptance, postings and direct balances are compared where supported;
@@ -105,3 +105,8 @@ The live runner ignores tool configuration and uses `C.UTF-8` for reliable decod
 
 A configurable account-type UI, general tag queries, statement reports, and broader
 conflicting declaration compatibility remain future work.
+
+[Literal account aliases](account-aliases.md) apply to subsequent account declarations
+as well as postings. Types attach globally to the resulting canonical name; a type
+declared before an alias is not retroactively renamed. Existing conflict diagnostics
+still apply when different source declarations resolve to the same account.

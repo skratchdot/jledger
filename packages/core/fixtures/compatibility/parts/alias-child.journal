@@ -1,0 +1,5 @@
+alias food = expenses:child
+2024-01-01 Child
+  food  0.10 USD
+  assets:cash
+

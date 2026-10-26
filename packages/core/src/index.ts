@@ -1,4 +1,11 @@
 import {
+  AccountAliases,
+  parseAccountAlias,
+  type AccountAliasInfo,
+} from './aliases.js';
+export { MAX_ACCOUNT_ALIASES } from './aliases.js';
+export type { AccountAliasInfo } from './aliases.js';
+import {
   hasAccountTypeTag,
   parseAccountTypeComment,
   type AccountDeclaration,
@@ -68,6 +75,8 @@ export interface Amount {
 export type Status = '' | '*' | '!';
 export interface Posting {
   account: string;
+  /** Present when source-ordered literal aliases matched this posting. */
+  accountAlias?: AccountAliasInfo;
   /** Explicit primary posting date; absent means the transaction date. */
   date?: string;
   amount: Amount;
@@ -158,12 +167,13 @@ export function parseJournal(sources: Source[]): Journal {
     if (!previous) typedDeclarations.set(declaration.account, declaration);
   };
   interface ParsingContext {
+    aliases?: AccountAliases;
     defaultYear?: NonNullable<Transaction['inferredYear']>;
     decimalMark?: DecimalMark;
     commodityFormats: Map<string, CommodityFormat>;
   }
   function parseSource(source: Source, inherited: ParsingContext) {
-    // Years and decimal marks are file-scoped and inherited by includes; commodity formats flow through them.
+    // Years, decimal marks and alias scopes are file-local/inherited; commodity formats flow through includes.
     const context = { ...inherited };
     let commodityBlock: string | undefined;
     let accountBlock: AccountDeclaration | undefined;
@@ -294,6 +304,35 @@ export function parseJournal(sources: Source[]): Journal {
           parseSource(byName.get(child)!, context);
           continue;
         }
+        if (/^alias(?:\s|$)/.test(content)) {
+          const rule = parseAccountAlias(raw, location);
+          if (!rule)
+            error(
+              location,
+              'account-alias',
+              'Use alias OLD = NEW with literal valid account names. Regex aliases, escapes, empty names and inline comments are not supported.',
+            );
+          else {
+            try {
+              context.aliases = (context.aliases ?? new AccountAliases()).with(
+                rule,
+              );
+            } catch (cause) {
+              error(location, 'account-alias-limit', (cause as Error).message);
+            }
+          }
+          continue;
+        }
+        if (/^end aliases(?:\s|$)/.test(content)) {
+          if (raw.trimEnd() !== 'end aliases')
+            error(
+              location,
+              'account-alias',
+              'Use end aliases without other text.',
+            );
+          else delete context.aliases;
+          continue;
+        }
         if (/^(?:Y(?=\s|\d|$)|year(?:\s|$))/.test(content)) {
           const declaration = content.match(/^(?:Y\s*|year\s+)(\d{4})$/);
           if (!declaration || declaration[1] === '0000')
@@ -340,7 +379,7 @@ export function parseJournal(sources: Source[]): Journal {
           continue;
         }
         if (/^account\s+\S/.test(content)) {
-          const account = content.slice('account'.length).trim();
+          let account = content.slice('account'.length).trim();
           if (
             /[[\]()=\t]| {2,}/.test(account) ||
             account.split(':').some((part) => !part.trim())
@@ -351,6 +390,14 @@ export function parseJournal(sources: Source[]): Journal {
               'Invalid or unsupported declared account name.',
             );
             continue;
+          }
+          if (context.aliases) {
+            try {
+              account = context.aliases.resolve(account).account;
+            } catch (cause) {
+              error(location, 'account-alias-limit', (cause as Error).message);
+              continue;
+            }
           }
           accountBlock = { account, source: location };
           journal.accountDeclarations.push(accountBlock);
@@ -451,7 +498,7 @@ export function parseJournal(sources: Source[]): Journal {
         }
         // Split only the first separator; spacing inside quoted commodities is literal.
         const separator = /\t+| {2,}/.exec(body);
-        const account = separator ? body.slice(0, separator.index) : body;
+        let account = separator ? body.slice(0, separator.index) : body;
         if (
           !account ||
           /[[\]()=]/.test(account) ||
@@ -463,6 +510,17 @@ export function parseJournal(sources: Source[]): Journal {
             'Invalid or unsupported account name. Virtual postings are not supported yet.',
           );
           continue;
+        }
+        let accountAlias: AccountAliasInfo | undefined;
+        if (context.aliases) {
+          try {
+            const resolved = context.aliases.resolve(account);
+            account = resolved.account;
+            accountAlias = resolved.accountAlias;
+          } catch (cause) {
+            error(location, 'account-alias-limit', (cause as Error).message);
+            continue;
+          }
         }
         const amountText = separator
           ? body.slice(separator.index + separator[0].length).trim()
@@ -514,6 +572,7 @@ export function parseJournal(sources: Source[]): Journal {
           ...(balanceAssertion ? { balanceAssertion } : {}),
           ...(postingDate ? { date: postingDate } : {}),
           account,
+          ...(accountAlias ? { accountAlias } : {}),
           amount,
           status,
           inferred: !amount,

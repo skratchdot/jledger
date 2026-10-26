@@ -87,7 +87,7 @@ export class JournalEngine {
       ? journal.transactions
           .map((t, id) => ({
             id,
-            text: `${t.description} ${t.code} ${t.postings.map((p) => p.account).join(' ')}`.toLowerCase(),
+            text: `${t.description} ${t.code} ${t.postings.map((p) => (p.accountAlias ? `${p.account} ${p.accountAlias.originalAccount}` : p.account)).join(' ')}`.toLowerCase(),
           }))
           .sort((a, b) =>
             journal.transactions[b.id]!.date.localeCompare(
