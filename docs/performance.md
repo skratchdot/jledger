@@ -63,6 +63,10 @@ parsing or aggregation acceptable.
   adds work for month queries; all-dates/custom-range queries skip that comparison.
   This is not a new latency or memory guarantee.
 - React receives a summary and report aggregates, not the entire transaction set.
+- Undo/redo retains at most 50 recent seven-field configurations across the two
+  history stacks. Nearby typing coalesces into one step; no journal scan or money
+  arithmetic runs in the reducer. Undo/redo changes use existing worker debounce,
+  cancellation and row windows. Snapshot counts do not bound arbitrary string size.
 - Named filter presets retain at most 20 seven-field configurations with 80-character
   names per open journal. Copying/comparing this bounded metadata does not scan
   postings or compute totals on the UI thread. Applying uses the existing worker
@@ -175,3 +179,12 @@ cases exercise linked prior-month navigation, missing-month scope labels, keyboa
 focus, commodity/search/status/account changes, narrow layout and invalid reports.
 The existing 200,000-transaction regression remains a synthetic responsiveness
 check rather than a guarantee for every month-comparison workload.
+
+## Filter history regression
+
+Reducer tests cover complete scope restoration, typing groups, no-op/branch behavior,
+invalid date recovery, bounded long edit/undo/redo sequences and session resets.
+Browser cases exercise native keyboard controls, month/comparison restoration,
+atomic preset application, redo invalidation, failed/cancelled and same-name imports,
+closing, narrow controls and offline refresh with no persisted private history.
+The 200,000-transaction test continues to exercise responsive input during import.

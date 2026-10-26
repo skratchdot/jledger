@@ -137,6 +137,45 @@ cancelled import retains the prior complete journal, current filters and saved
 filters. Clear filters clears optional filter values, not saved presets, and keeps
 the selected commodity.
 
+## Undo and redo filter changes
+
+Use **Undo** and **Redo** in **Filter history** to restore recent report scopes.
+Each step restores all seven fields together: search, account, month shortcut,
+From, Through, commodity and transaction status. Month shortcuts, chart/account
+clicks, clearing filters/chips and applying a named preset are single steps, so
+undoing a month selection also restores its date bounds. Month comparisons are
+recomputed from the restored scope by the worker.
+
+Consecutive edits in the same search/date field group while they are no more than
+750 ms apart. A pause or another filter action starts a new step. A typing group
+that returns to its starting scope disappears from history. No-op changes do not
+add entries. A new change after Undo discards the redo branch. Up to 50 recent
+steps are retained; older configurations age out as new changes are recorded.
+
+The buttons support normal Tab/Enter/Space navigation and retain focus when a
+history boundary is reached. Native text-editing shortcuts keep their normal input
+behavior. Invalid date ranges are reversible: Undo can recover the previous valid
+scope, while Redo restores the invalid range and its report-hiding correction state.
+History does not bypass journal validation.
+
+Saved preset contents, account search/folds, chart/table display, view choice and
+scroll position stay outside report history. Applying a preset is undoable without
+changing that preset. Clearing active filters leaves their earlier values
+recoverable through history for the open session.
+
+History belongs to the current journal. A committed replacement, even with the
+same file names or with journal diagnostics, clears both directions. Closing or
+refreshing clears it too. Failed reads and cancelled imports retain it alongside
+the committed journal. Values typed during an import retain the existing commit
+rules, but the replacement starts with a fresh history.
+
+Snapshots contain only small filter configurations; financial matching and totals
+still run through the debounced, cancellable worker query. History stays in memory
+and is absent from URLs, browser storage, service-worker caches and uploads. Filter
+strings can contain private data: closing/refreshing drops application references,
+without guaranteeing secure erasure from browser/OS memory. The step count bounds
+configurations, not the byte size of arbitrarily long search/account strings.
+
 ## Transaction and journal scope
 
 A posting without an explicit date inherits its transaction date. A transaction

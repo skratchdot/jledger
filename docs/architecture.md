@@ -24,6 +24,11 @@ Full-month scopes optionally aggregate the prior calendar month in that same wor
 scan, keeping non-date filters fixed. Exact income/spending deltas and transaction
 counts cross as bounded report metadata. Only current-period IDs become register
 matches, and the existing query generation guard rejects stale comparisons.
+A bounded UI reducer retains up to 50 filter-history steps, grouping nearby text
+edits and recording complete scope changes atomically. Undo/redo reuse the same
+worker query/cancellation path; successful journal commits clear both stacks while
+failed/cancelled replacements retain them. History contains configurations only
+and is never persisted.
 Active filter chips and bounded named presets copy only the seven-field report
 configuration on the UI thread. Presets are scoped to the worker's successful-load
 revision, so replacing/reloading a journal resets them even with identical names.

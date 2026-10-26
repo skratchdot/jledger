@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { ACCOUNT_TYPE_LABELS, formatAmount, type Source } from '@jledger/core';
 import demo from '@jledger/examples/demo.journal?raw';
 import { useJournal } from './use-journal';
+import { useFilterHistory } from './filter-history';
 import { dateRangeError, monthBounds, type Filters } from './report-filters';
 import { ActiveFilters, type FilterChip } from './components/active-filters';
 import { SavedFilters } from './components/saved-filters';
@@ -18,13 +19,14 @@ function metric(value: string, commodity: string) {
 }
 
 export function Explorer() {
-  const [query, setQuery] = useState(''),
-    [account, setAccount] = useState(''),
-    [month, setMonth] = useState(''),
-    [dateFrom, setDateFrom] = useState(''),
-    [dateTo, setDateTo] = useState(''),
-    [commodity, setCommodity] = useState(''),
-    [status, setStatus] = useState('all');
+  const history = useFilterHistory();
+  const filters = history.filters;
+  const { query, account, month, dateFrom, dateTo, commodity, status } =
+    filters;
+  const setQuery = (value: string) => history.change({ query: value }, 'query');
+  const setAccount = (value: string) => history.change({ account: value });
+  const setCommodity = (value: string) => history.change({ commodity: value });
+  const setStatus = (value: string) => history.change({ status: value });
   const [view, setView] = useState<'overview' | 'accounts'>('overview');
   const [spendingDisplay, setSpendingDisplay] = useState<'charts' | 'tables'>(
     'charts',
@@ -52,15 +54,6 @@ export function Explorer() {
       ),
     [],
   );
-  const filters = {
-    query,
-    account,
-    month,
-    dateFrom,
-    dateTo,
-    commodity,
-    status,
-  };
   const invalidDateRange = dateRangeError(dateFrom, dateTo);
   const engine = useJournal(filters, range, accountRange, includeSubaccounts);
   const {
@@ -106,27 +99,23 @@ export function Explorer() {
   const fileInput = useRef<HTMLInputElement>(null);
   const folderInput = useRef<HTMLInputElement>(null);
   function resetFilters() {
-    setQuery('');
-    setAccount('');
-    setMonth('');
-    setDateFrom('');
-    setDateTo('');
-    setStatus('all');
+    history.change({
+      query: '',
+      account: '',
+      month: '',
+      dateFrom: '',
+      dateTo: '',
+      status: 'all',
+    });
     setSelected(null);
   }
   function applyFilters(next: Filters) {
-    setQuery(next.query);
-    setAccount(next.account);
-    setMonth(next.month);
-    setDateFrom(next.dateFrom);
-    setDateTo(next.dateTo);
-    setCommodity(next.commodity);
-    setStatus(next.status);
+    history.change(next);
     setSelected(null);
   }
   function clearFilter(filter: FilterChip) {
     if (filter === 'query' || filter === 'account') {
-      if (filter === 'query') setQuery('');
+      if (filter === 'query') history.change({ query: '' });
       else setAccount('');
       searchInput.current?.focus();
     } else if (filter === 'status') {
@@ -139,16 +128,18 @@ export function Explorer() {
     setSelected(null);
   }
   function selectMonth(next: string) {
-    setMonth(next);
     const bounds = next ? monthBounds(next) : { dateFrom: '', dateTo: '' };
-    setDateFrom(bounds.dateFrom);
-    setDateTo(bounds.dateTo);
+    history.change({ month: next, ...bounds });
     setSelected(null);
   }
   function changeDate(which: 'from' | 'through', value: string) {
-    setMonth('');
-    if (which === 'from') setDateFrom(value);
-    else setDateTo(value);
+    history.change(
+      {
+        month: '',
+        ...(which === 'from' ? { dateFrom: value } : { dateTo: value }),
+      },
+      which,
+    );
     setSelected(null);
   }
   function replaceSources(next: Source[]) {
@@ -175,12 +166,17 @@ export function Explorer() {
     if (journalRevision) {
       // Clear the previous scope without erasing input entered during parsing.
       const before = importFilters.current;
-      setQuery((current) => (current === before.query ? '' : current));
-      setAccount((current) => (current === before.account ? '' : current));
-      setMonth((current) => (current === before.month ? '' : current));
-      setDateFrom((current) => (current === before.dateFrom ? '' : current));
-      setDateTo((current) => (current === before.dateTo ? '' : current));
-      setStatus((current) => (current === before.status ? 'all' : current));
+      const nextFilters = {
+        ...filters,
+        query: query === before.query ? '' : query,
+        account: account === before.account ? '' : account,
+        month: month === before.month ? '' : month,
+        dateFrom: dateFrom === before.dateFrom ? '' : dateFrom,
+        dateTo: dateTo === before.dateTo ? '' : dateTo,
+        status: status === before.status ? 'all' : status,
+      };
+      history.reset(nextFilters);
+      importFilters.current = nextFilters;
       setSelected(null);
       setLocal(nextLocal.current);
     }
@@ -579,6 +575,39 @@ export function Explorer() {
                     filters={{ ...filters, commodity: currency }}
                     onClear={clearFilter}
                   />
+                  <div
+                    className="filter-history"
+                    role="group"
+                    aria-label="Filter history"
+                  >
+                    <Button
+                      variant="outline"
+                      disabled={!history.canUndo}
+                      focusableWhenDisabled
+                      aria-label="Undo filter change"
+                      onClick={() => {
+                        history.undo();
+                        setSelected(null);
+                      }}
+                    >
+                      Undo
+                    </Button>
+                    <Button
+                      variant="outline"
+                      disabled={!history.canRedo}
+                      focusableWhenDisabled
+                      aria-label="Redo filter change"
+                      onClick={() => {
+                        history.redo();
+                        setSelected(null);
+                      }}
+                    >
+                      Redo
+                    </Button>
+                    <span className="muted">
+                      Recent changes for this journal
+                    </span>
+                  </div>
                   <SavedFilters
                     key={journalRevision}
                     filters={{ ...filters, commodity: currency }}
