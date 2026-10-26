@@ -108,7 +108,11 @@
   },
   {
     "id": "assertion-inclusive",
-    "supported": false
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
   },
   {
     "id": "assertion-assignment",
@@ -901,5 +905,134 @@
   {
     "id": "total-mixed-offset",
     "supported": false
+  },
+  {
+    "id": "inclusive-descendants",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "inclusive-boundaries",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "inclusive-overlap",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "inclusive-other-commodity",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "inclusive-unitless",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "inclusive-zero",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "inclusive-inferred",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "inclusive-posting-order",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "inclusive-same-date",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "inclusive-quoted-format",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "inclusive-includes",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    },
+    "sources": ["inclusive-includes.journal", "parts/inclusive-child.journal"]
+  },
+  {
+    "id": "inclusive-wrong",
+    "supported": false,
+    "referenceAcceptance": {
+      "hledger": false,
+      "ledger": false
+    }
+  },
+  {
+    "id": "inclusive-precision",
+    "supported": false,
+    "referenceAcceptance": {
+      "hledger": false,
+      "ledger": false
+    }
+  },
+  {
+    "id": "inclusive-assignment",
+    "supported": false,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "inclusive-space",
+    "supported": false,
+    "referenceAcceptance": {
+      "hledger": false,
+      "ledger": false
+    }
+  },
+  {
+    "id": "inclusive-extra-operator",
+    "supported": false,
+    "referenceAcceptance": {
+      "hledger": false,
+      "ledger": false
+    }
   }
 ]

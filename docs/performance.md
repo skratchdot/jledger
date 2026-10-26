@@ -8,13 +8,23 @@ parsing or aggregation acceptable.
 
 - A dedicated module worker owns source text, the parsed journal, a normalized
   search index, sorted transaction IDs, and the current filtered result IDs.
-- Direct assertion validation runs in the worker in effective posting-date order,
+- Assertion validation runs in the worker in effective posting-date order,
   only for journals containing assertions. Total checks lazily index nonzero commodities
   only in accounts using `==`, keeping repeated checks independent of that account's
   full commodity-map size. The first check scans its map; sets add temporary memory.
   Diagnostics show at most five extras plus their remaining count, while validating
   every balance. It retains posting references and effective dates for a stable
   chronological sort and running direct balances; ordinary imports skip this pass.
+- Partial inclusive `=*` assertions index checked account/commodity scopes while
+  collecting posting references.
+  Each distinct posting account caches references to matching checked ancestors at
+  colon boundaries. The chronological pass updates matching scopes without scanning
+  all accounts at every check or building unrequested hierarchy rollups. This adds
+  scope balances and per-account cached references; overlapping
+  checked ancestors increase update work. Imports without inclusive assertions skip
+  that path. A synthetic five-file/12,000-purchase browser case checks four parent
+  statements, exact totals, responsive input, bounded rows and final drill-down;
+  this does not establish a new depth, memory or device-wide latency guarantee.
 - Quoted commodity tokenization and exact-name format lookup stay in the worker
   parser. Amount splitting preserves the original tail rather than rebuilding it.
   Report formatting adds quotes where necessary, without converting quantities to

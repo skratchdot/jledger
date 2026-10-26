@@ -39,7 +39,7 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    balanced postings, and direct balances against hledger 1.52 and a pinned Ledger
    release; document intentional differences. Prioritize representative journals
    before adding many unrelated features.
-   The initial [corpus v1](conformance.md) now covers 145 synthetic cases with
+   The initial [corpus v1](conformance.md) now covers 161 synthetic cases with
    pinned hledger 1.52 / Ledger 3.3.2 captures and a live differential command.
 2. Add a lossless syntax tree and include graph. The initial read-only,
    [source-preserving line tree](syntax.md) now shares a streaming scanner with
@@ -49,16 +49,16 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    an explicit allowed-root policy; broader include syntax and root selection remain.
 3. Implement commodity styles, grouping/decimal marks, balance assertions,
    aliases/default-year rules, and posting/secondary dates with tested semantics.
-   [Direct plain/total assertions](assertions.md) with explicit amounts are now
-   supported and tested against hledger 1.52. Assignments and inclusive forms remain
-   errors; [inline full and month/day primary posting dates](posting-dates.md) now drive
+   [Direct plain/total and partial inclusive assertions](assertions.md) with explicit
+   amounts are now supported and tested against hledger 1.52. Assignments and total
+   inclusive `==*` remain errors; [inline full and month/day primary posting dates](posting-dates.md) now drive
    assertions and month reports. Secondary/continuation dates remain errors. Commodity
    [styles and decimal marks](amount-formats.md) now have an explicit parsing
    subset. [Explicit default years](default-years.md) now resolve month/day headers
    with inherited, file-local include scope and source provenance. Month/day posting
    dates now resolve from the transaction year with explicit Ledger differences;
    clock-based year inference remains an error. [Quoted commodity names](quoted-commodities.md)
-   now support literal identities, explicit formats and plain assertions with pinned
+   now support literal identities, explicit formats and balance assertions with pinned
    Ledger differences. [Literal account aliases](account-aliases.md) now normalize
    postings/declarations with source provenance and file-local include scope. Regex
    aliases, broader grouping and assignments remain compatibility work; canonical

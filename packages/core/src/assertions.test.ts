@@ -104,7 +104,7 @@ describe('plain balance assertions', () => {
 
   it.each([
     ['10 USD === 10 USD', 'balance-assertion-syntax'],
-    ['10 USD =* 10 USD', 'balance-assertion-syntax'],
+    ['10 USD =** 10 USD', 'balance-assertion-syntax'],
     ['10 USD ==* 10 USD', 'balance-assertion-syntax'],
     ['= 10 USD', 'balance-assignment'],
     ['10 USD =', 'balance-assertion-syntax'],

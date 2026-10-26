@@ -3895,5 +3895,53 @@
   },
   "total-mixed-offset": {
     "accepted": false
+  },
+  "inclusive-descendants": {
+    "accepted": false
+  },
+  "inclusive-boundaries": {
+    "accepted": false
+  },
+  "inclusive-overlap": {
+    "accepted": false
+  },
+  "inclusive-other-commodity": {
+    "accepted": false
+  },
+  "inclusive-unitless": {
+    "accepted": false
+  },
+  "inclusive-zero": {
+    "accepted": false
+  },
+  "inclusive-inferred": {
+    "accepted": false
+  },
+  "inclusive-posting-order": {
+    "accepted": false
+  },
+  "inclusive-same-date": {
+    "accepted": false
+  },
+  "inclusive-quoted-format": {
+    "accepted": false
+  },
+  "inclusive-includes": {
+    "accepted": false
+  },
+  "inclusive-wrong": {
+    "accepted": false
+  },
+  "inclusive-precision": {
+    "accepted": false
+  },
+  "inclusive-assignment": {
+    "accepted": false
+  },
+  "inclusive-space": {
+    "accepted": false
+  },
+  "inclusive-extra-operator": {
+    "accepted": false
   }
 }

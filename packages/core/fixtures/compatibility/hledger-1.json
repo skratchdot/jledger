@@ -692,7 +692,35 @@
     ]
   },
   "assertion-inclusive": {
-    "accepted": true
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Inclusive",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "date": "2026-01-01",
+        "description": "Inclusive",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-10"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-10"
+      }
+    ]
   },
   "assertion-assignment": {
     "accepted": true
@@ -4892,6 +4920,756 @@
     "accepted": false
   },
   "total-mixed-offset": {
+    "accepted": false
+  },
+  "inclusive-descendants": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank:a",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank:b:deposit",
+        "commodity": "USD",
+        "quantity": "0.2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-0.2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "0.3"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-0.3"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "0.3"
+      },
+      {
+        "account": "assets:bank:a",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "account": "assets:bank:b:deposit",
+        "commodity": "USD",
+        "quantity": "0.2"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-0.6"
+      }
+    ]
+  },
+  "inclusive-boundaries": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-10"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bankruptcy",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-10"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank:a",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "account": "assets:bank:a",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "assets:bankruptcy",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-23"
+      }
+    ]
+  },
+  "inclusive-overlap": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank:a",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets",
+        "commodity": "USD",
+        "quantity": "3"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-3"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank:a",
+        "commodity": "USD",
+        "quantity": "4"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-4"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "0"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "0"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets",
+        "commodity": "USD",
+        "quantity": "0"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "0"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets",
+        "commodity": "USD",
+        "quantity": "3"
+      },
+      {
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "account": "assets:bank:a",
+        "commodity": "USD",
+        "quantity": "5"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-10"
+      }
+    ]
+  },
+  "inclusive-other-commodity": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank:a",
+        "commodity": "EUR",
+        "quantity": "1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "EUR",
+        "quantity": "-1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank:b",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank",
+        "commodity": "EUR",
+        "quantity": "1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "EUR",
+        "quantity": "-1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank",
+        "commodity": "EUR",
+        "quantity": "1"
+      },
+      {
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "assets:bank:a",
+        "commodity": "EUR",
+        "quantity": "1"
+      },
+      {
+        "account": "assets:bank:b",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "EUR",
+        "quantity": "-2"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-3"
+      }
+    ]
+  },
+  "inclusive-unitless": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank:a",
+        "commodity": "",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank",
+        "commodity": "",
+        "quantity": "0.2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "",
+        "quantity": "-0.2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank",
+        "commodity": "",
+        "quantity": "0.2"
+      },
+      {
+        "account": "assets:bank:a",
+        "commodity": "",
+        "quantity": "0.1"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "",
+        "quantity": "-0.3"
+      }
+    ]
+  },
+  "inclusive-zero": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank:a",
+        "commodity": "EUR",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "EUR",
+        "quantity": "-0.1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "assets:bank:a",
+        "commodity": "EUR",
+        "quantity": "0.1"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "EUR",
+        "quantity": "-0.1"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-1"
+      }
+    ]
+  },
+  "inclusive-inferred": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Purchase",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Purchase",
+        "account": "assets:bank:a",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "account": "assets:bank:a",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      }
+    ]
+  },
+  "inclusive-posting-order": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank:a",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-10"
+      },
+      {
+        "date": "2024-01-03",
+        "description": "Synthetic",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2024-01-03",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "account": "assets:bank:a",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-9"
+      }
+    ]
+  },
+  "inclusive-same-date": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank:a",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "0"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "0"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "assets:bank:a",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-3"
+      }
+    ]
+  },
+  "inclusive-quoted-format": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank:a",
+        "commodity": "Meal Credits",
+        "quantity": "1000"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "Meal Credits",
+        "quantity": "-1000"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank",
+        "commodity": "Meal Credits",
+        "quantity": "0.01"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "Meal Credits",
+        "quantity": "-0.01"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank",
+        "commodity": "Meal Credits",
+        "quantity": "0.01"
+      },
+      {
+        "account": "assets:bank:a",
+        "commodity": "Meal Credits",
+        "quantity": "1000"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "Meal Credits",
+        "quantity": "-1000.01"
+      }
+    ]
+  },
+  "inclusive-includes": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank:a",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "0.2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-0.2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "0.2"
+      },
+      {
+        "account": "assets:bank:a",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-0.3"
+      }
+    ]
+  },
+  "inclusive-wrong": {
+    "accepted": false
+  },
+  "inclusive-precision": {
+    "accepted": false
+  },
+  "inclusive-assignment": {
+    "accepted": true
+  },
+  "inclusive-space": {
+    "accepted": false
+  },
+  "inclusive-extra-operator": {
     "accepted": false
   }
 }

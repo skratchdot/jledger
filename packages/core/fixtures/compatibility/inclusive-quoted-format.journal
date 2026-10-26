@@ -1,0 +1,10 @@
+commodity "Meal Credits"
+  format 1.000,00 "Meal Credits"
+2024-01-01 Synthetic
+  assets:bank:a  1.000,00 "Meal Credits"
+  equity:opening
+
+2024-01-01 Synthetic
+  assets:bank  0,01 "Meal Credits" =* 1.000,01 "Meal Credits"
+  equity:opening
+

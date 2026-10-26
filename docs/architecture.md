@@ -79,12 +79,16 @@ UI or applied as rounding to financial report quantities.
 [Quoted commodity names](quoted-commodities.md) decode to literal identities in
 the worker parser. Amount splitting preserves their whitespace; formats, assertions
 and report matching share those same keys. Read-only display adds necessary quotes.
-[Direct balance assertions](assertions.md) are checked after successful parsing and
+[Balance assertions](assertions.md) are checked after successful parsing and
 transaction balancing, in effective posting-date order across the expanded bundle.
 Total `==` checks lazily maintain nonzero commodity sets for the checked direct
 accounts. Validation includes every balance, while diagnostic text samples at most
 five extras with an explicit remainder count. Posting metadata retains total scope
 for source drill-down; ordinary/plain postings omit that optional flag.
+Single-commodity inclusive `=*` checks index only asserted accounts/commodities and
+cache each distinct posting account's matching checked ancestors. Running updates
+use those exact colon-boundary matches, avoiding a complete account scan per check.
+Inclusive scope also crosses to transaction details as optional posting metadata.
 [Explicit default years](default-years.md) resolve month/day transaction headers
 from file/include context without consulting the clock. Includes inherit the year
 and restore their parent on return; independent roots start unset. Canonical dates

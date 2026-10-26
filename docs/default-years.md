@@ -88,7 +88,7 @@ No source files, caches or URLs are written by this feature.
 
 ## Pinned reference evidence and Ledger interoperability
 
-The [145-case corpus](conformance.md) includes 18 default-year cases. Supported
+The [161-case corpus](conformance.md) includes 18 default-year cases. Supported
 fixtures compare resolved posting dates, exact quantities and direct balances with hledger 1.52,
 and Ledger 3.3.2 where it accepts the fixture. Includes, independent roots, year
 changes, mixed full/partial headers, boundary years and full posting overrides are

@@ -41,7 +41,7 @@ labelled accordingly; explicit posting dates appear beside the amounts. Date fil
 can show only part of a transaction, while details show every original posting and
 both date contexts. Full-journal direct and inclusive account balances are independent of date filters.
 
-Plain balance assertions also follow effective posting dates. The checker sorts
+Balance assertions also follow effective posting dates. The checker sorts
 individual postings by effective date, retaining expanded source/posting order for
 equal-date ties. Overrides can therefore reorder postings within one transaction.
 Transaction balancing still uses the entire transaction regardless of posting dates.
