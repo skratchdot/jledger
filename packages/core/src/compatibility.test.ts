@@ -282,3 +282,56 @@ describe('zero report arithmetic projection', () => {
     });
   });
 });
+
+describe('exact CSV reference evidence', () => {
+  it('captures residuals beyond JSON and declared display precision in both tools', () => {
+    for (const reference of [hledger, ledger]) {
+      const entry = reference['exact-residual'];
+      expect(entry.postings[0]!.quantity).toBe('0.010000000000000001');
+      expect(entry.balances).toContainEqual({
+        account: 'assets:cash',
+        commodity: 'USD',
+        quantity: '0.000000000000000001',
+      });
+      expect(
+        nonzeroBalances(
+          entry.balances.map((row) => ({ ...row, quantity: '0.00' })),
+        ),
+      ).not.toEqual(nonzeroBalances(entry.balances));
+      expect(reference['exact-unitless'].balances).toContainEqual({
+        account: 'assets:cash',
+        commodity: '',
+        quantity: '0.0000000000000000000000001',
+      });
+      expect(reference['exact-unitless'].postings[0]!.quantity).toBe(
+        '9007199254740993.0000000000000000000000001',
+      );
+      expect(reference['exact-quoted'].postings[0]).toMatchObject({
+        description: 'A "quoted", description',
+        commodity: 'travel miles',
+        quantity: '1.000000000000000000001',
+      });
+    }
+  });
+
+  it('retains effective posting dates and exact inclusive parent residuals', () => {
+    for (const reference of [hledger, ledger]) {
+      const entry = reference['exact-posting-dates'];
+      expect(entry.postings[0]).toMatchObject({
+        date: '2024-02-29',
+        account: 'assets:bank:child',
+        quantity: '0.010000000000000001',
+      });
+      expect(entry.rollups).toContainEqual({
+        account: 'assets:bank:child',
+        commodity: 'USD',
+        quantity: '0.000000000000000001',
+      });
+    }
+    expect(hledger['exact-posting-dates'].rollups).toContainEqual({
+      account: 'assets:bank',
+      commodity: 'USD',
+      quantity: '0.000000000000000001',
+    });
+  });
+});

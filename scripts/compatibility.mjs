@@ -79,7 +79,17 @@ function quantity(text) {
     : value;
 }
 function hledgerAmount(a) {
-  const { decimalMantissa, decimalPlaces } = a.aquantity;
+  const { decimalPlaces } = a.aquantity;
+  let { decimalMantissa } = a.aquantity;
+  if (/[eE]/.test(decimalMantissa)) {
+    const [coefficient, exponent] = decimalMantissa.split(/[eE]/);
+    const zeros = Number(exponent) - (coefficient.split('.')[1]?.length ?? 0);
+    assert(
+      Number.isSafeInteger(zeros) && zeros >= 0 && zeros <= 10000,
+      'Invalid integer JSON mantissa exponent',
+    );
+    decimalMantissa = coefficient.replace('.', '') + '0'.repeat(zeros);
+  }
   const negative = decimalMantissa.startsWith('-');
   const digits = decimalMantissa
     .replace(/^-/, '')
@@ -91,6 +101,97 @@ function hledgerAmount(a) {
     commodity: a.acommodity,
     quantity: quantity(`${negative ? '-' : ''}${value}`),
   };
+}
+// Opt-in exact evidence: print CSV preserves original amount precision, whereas
+// hledger 1.52 JSON quantities round fractional digits after ten places. Retain
+// JSON's effective dates/order, but replace quantities only after checking every
+// CSV posting identity. CSV header dates alone cannot represent posting overrides.
+function exactHledgerPostings(tool, prefix, postings) {
+  const printed = run(tool, [...prefix, 'print', '--round=none', '-O', 'csv']);
+  assert.equal(printed.status, 0, printed.stderr);
+  const [header, ...rows] = csv(printed.stdout);
+  assert.deepEqual(header, [
+    'txnidx',
+    'date',
+    'date2',
+    'status',
+    'code',
+    'description',
+    'comment',
+    'account',
+    'amount',
+    'commodity',
+    'credit',
+    'debit',
+    'posting-status',
+    'posting-comment',
+  ]);
+  assert.equal(rows.length, postings.length, 'CSV/JSON posting count differs');
+  return postings.map((posting, i) => {
+    const row = rows[i];
+    assert.equal(row.length, header.length);
+    assert.deepEqual(
+      [row[5], row[7], row[9]],
+      [posting.description, posting.account, posting.commodity],
+      'CSV/JSON posting identity differs',
+    );
+    assert.match(row[8], /^-?\d+(?:\.\d+)?$/, 'Non-decimal CSV quantity');
+    return { ...posting, quantity: quantity(row[8]) };
+  });
+}
+function exactHledgerStyles(postings) {
+  const scales = new Map();
+  for (const { commodity, quantity: q } of postings) {
+    const scale = q.split('.')[1]?.length ?? 0;
+    scales.set(commodity, Math.max(scales.get(commodity) ?? 0, scale));
+  }
+  // Balances only add/subtract postings: their scale cannot exceed the greatest
+  // posting scale for that commodity. Derive it from the reference, never core.
+  return [...scales].flatMap(([commodity, scale]) => {
+    assert(!/["\\\r\n]/.test(commodity), 'Unsupported style commodity');
+    const example = `1${scale ? `.${'0'.repeat(scale)}` : ''}`;
+    return [
+      '--commodity-style',
+      `${example}${commodity ? ` "${commodity}"` : ''}`,
+    ];
+  });
+}
+function exactHledgerBalances(tool, prefix, styles, options, identities) {
+  const result = run(tool, [
+    ...prefix,
+    'balance',
+    '--no-total',
+    ...options,
+    '--layout=bare',
+    '-O',
+    'csv',
+    ...styles,
+  ]);
+  assert.equal(result.status, 0, result.stderr);
+  const [header, ...rows] = csv(result.stdout);
+  assert.deepEqual(header, ['account', 'commodity', 'balance']);
+  if (identities)
+    assert.equal(
+      rows.length,
+      identities.length,
+      'CSV/JSON report count differs',
+    );
+  return rows.map((row, index) => {
+    assert.equal(row.length, 3);
+    let [account, commodity, q] = row;
+    if (identities) {
+      const identity = identities[index];
+      assert.equal(commodity, identity.commodity);
+      assert.equal(
+        account.replace(/^\u00a0*/, ''),
+        identity.account.split(':').at(-1),
+        'CSV/JSON tree account differs',
+      );
+      account = identity.account;
+    }
+    assert.match(q, /^-?\d+(?:\.\d+)?$/, 'Non-decimal report quantity');
+    return { account, commodity, quantity: quantity(q) };
+  });
 }
 for (const tool of tools) {
   const version = run(tool, ['--version']);
@@ -133,7 +234,7 @@ for (const tool of tools) {
             )
           : JSON.parse(
               parsed.stdout.replace(
-                /("decimalMantissa"\s*:\s*)(-?\d+)/g,
+                /("decimalMantissa"\s*:\s*)(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)/g,
                 '$1"$2"',
               ),
             )
@@ -148,6 +249,15 @@ for (const tool of tools) {
                   })),
                 ),
               );
+      let exactStyles;
+      if (tool.name === 'hledger' && fixture.exactHledger) {
+        assert(
+          !fixture.postingStatuses,
+          'Exact status-query capture is not implemented',
+        );
+        entry.postings = exactHledgerPostings(tool, prefix, entry.postings);
+        exactStyles = exactHledgerStyles(entry.postings);
+      }
       entry.postings.sort((a, b) => a.date.localeCompare(b.date));
       // Some reference row selection uses inclusive totals even with a direct
       // amount expression. Marked fixtures request --empty to retain those rows.
@@ -166,7 +276,8 @@ for (const tool of tools) {
       ]);
       assert.equal(report.status, 0, report.stderr);
       // JSON mantissas and Ledger quantity expressions bypass localized display
-      // punctuation and commodity precision; exact report quantities must not round.
+      // punctuation and commodity precision. JSON still has a ten-place limit;
+      // exactHledger fixtures replace those quantities below with CSV evidence.
       entry.balances =
         tool.name === 'ledger'
           ? csv(report.stdout).map(([account, q, commodity]) => ({
@@ -176,12 +287,17 @@ for (const tool of tools) {
             }))
           : JSON.parse(
               report.stdout.replace(
-                /("decimalMantissa"\s*:\s*)(-?\d+)/g,
+                /("decimalMantissa"\s*:\s*)(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)/g,
                 '$1"$2"',
               ),
             )[0].flatMap(([account, , , amounts]) =>
               amounts.map((a) => ({ account, ...hledgerAmount(a) })),
             );
+      if (exactStyles)
+        entry.balances = exactHledgerBalances(tool, prefix, exactStyles, [
+          '--flat',
+          ...(fixture.emptyBalances ? ['--empty'] : []),
+        ]);
       entry.balances.sort(
         (a, b) =>
           a.account.localeCompare(b.account) ||
@@ -213,12 +329,20 @@ for (const tool of tools) {
               }))
             : JSON.parse(
                 rollup.stdout.replace(
-                  /("decimalMantissa"\s*:\s*)(-?\d+)/g,
+                  /("decimalMantissa"\s*:\s*)(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)/g,
                   '$1"$2"',
                 ),
               )[0].flatMap(([account, , , amounts]) =>
                 amounts.map((a) => ({ account, ...hledgerAmount(a) })),
               );
+        if (exactStyles)
+          entry.rollups = exactHledgerBalances(
+            tool,
+            prefix,
+            exactStyles,
+            ['--tree', '--no-elide', '--empty'],
+            entry.rollups,
+          );
         entry.rollups.sort(
           (a, b) =>
             a.account.localeCompare(b.account) ||
@@ -232,7 +356,10 @@ for (const tool of tools) {
     if (entry.accepted && fixture.postingStatuses && tool.name === 'hledger') {
       const transactions = new Map(
         JSON.parse(
-          parsed.stdout.replace(/("decimalMantissa"\s*:\s*)(-?\d+)/g, '$1"$2"'),
+          parsed.stdout.replace(
+            /("decimalMantissa"\s*:\s*)(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)/g,
+            '$1"$2"',
+          ),
         ).map((transaction) => [String(transaction.tindex), transaction]),
       );
       entry.statusPostings = {};
@@ -246,7 +373,10 @@ for (const tool of tools) {
         ]);
         assert.equal(result.status, 0, result.stderr);
         entry.statusPostings[status] = JSON.parse(
-          result.stdout.replace(/("decimalMantissa"\s*:\s*)(-?\d+)/g, '$1"$2"'),
+          result.stdout.replace(
+            /("decimalMantissa"\s*:\s*)(-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?)/g,
+            '$1"$2"',
+          ),
         )
           .flatMap(([, , , posting]) => {
             const transaction = transactions.get(String(posting.ptransaction_));
