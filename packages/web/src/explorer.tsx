@@ -5,6 +5,7 @@ import { useJournal } from './use-journal';
 import { dateRangeError, monthBounds, type Filters } from './report-filters';
 import { ActiveFilters, type FilterChip } from './components/active-filters';
 import { SavedFilters } from './components/saved-filters';
+import { ReportDataTable } from './components/report-data-table';
 import { VirtualRegister } from './components/virtual-register';
 import { VirtualAccounts } from './components/virtual-accounts';
 import { Button } from './components/ui/button';
@@ -25,6 +26,9 @@ export function Explorer() {
     [commodity, setCommodity] = useState(''),
     [status, setStatus] = useState('all');
   const [view, setView] = useState<'overview' | 'accounts'>('overview');
+  const [spendingDisplay, setSpendingDisplay] = useState<'charts' | 'tables'>(
+    'charts',
+  );
   const [includeSubaccounts, setIncludeSubaccounts] = useState(true);
   const [offline, setOffline] = useState(false),
     [local, setLocal] = useState(false);
@@ -566,13 +570,47 @@ export function Explorer() {
                               <small>Matching your filters</small>
                             </div>
                           </section>
-                          <section className="chart-grid">
+                          <div
+                            className="spending-display"
+                            role="group"
+                            aria-label="Spending display"
+                          >
+                            <Button
+                              variant="outline"
+                              aria-pressed={spendingDisplay === 'charts'}
+                              aria-controls="spending-panels"
+                              onClick={() => setSpendingDisplay('charts')}
+                            >
+                              Charts
+                            </Button>
+                            <Button
+                              variant="outline"
+                              aria-pressed={spendingDisplay === 'tables'}
+                              aria-controls="spending-panels"
+                              onClick={() => setSpendingDisplay('tables')}
+                            >
+                              Tables
+                            </Button>
+                          </div>
+                          <section className="chart-grid" id="spending-panels">
                             <div className="panel chart-panel">
                               <div className="section-title">
                                 <h2>Where it goes</h2>
                                 <span>By expense account</span>
                               </div>
-                              {categories.length ? (
+                              {spendingDisplay === 'tables' ? (
+                                <ReportDataTable
+                                  rows={report.categories}
+                                  caption="Expense categories"
+                                  column="Account"
+                                  commodity={currency}
+                                  label={(row) => row[0]}
+                                  value={(row) => row[1]}
+                                  selected={account}
+                                  onSelect={setAccount}
+                                  busy={busy}
+                                />
+                              ) : categories.length ? (
                                 <div className="bars">
                                   {categories.map(([name, value], i) => (
                                     <Button
@@ -580,6 +618,9 @@ export function Explorer() {
                                       key={name}
                                       onClick={() => setAccount(name)}
                                       aria-label={`Filter ${name}`}
+                                      aria-current={
+                                        account === name ? 'true' : undefined
+                                      }
                                     >
                                       <div className="bar-label">
                                         <span>
@@ -615,8 +656,10 @@ export function Explorer() {
                                 </p>
                               )}
                               <p className="chart-hint">
-                                Top 30 categories. Select one to explore its
-                                transactions. Bar lengths use absolute values.
+                                {spendingDisplay === 'tables'
+                                  ? 'All matching expense accounts, 25 per page. Select an account to explore it and its descendants.'
+                                  : 'Top 30 categories. Select one to explore its transactions. Bar lengths use absolute values.'}{' '}
+                                Net values include refunds.
                               </p>
                             </div>
                             <div className="panel chart-panel">
@@ -624,44 +667,64 @@ export function Explorer() {
                                 <h2>Spending over time</h2>
                                 <span>Monthly</span>
                               </div>
-                              <div className="monthly-chart">
-                                {(() => {
-                                  const data = report.monthly;
-                                  const max = Math.max(
-                                    1,
-                                    ...data.map((d) =>
-                                      Math.abs(Number(d.value)),
-                                    ),
-                                  );
-                                  return data.map((d) => (
-                                    <Button
-                                      key={d.month}
-                                      className={`month-column ${month === d.month ? 'chosen' : ''}`}
-                                      onClick={() =>
-                                        selectMonth(
-                                          month === d.month ? '' : d.month,
-                                        )
-                                      }
-                                      aria-label={`Filter month ${d.month}`}
-                                    >
-                                      <span className="month-value">
-                                        {metric(d.value, currency)}
-                                      </span>
-                                      <div className="column-track">
-                                        <div
-                                          style={{
-                                            height: `${(Math.abs(Number(d.value)) / max) * 100}%`,
-                                          }}
-                                        />
-                                      </div>
-                                      <span>{d.month}</span>
-                                    </Button>
-                                  ));
-                                })()}
-                              </div>
+                              {spendingDisplay === 'tables' ? (
+                                <ReportDataTable
+                                  rows={report.monthly}
+                                  caption="Monthly spending"
+                                  column="Month"
+                                  commodity={currency}
+                                  label={(row) => row.month}
+                                  value={(row) => row.value}
+                                  selected={month}
+                                  toggleSelection
+                                  onSelect={(next) =>
+                                    selectMonth(month === next ? '' : next)
+                                  }
+                                  busy={busy}
+                                />
+                              ) : (
+                                <div className="monthly-chart">
+                                  {(() => {
+                                    const data = report.monthly;
+                                    const max = Math.max(
+                                      1,
+                                      ...data.map((d) =>
+                                        Math.abs(Number(d.value)),
+                                      ),
+                                    );
+                                    return data.map((d) => (
+                                      <Button
+                                        key={d.month}
+                                        className={`month-column ${month === d.month ? 'chosen' : ''}`}
+                                        onClick={() =>
+                                          selectMonth(
+                                            month === d.month ? '' : d.month,
+                                          )
+                                        }
+                                        aria-label={`Filter month ${d.month}`}
+                                        aria-pressed={month === d.month}
+                                      >
+                                        <span className="month-value">
+                                          {metric(d.value, currency)}
+                                        </span>
+                                        <div className="column-track">
+                                          <div
+                                            style={{
+                                              height: `${(Math.abs(Number(d.value)) / max) * 100}%`,
+                                            }}
+                                          />
+                                        </div>
+                                        <span>{d.month}</span>
+                                      </Button>
+                                    ));
+                                  })()}
+                                </div>
+                              )}
                               <p className="chart-hint">
                                 Select a month to focus the explorer. No
-                                currency conversion is applied.
+                                currency conversion is applied. Values follow
+                                the current filters; boundary months may be
+                                partial.
                               </p>
                             </div>
                           </section>
