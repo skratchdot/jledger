@@ -100,8 +100,10 @@ its scope, and every visible total can be traced back to source postings.
 
 - [Previous calendar month comparisons](explorer-filters.md#previous-calendar-month-comparison)
   now show exact income/spending/count changes under shared filters and link back
-  to prior-period transactions. Broader date-period comparisons, longer trends and
-  merchant/category drill-down remain.
+  to prior-period transactions. [Closed custom ranges](explorer-filters.md#previous-equal-length-range-comparison)
+  now compare the immediately preceding equal-length date range with atomic
+  drill-down, history and preset restoration. Longer trends, configurable comparison
+  periods and merchant/category drill-down remain.
 - Cash-flow timelines, recurring-payment exploration, and reconciliation views.
 - Budgets using explicit supported semantics, with actual-vs-plan comparisons.
 - Dashboard filters shared across charts and register; share/export _configuration_

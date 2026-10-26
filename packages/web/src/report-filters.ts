@@ -105,3 +105,20 @@ export function previousMonthFilters(filters: Filters): Filters | null {
   const month = previous.toISOString().slice(0, 7);
   return { ...filters, month, ...monthBounds(month) };
 }
+
+/** Closed custom ranges compare equal UTC calendar-day counts, immediately before. */
+export function previousPeriodFilters(filters: Filters): Filters | null {
+  if (filters.month) return previousMonthFilters(filters);
+  const { dateFrom, dateTo } = filters;
+  if (!dateFrom || !dateTo || dateRangeError(dateFrom, dateTo)) return null;
+  const day = 86400000;
+  const start = Date.parse(`${dateFrom}T00:00:00Z`);
+  const end = Date.parse(`${dateTo}T00:00:00Z`);
+  const previousStart = start - (end - start + day);
+  if (previousStart < Date.parse('0001-01-01T00:00:00Z')) return null;
+  return {
+    ...filters,
+    dateFrom: new Date(previousStart).toISOString().slice(0, 10),
+    dateTo: new Date(start - day).toISOString().slice(0, 10),
+  };
+}

@@ -22,7 +22,7 @@ import {
   dateRangeError,
   InvalidDateRangeError,
   matchesPosting,
-  previousMonthFilters,
+  previousPeriodFilters,
   type Filters,
 } from './report-filters';
 export type { Filters } from './report-filters';
@@ -36,9 +36,13 @@ export interface Summary {
   commodities: string[];
   months: string[];
 }
-export interface MonthComparison {
+export interface PeriodComparison {
   month: string;
   previousMonth: string;
+  dateFrom: string;
+  dateTo: string;
+  previousDateFrom: string;
+  previousDateTo: string;
   income: string;
   spending: string;
   count: number;
@@ -47,7 +51,7 @@ export interface MonthComparison {
   countChange: number;
 }
 export interface Report {
-  comparison?: MonthComparison;
+  comparison?: PeriodComparison;
   count: number;
   income: string;
   spending: string;
@@ -155,7 +159,7 @@ export class JournalEngine {
       monthly = new Map<string, string>();
     let income = '0',
       spending = '0';
-    const previous = previousMonthFilters(filters);
+    const previous = previousPeriodFilters(filters);
     let previousIncome = '0',
       previousSpending = '0',
       previousCount = 0;
@@ -214,6 +218,10 @@ export class JournalEngine {
             comparison: {
               month: filters.month,
               previousMonth: previous.month,
+              dateFrom: filters.dateFrom,
+              dateTo: filters.dateTo,
+              previousDateFrom: previous.dateFrom,
+              previousDateTo: previous.dateTo,
               income: shownPreviousIncome,
               spending: previousSpending,
               count: previousCount,

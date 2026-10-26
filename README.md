@@ -122,6 +122,7 @@ installation is a later milestone.
   with inherited declarations, child overrides, and English-name defaults.
   Transaction details explain the classification source.
 - [Previous-month comparisons](docs/explorer-filters.md#previous-calendar-month-comparison)
+  and [equal-length custom-range comparisons](docs/explorer-filters.md#previous-equal-length-range-comparison)
   show exact income/spending changes under the same filters, with prior-period drill-down.
 - [Filter undo/redo](docs/explorer-filters.md#undo-and-redo-filter-changes) restores
   recent scopes, including complete month shortcuts and preset applications.

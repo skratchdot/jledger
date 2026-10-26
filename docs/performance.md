@@ -70,11 +70,12 @@ parsing or aggregation acceptable.
   queries; already-started projections run synchronously in the worker. Cached
   path text, parent/direct indices and match/context flags add memory. This is not
   a new account-count, latency or memory guarantee.
-- Full-month comparisons check current and previous posting scopes in the same
-  cancellable worker scan. They reuse the account-type resolver and exact decimal
+- Calendar-month and closed custom-range comparisons check current and previous
+  posting scopes in the same cancellable worker scan. They reuse the account-type resolver and exact decimal
   operations; only the current period populates register IDs/category/month data.
   Previous totals, deltas and count add bounded metadata. Matching two date scopes
-  adds work for month queries; all-dates/custom-range queries skip that comparison.
+  adds work for eligible queries; all-dates and open-ended ranges skip that
+  comparison.
   This is not a new latency or memory guarantee.
 - Effective posting status adds a marker/inheritance comparison to the shared
   worker posting matcher and the existing bounded register previews. Header-only
@@ -208,3 +209,14 @@ Browser cases exercise native keyboard controls, month/comparison restoration,
 atomic preset application, redo invalidation, failed/cancelled and same-name imports,
 closing, narrow controls and offline refresh with no persisted private history.
 The 200,000-transaction test continues to exercise responsive input during import.
+
+## Custom-range comparison regression
+
+Worker tests cover inclusive equal-length boundaries, leap years, UTC days, year
+limits, effective split posting dates, same-posting account/commodity/status scopes,
+exact large/unitless quantities, refunds, empty prior periods and cancellation.
+Production-browser cases cover prior-range drill-down, atomic undo, preset reuse,
+invalid/open-ended scopes, source details, focus and narrow layout. The existing
+200,000-transaction regression also exercises closed ranges. Comparisons still
+share one cancellable worker scan and add bounded metadata, without a new query
+index or streaming/latency/memory guarantee.
