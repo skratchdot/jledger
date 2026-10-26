@@ -988,6 +988,16 @@ export function Explorer() {
                   <dd>
                     {formatAmount(p.amount)}
                     {p.inferred && <small> inferred</small>}
+                    {p.accountAlias && (
+                      <small>
+                        {' '}
+                        · original account {p.accountAlias.originalAccount};
+                        aliases from{' '}
+                        {p.accountAlias.sources
+                          .map((source) => `${source.file}:${source.line}`)
+                          .join(', ')}
+                      </small>
+                    )}
                     <small>
                       {' '}
                       ·{' '}

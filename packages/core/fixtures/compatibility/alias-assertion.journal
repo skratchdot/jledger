@@ -1,0 +1,9 @@
+alias food = expenses:food
+2024-01-01 First
+  food  0.10 USD = 0.10 USD
+  assets:cash
+
+2024-01-01 Second
+  expenses:food  0.20 USD = 0.30 USD
+  assets:cash
+

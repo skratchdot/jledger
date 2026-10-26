@@ -33,7 +33,8 @@ and explicitly captured direct/inclusive balances have parity evidence.
 | Balance assignments, total/inclusive assertions          | Error                                                                                                                                                        |
 | Virtual/balanced virtual postings                        | Error                                                                                                                                                        |
 | Secondary dates, automatic/periodic transactions         | Error                                                                                                                                                        |
-| Aliases, apply blocks, expressions                       | Error                                                                                                                                                        |
+| Literal account aliases                                  | Source-ordered segment prefixes with file/include scope; see [account aliases](account-aliases.md)                                                           |
+| Regex aliases, apply blocks, expressions                 | Error                                                                                                                                                        |
 
 Include graph roots are inferred from selected files without incoming includes;
 other selected sources are expanded once at their directive location. This differs

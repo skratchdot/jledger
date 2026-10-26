@@ -15,6 +15,11 @@ parsing or aggregation acceptable.
   parser. Amount splitting preserves the original tail rather than rebuilding it.
   Report formatting adds quotes where necessary, without converting quantities to
   floats or adding a new scan/transfer of journals.
+- Literal aliases use immutable file-local scopes and cached account resolution
+  in the worker. Each distinct input is checked once per rule context against at
+  most 128 active rules. Shared provenance avoids copying directive lists per
+  posting; original-name search adds text to the existing index. Caches and metadata
+  add memory; no aliased-journal latency or memory SLA is established.
 - Explicit format state stays in the worker parser. Compiled amount patterns are
   reused; normalization removes grouping with string operations and uses exact
   decimals. Includes share commodity formats while copying the small file context.

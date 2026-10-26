@@ -1,0 +1,9 @@
+2024-01-01 Before
+  food  0.10 USD
+  assets:cash
+
+alias food = expenses:food
+2024-01-01 After
+  food  0.10 USD
+  assets:cash
+

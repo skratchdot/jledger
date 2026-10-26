@@ -1,0 +1,6 @@
+alias meals = expenses:food
+alias food = meals
+2024-01-01 Synthetic
+  food  0.10 USD
+  assets:cash
+

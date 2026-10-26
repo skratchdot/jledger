@@ -1,0 +1,13 @@
+alias food = expenses:food
+2024-01-01 Synthetic
+  food  0.10 USD
+  assets:cash
+
+2024-01-01 Other
+  foodie  0.10 USD
+  assets:cash
+
+2024-01-01 Case
+  Food  0.10 USD
+  assets:cash
+

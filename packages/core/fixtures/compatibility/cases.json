@@ -729,5 +729,88 @@
   {
     "id": "quoted-assertion-failure",
     "supported": false
+  },
+  {
+    "id": "alias-basic",
+    "supported": true
+  },
+  {
+    "id": "alias-order",
+    "supported": true
+  },
+  {
+    "id": "alias-boundaries",
+    "supported": true
+  },
+  {
+    "id": "alias-spaces",
+    "supported": true
+  },
+  {
+    "id": "alias-chain",
+    "supported": true,
+    "ledgerParity": false
+  },
+  {
+    "id": "alias-duplicate",
+    "supported": true
+  },
+  {
+    "id": "alias-end",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "alias-includes",
+    "supported": true,
+    "sources": ["alias-includes.journal", "parts/alias-child.journal"],
+    "ledgerParity": false
+  },
+  {
+    "id": "alias-roots",
+    "supported": true,
+    "sources": ["alias-roots.journal", "parts/alias-root.journal"],
+    "referenceFiles": ["alias-roots.journal", "parts/alias-root.journal"],
+    "ledgerParity": false
+  },
+  {
+    "id": "alias-types",
+    "supported": true,
+    "accountTypes": true
+  },
+  {
+    "id": "alias-identity",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "alias-comment",
+    "supported": false
+  },
+  {
+    "id": "alias-regex",
+    "supported": false
+  },
+  {
+    "id": "alias-empty",
+    "supported": false
+  },
+  {
+    "id": "alias-invalid",
+    "supported": false
+  },
+  {
+    "id": "alias-assertion",
+    "supported": true
+  },
+  {
+    "id": "alias-assertion-failure",
+    "supported": false
   }
 ]

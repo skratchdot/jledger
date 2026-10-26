@@ -103,6 +103,8 @@ installation is a later milestone.
   examples/blocks, and three-digit grouping, with canonical exact report amounts.
   [Quoted commodity names](docs/quoted-commodities.md) support literal spaces/digits
   in amounts, declarations, formats and plain assertions.
+- [Literal account aliases](docs/account-aliases.md) normalize posting/declaration
+  names with include scope, original-name search and source explanations.
 - [Plain balance assertions](docs/assertions.md) with expected/calculated diagnostics;
   a failed assertion disables every report. Assignments and total/inclusive forms
   remain unsupported.

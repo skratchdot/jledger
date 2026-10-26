@@ -37,6 +37,11 @@ Filters and local-server mode reset only on commit. Reading progress is batched 
 file count; parsing/indexing is an indeterminate phase. Keeping the old journal raises
 peak memory during replacement, and this does not make parsing incremental.
 
+[Literal aliases](account-aliases.md) resolve postings and declarations in the
+worker parser before validation/classification. File-local immutable scopes cache
+canonical names and shared original-name/directive provenance. Original names also
+enter the worker text index; account filtering remains canonical.
+
 [Account rollups](account-hierarchy.md) are computed from direct balances in core
 and built in the worker, together with a subtree/fold index. Summaries expose counts;
 the virtualized account list requests bounded row windows for inclusive or direct

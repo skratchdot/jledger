@@ -85,7 +85,7 @@ are evidence from the tools, never generated from jledger's own expected results
 ## Selected-source includes and remaining scope
 
 The [source-preserving syntax layer](syntax.md) and [selected-source include graph](includes.md)
-are implemented. The corpus now contains 114 cases, including posting and direct
+are implemented. The corpus now contains 131 cases, including posting and direct
 balance parity for simple and nested includes, plus acceptance-only captures for
 missing and repeated includes. Included sources are supplied explicitly in fixture
 metadata; references read the root journal and follow its real relative paths.
@@ -185,3 +185,14 @@ comparison; the original 96 captures remain unchanged. Inline-style and include-
 quantity differences use the existing explicit `ledgerParity: false` contract.
 Unsupported empty, malformed, escaped, delimiter-containing names and costs retain
 acceptance-only evidence and disable every jledger report.
+
+## Literal account aliases
+
+The [alias slice](account-aliases.md) adds 17 cases covering exact/descendant
+matching, source order, case and name boundaries, multiword names, duplicates,
+chaining, clearing, include scope, independent roots, declarations and assertions.
+Three `ledgerParity: false` cases capture Ledger's different chaining and scope
+semantics. Two supported cases explicitly mark Ledger rejection of end/identity
+forms. Unsupported regex, empty-target, semicolon and invalid-name cases retain
+acceptance-only evidence. Previous captures remain unchanged; the corpus now has
+131 cases, with original names and provenance checked separately in core/browser tests.
