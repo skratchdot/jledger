@@ -183,6 +183,21 @@ pnpm build                   # restore the root-path build for jledger server
 `pnpm typecheck` prepares core's declarations. On a fresh checkout, run `pnpm build`
 before the first typecheck so TanStack can generate its route tree.
 
+CI and Pages run browser tests in the official Playwright container, with browsers
+and Linux dependencies preinstalled. The shared
+[image resolver](.github/workflows/playwright-image.yml) derives the image tag from
+the exact `@playwright/test` version in `package.json`; no image tag needs updating
+when running `pnpm update @playwright/test`. Commit both `package.json` and
+`pnpm-lock.yaml` after an update. Frozen lockfile installs enforce consistency,
+and the resolver rejects version ranges. A new Playwright release must have its
+matching `-noble` image published before CI can run it. Node still follows
+`.node-version`, independently of the image's bundled Node version.
+
+All lint, type, unit, compatibility, formatting, root browser, and subpath browser
+checks remain enabled. Superseded pull-request CI runs are canceled automatically.
+Container pulls still take time on fresh runners; compare total job duration when
+measuring the improvement.
+
 ## Static deployment
 
 The [live explorer](https://skratchdot.github.io/jledger/) updates automatically

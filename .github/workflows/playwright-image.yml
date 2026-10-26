@@ -1,0 +1,29 @@
+name: resolve Playwright image
+on:
+  workflow_call:
+    outputs:
+      image:
+        description: Playwright image matching the pinned project dependency
+        value: ${{ jobs.resolve.outputs.image }}
+permissions:
+  contents: read
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.image.outputs.image }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: Resolve image from package.json
+        id: image
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { appendFileSync, readFileSync } from 'node:fs';
+          const { devDependencies } = JSON.parse(readFileSync('package.json', 'utf8'));
+          const version = devDependencies['@playwright/test'];
+          if (!/^\d+\.\d+\.\d+$/.test(version)) {
+            throw new Error('Pin @playwright/test to an exact stable version for the CI image.');
+          }
+          appendFileSync(process.env.GITHUB_OUTPUT, `image=mcr.microsoft.com/playwright:v${version}-noble\n`);
+          NODE
