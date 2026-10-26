@@ -253,7 +253,7 @@ export function parseJournal(sources: Source[]): Journal {
             );
             continue;
           }
-          const parsed = parsePostingDateComment(comment);
+          const parsed = parsePostingDateComment(comment, tx.date);
           if (parsed.error) {
             error(location, 'posting-date', parsed.error);
             continue;

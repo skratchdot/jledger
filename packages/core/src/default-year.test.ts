@@ -163,9 +163,9 @@ describe('explicit default years', () => {
     expect(journal.diagnostics).toEqual([]);
     expect(journal.transactions[0]!.date).toBe('2024-02-29');
   });
-  it('keeps partial posting and secondary dates unsupported even with a declared year', () => {
+  it('keeps secondary dates unsupported even with a declared year', () => {
     const journal = parse(
-      'Y2024\n2/29 Synthetic\n  expenses:food  1 USD ; [3/1]\n  assets:cash',
+      'Y2024\n2/29 Synthetic\n  expenses:food  1 USD ; [3/1=3/2]\n  assets:cash',
     );
     expect(journal.diagnostics).toContainEqual(
       expect.objectContaining({ code: 'posting-date', line: 3 }),

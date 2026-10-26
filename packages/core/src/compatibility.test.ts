@@ -82,11 +82,21 @@ describe('compatibility corpus v1 (captured hledger 1.52 / Ledger 3.3.2)', () =>
           );
           continue;
         }
-        expect(
-          tool === 'ledger' && fixture.ledgerUsesTransactionDates
-            ? projection(true)
-            : postings,
-        ).toEqual('postings' in expected ? expected.postings : undefined);
+        if (tool === 'ledger' && fixture.ledgerPostingDatesDiffer) {
+          // Ledger uses the active default year for partial brackets; hledger
+          // uses the transaction year. Keep quantity and balance parity checked.
+          const captured = 'postings' in expected ? expected.postings : [];
+          expect(captured).not.toEqual(postings);
+          const withoutDates = (rows: typeof postings) =>
+            rows.map(({ date: _date, ...row }) => JSON.stringify(row)).sort();
+          expect(withoutDates(captured)).toEqual(withoutDates(postings));
+        } else {
+          expect(
+            tool === 'ledger' && fixture.ledgerUsesTransactionDates
+              ? projection(true)
+              : postings,
+          ).toEqual('postings' in expected ? expected.postings : undefined);
+        }
         expect(report).toEqual(
           'balances' in expected ? expected.balances : undefined,
         );

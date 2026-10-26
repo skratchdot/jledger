@@ -641,7 +641,35 @@
     "accepted": false
   },
   "posting-date-partial": {
-    "accepted": true
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2026-01-01",
+        "description": "Pending",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "date": "2026-02-01",
+        "description": "Pending",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-2"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "2"
+      }
+    ]
   },
   "posting-date-secondary": {
     "accepted": true
@@ -2672,6 +2700,209 @@
     "accepted": false
   },
   "default-year-posting-partial": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-02-29",
+        "description": "Partial header",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2024-03-01",
+        "description": "Partial header",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "1"
+      }
+    ]
+  },
+  "posting-partial-transaction-year": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2020-02-29",
+        "description": "Explicit header overrides default",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-03-01",
+        "description": "Explicit header overrides default",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      }
+    ]
+  },
+  "posting-partial-no-rollover": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "December",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "January",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.2"
+      },
+      {
+        "date": "2024-02-29",
+        "description": "Dots",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.3"
+      },
+      {
+        "date": "2024-03-01",
+        "description": "Dots",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.3"
+      },
+      {
+        "date": "2024-12-31",
+        "description": "December",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-12-31",
+        "description": "January",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.6"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.6"
+      }
+    ]
+  },
+  "posting-partial-tag": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-03-01",
+        "description": "Tag",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-03-01",
+        "description": "Tag",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      }
+    ]
+  },
+  "posting-partial-invalid-leap": {
     "accepted": true
+  },
+  "posting-partial-assertion": {
+    "accepted": false
+  },
+  "posting-partial-day-only": {
+    "accepted": false
+  },
+  "posting-partial-includes": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2020-01-01",
+        "description": "Parent",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.2"
+      },
+      {
+        "date": "2024-12-31",
+        "description": "Parent",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.2"
+      },
+      {
+        "date": "2025-01-01",
+        "description": "Child",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2028-12-31",
+        "description": "Child",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.3"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.3"
+      }
+    ]
   }
 }

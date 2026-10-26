@@ -56,7 +56,7 @@ test('declared years flow through selected includes, exact reports and source ex
   ).toBe(true);
 });
 
-test('unanchored headers and partial posting dates disable every report until corrected', async ({
+test('unanchored headers and secondary posting dates disable every report until corrected', async ({
   page,
 }) => {
   await page.goto('./');
@@ -81,7 +81,7 @@ test('unanchored headers and partial posting dates disable every report until co
     name: 'year.journal',
     mimeType: 'text/plain',
     buffer: Buffer.from(
-      'Y2024\n2/29 Partial posting\n  expenses:food  1 USD ; [3/1]\n  assets:cash',
+      'Y2024\n2/29 Partial posting\n  expenses:food  1 USD ; [3/1=3/2]\n  assets:cash',
     ),
   });
   await expect(page.getByRole('alert')).toContainText('posting-date');
