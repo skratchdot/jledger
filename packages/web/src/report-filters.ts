@@ -1,4 +1,9 @@
-import { effectivePostingDate, type Posting } from '@jledger/core';
+import {
+  effectivePostingDate,
+  effectivePostingStatus,
+  type Posting,
+  type Status,
+} from '@jledger/core';
 
 export interface Filters {
   query: string;
@@ -11,7 +16,7 @@ export interface Filters {
 }
 export type PostingFilters = Pick<
   Filters,
-  'account' | 'commodity' | 'month' | 'dateFrom' | 'dateTo'
+  'account' | 'commodity' | 'month' | 'dateFrom' | 'dateTo' | 'status'
 >;
 
 function isIsoDate(value: string): boolean {
@@ -59,10 +64,13 @@ export function matchesPosting(
   posting: Posting,
   transactionDate: string,
   filters: PostingFilters,
+  transactionStatus: Status,
 ): boolean {
   if (
     posting.amount.commodity !== filters.commodity ||
-    !matchesAccount(posting.account, filters.account)
+    !matchesAccount(posting.account, filters.account) ||
+    (filters.status !== 'all' &&
+      effectivePostingStatus(posting, transactionStatus) !== filters.status)
   )
     return false;
   const date = effectivePostingDate(posting, transactionDate);

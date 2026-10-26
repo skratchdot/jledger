@@ -167,23 +167,21 @@ export class JournalEngine {
       }
       const entry = this.index[i]!,
         t = this.journal.transactions[entry.id]!;
-      if (
-        (filters.status !== 'all' && t.status !== filters.status) ||
-        !entry.text.includes(query)
-      )
-        continue;
+      if (!entry.text.includes(query)) continue;
       const currentMatches = t.postings.some((p) =>
-        matchesPosting(p, t.date, filters),
+        matchesPosting(p, t.date, filters, t.status),
       );
       const previousMatches =
-        previous && t.postings.some((p) => matchesPosting(p, t.date, previous));
+        previous &&
+        t.postings.some((p) => matchesPosting(p, t.date, previous, t.status));
       if (!currentMatches && !previousMatches) continue;
       if (currentMatches) matches.push(entry.id);
       if (previousMatches) previousCount++;
       for (const p of t.postings) {
-        const inCurrent = currentMatches && matchesPosting(p, t.date, filters);
+        const inCurrent =
+          currentMatches && matchesPosting(p, t.date, filters, t.status);
         const inPrevious =
-          previousMatches && matchesPosting(p, t.date, previous!);
+          previousMatches && matchesPosting(p, t.date, previous!, t.status);
         if (!inCurrent && !inPrevious) continue;
         const type = this.classify!(p.account).type;
         if (inPrevious) {

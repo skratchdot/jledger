@@ -6447,5 +6447,710 @@
       }
     ],
     "balances": []
+  },
+  "status-inheritance": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Unmarked",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Unmarked",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Cleared",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.2"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Cleared",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "-0.2"
+      },
+      {
+        "date": "2024-01-03",
+        "description": "Pending",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.3"
+      },
+      {
+        "date": "2024-01-03",
+        "description": "Pending",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "-0.3"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "-0.6"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.6"
+      }
+    ],
+    "statusPostings": {
+      "*": [
+        {
+          "date": "2024-01-02",
+          "description": "Cleared",
+          "account": "expenses:food",
+          "commodity": "USD",
+          "quantity": "0.2"
+        },
+        {
+          "date": "2024-01-02",
+          "description": "Cleared",
+          "account": "assets:bank",
+          "commodity": "USD",
+          "quantity": "-0.2"
+        }
+      ],
+      "!": [
+        {
+          "date": "2024-01-03",
+          "description": "Pending",
+          "account": "expenses:food",
+          "commodity": "USD",
+          "quantity": "0.3"
+        },
+        {
+          "date": "2024-01-03",
+          "description": "Pending",
+          "account": "assets:bank",
+          "commodity": "USD",
+          "quantity": "-0.3"
+        }
+      ],
+      "": [
+        {
+          "date": "2024-01-01",
+          "description": "Unmarked",
+          "account": "expenses:food",
+          "commodity": "USD",
+          "quantity": "0.1"
+        },
+        {
+          "date": "2024-01-01",
+          "description": "Unmarked",
+          "account": "assets:bank",
+          "commodity": "USD",
+          "quantity": "-0.1"
+        }
+      ]
+    }
+  },
+  "status-overrides": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Cleared",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Cleared",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "3"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Cleared",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "-5"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Unmarked",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "5"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Unmarked",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "7"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Unmarked",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "-12"
+      },
+      {
+        "date": "2024-01-03",
+        "description": "Pending",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "11"
+      },
+      {
+        "date": "2024-01-03",
+        "description": "Pending",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "13"
+      },
+      {
+        "date": "2024-01-03",
+        "description": "Pending",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "-24"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "-41"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "41"
+      }
+    ],
+    "statusPostings": {
+      "*": [
+        {
+          "date": "2024-01-01",
+          "description": "Cleared",
+          "account": "expenses:food",
+          "commodity": "USD",
+          "quantity": "3"
+        },
+        {
+          "date": "2024-01-01",
+          "description": "Cleared",
+          "account": "assets:bank",
+          "commodity": "USD",
+          "quantity": "-5"
+        },
+        {
+          "date": "2024-01-02",
+          "description": "Unmarked",
+          "account": "expenses:food",
+          "commodity": "USD",
+          "quantity": "5"
+        },
+        {
+          "date": "2024-01-03",
+          "description": "Pending",
+          "account": "expenses:food",
+          "commodity": "USD",
+          "quantity": "11"
+        }
+      ],
+      "!": [
+        {
+          "date": "2024-01-01",
+          "description": "Cleared",
+          "account": "expenses:food",
+          "commodity": "USD",
+          "quantity": "2"
+        },
+        {
+          "date": "2024-01-02",
+          "description": "Unmarked",
+          "account": "expenses:food",
+          "commodity": "USD",
+          "quantity": "7"
+        },
+        {
+          "date": "2024-01-03",
+          "description": "Pending",
+          "account": "expenses:food",
+          "commodity": "USD",
+          "quantity": "13"
+        },
+        {
+          "date": "2024-01-03",
+          "description": "Pending",
+          "account": "assets:bank",
+          "commodity": "USD",
+          "quantity": "-24"
+        }
+      ],
+      "": [
+        {
+          "date": "2024-01-02",
+          "description": "Unmarked",
+          "account": "assets:bank",
+          "commodity": "USD",
+          "quantity": "-12"
+        }
+      ]
+    }
+  },
+  "status-inferred": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Pending",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Pending",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Cleared",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.2"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Cleared",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "-0.2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "-0.3"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.3"
+      }
+    ],
+    "statusPostings": {
+      "*": [
+        {
+          "date": "2024-01-01",
+          "description": "Pending",
+          "account": "assets:bank",
+          "commodity": "USD",
+          "quantity": "-0.1"
+        },
+        {
+          "date": "2024-01-02",
+          "description": "Cleared",
+          "account": "expenses:food",
+          "commodity": "USD",
+          "quantity": "0.2"
+        }
+      ],
+      "!": [
+        {
+          "date": "2024-01-01",
+          "description": "Pending",
+          "account": "expenses:food",
+          "commodity": "USD",
+          "quantity": "0.1"
+        },
+        {
+          "date": "2024-01-02",
+          "description": "Cleared",
+          "account": "assets:bank",
+          "commodity": "USD",
+          "quantity": "-0.2"
+        }
+      ],
+      "": []
+    }
+  },
+  "status-posting-dates": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-02-29",
+        "description": "Split",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-03-01",
+        "description": "Split",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "-0.3"
+      },
+      {
+        "date": "2024-03-02",
+        "description": "Split",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "-0.3"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.3"
+      }
+    ],
+    "statusPostings": {
+      "*": [
+        {
+          "date": "2024-03-01",
+          "description": "Split",
+          "account": "assets:bank",
+          "commodity": "USD",
+          "quantity": "-0.3"
+        },
+        {
+          "date": "2024-03-02",
+          "description": "Split",
+          "account": "expenses:food",
+          "commodity": "USD",
+          "quantity": "0.2"
+        }
+      ],
+      "!": [
+        {
+          "date": "2024-02-29",
+          "description": "Split",
+          "account": "expenses:food",
+          "commodity": "USD",
+          "quantity": "0.1"
+        }
+      ],
+      "": []
+    }
+  },
+  "status-includes": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Opening",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "0.5"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Opening",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-0.5"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Purchase",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Purchase",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "0.4"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-0.5"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      }
+    ],
+    "statusPostings": {
+      "*": [
+        {
+          "date": "2024-01-01",
+          "description": "Opening",
+          "account": "assets:bank",
+          "commodity": "USD",
+          "quantity": "0.5"
+        },
+        {
+          "date": "2024-01-01",
+          "description": "Opening",
+          "account": "equity:opening",
+          "commodity": "USD",
+          "quantity": "-0.5"
+        },
+        {
+          "date": "2024-01-02",
+          "description": "Purchase",
+          "account": "expenses:food",
+          "commodity": "USD",
+          "quantity": "0.1"
+        }
+      ],
+      "!": [
+        {
+          "date": "2024-01-02",
+          "description": "Purchase",
+          "account": "assets:bank",
+          "commodity": "USD",
+          "quantity": "-0.1"
+        }
+      ],
+      "": []
+    }
+  },
+  "status-commodities": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Mixed",
+        "account": "expenses:usd",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Mixed",
+        "account": "assets:usd",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Mixed",
+        "account": "expenses:eur",
+        "commodity": "EUR",
+        "quantity": "0.2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Mixed",
+        "account": "assets:eur",
+        "commodity": "EUR",
+        "quantity": "-0.2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Mixed",
+        "account": "expenses:unitless",
+        "commodity": "",
+        "quantity": "0.3"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Mixed",
+        "account": "assets:unitless",
+        "commodity": "",
+        "quantity": "-0.3"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:eur",
+        "commodity": "EUR",
+        "quantity": "-0.2"
+      },
+      {
+        "account": "assets:unitless",
+        "commodity": "",
+        "quantity": "-0.3"
+      },
+      {
+        "account": "assets:usd",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "account": "expenses:eur",
+        "commodity": "EUR",
+        "quantity": "0.2"
+      },
+      {
+        "account": "expenses:unitless",
+        "commodity": "",
+        "quantity": "0.3"
+      },
+      {
+        "account": "expenses:usd",
+        "commodity": "USD",
+        "quantity": "0.1"
+      }
+    ],
+    "statusPostings": {
+      "*": [
+        {
+          "date": "2024-01-01",
+          "description": "Mixed",
+          "account": "expenses:eur",
+          "commodity": "EUR",
+          "quantity": "0.2"
+        }
+      ],
+      "!": [
+        {
+          "date": "2024-01-01",
+          "description": "Mixed",
+          "account": "expenses:usd",
+          "commodity": "USD",
+          "quantity": "0.1"
+        },
+        {
+          "date": "2024-01-01",
+          "description": "Mixed",
+          "account": "expenses:unitless",
+          "commodity": "",
+          "quantity": "0.3"
+        }
+      ],
+      "": [
+        {
+          "date": "2024-01-01",
+          "description": "Mixed",
+          "account": "assets:usd",
+          "commodity": "USD",
+          "quantity": "-0.1"
+        },
+        {
+          "date": "2024-01-01",
+          "description": "Mixed",
+          "account": "assets:eur",
+          "commodity": "EUR",
+          "quantity": "-0.2"
+        },
+        {
+          "date": "2024-01-01",
+          "description": "Mixed",
+          "account": "assets:unitless",
+          "commodity": "",
+          "quantity": "-0.3"
+        }
+      ]
+    }
+  },
+  "status-income-refunds": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Salary",
+        "account": "income:salary",
+        "commodity": "USD",
+        "quantity": "-10"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Salary",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Refund",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Refund",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "0.1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "10.1"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "account": "income:salary",
+        "commodity": "USD",
+        "quantity": "-10"
+      }
+    ],
+    "statusPostings": {
+      "*": [
+        {
+          "date": "2024-01-01",
+          "description": "Salary",
+          "account": "assets:bank",
+          "commodity": "USD",
+          "quantity": "10"
+        },
+        {
+          "date": "2024-01-02",
+          "description": "Refund",
+          "account": "expenses:food",
+          "commodity": "USD",
+          "quantity": "-0.1"
+        }
+      ],
+      "!": [
+        {
+          "date": "2024-01-01",
+          "description": "Salary",
+          "account": "income:salary",
+          "commodity": "USD",
+          "quantity": "-10"
+        },
+        {
+          "date": "2024-01-02",
+          "description": "Refund",
+          "account": "assets:bank",
+          "commodity": "USD",
+          "quantity": "0.1"
+        }
+      ],
+      "": []
+    }
   }
 }

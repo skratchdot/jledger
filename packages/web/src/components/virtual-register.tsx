@@ -13,6 +13,7 @@ export function VirtualRegister({
   month,
   dateFrom,
   dateTo,
+  status,
   onRange,
   onAccount,
   onInspect,
@@ -25,11 +26,19 @@ export function VirtualRegister({
   month: string;
   dateFrom: string;
   dateTo: string;
+  status: string;
   onRange: (range: { start: number; end: number }) => void;
   onAccount: (name: string) => void;
   onInspect: (id: number) => void;
 }) {
-  const filters = { commodity: currency, account, month, dateFrom, dateTo };
+  const filters = {
+    commodity: currency,
+    account,
+    month,
+    dateFrom,
+    dateTo,
+    status,
+  };
   const scroll = useRef<HTMLDivElement>(null);
   const virtualizer = useVirtualizer({
     count,
@@ -81,7 +90,7 @@ export function VirtualRegister({
                 </tr>
               );
             const postings = tx.postings.filter((p) =>
-              matchesPosting(p, tx.date, filters),
+              matchesPosting(p, tx.date, filters, tx.status),
             );
             return (
               <tr
@@ -100,10 +109,10 @@ export function VirtualRegister({
                       className={`status status-${tx.status === '*' ? 'cleared' : tx.status === '!' ? 'pending' : 'unmarked'}`}
                       title={
                         tx.status === '*'
-                          ? 'Cleared'
+                          ? 'Cleared transaction'
                           : tx.status === '!'
-                            ? 'Pending'
-                            : 'Unmarked'
+                            ? 'Pending transaction'
+                            : 'Unmarked transaction'
                       }
                     >
                       {tx.status || '·'}

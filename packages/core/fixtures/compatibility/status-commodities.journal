@@ -1,0 +1,7 @@
+2024-01-01 Mixed
+  ! expenses:usd  0.10 USD
+  assets:usd  -0.10 USD
+  * expenses:eur  0.20 EUR
+  assets:eur  -0.20 EUR
+  ! expenses:unitless  0.30
+  assets:unitless  -0.30

@@ -18,8 +18,11 @@ The browser uses a dedicated module worker for parsing, indexing, full-text filt
 and exact report aggregation. React receives metadata, aggregate results, on-demand
 details, and only the visible transaction window. TanStack Virtual bounds the
 register and account DOM. [Date ranges](explorer-filters.md) are inclusive and
-match the same posting as account and commodity filters. The worker and visible rows share that matcher;
+match the same posting as account, commodity and effective status filters. The worker and visible rows share that matcher;
 range errors are validated independently of journal diagnostics.
+[Posting status](posting-status.md) resolves explicit markers before transaction
+inheritance in core; the worker and bounded previews use the shared matcher. Raw
+markers/header status remain intact, with effective status explained in details.
 Full-month scopes optionally aggregate the prior calendar month in that same worker
 scan, keeping non-date filters fixed. Exact income/spending deltas and transaction
 counts cross as bounded report metadata. Only current-period IDs become register

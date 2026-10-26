@@ -18,7 +18,7 @@ Reference quantity-output precision and presentation are documented separately.
 | Transaction description, status, code                      | Supported; descriptions retain payee/note text                                                                                                                             |
 | Indented postings, colon-separated account names           | Supported, including single spaces in names                                                                                                                                |
 | Account/amount separator                                   | Two or more spaces or a tab                                                                                                                                                |
-| Posting status                                             | Preserved                                                                                                                                                                  |
+| Posting status                                             | Explicit markers with transaction inheritance in explorer filters; see [posting status](posting-status.md)                                                                 |
 | Decimal quantities                                         | Exact signed integers/fractions; strict dot decimals by default, explicit dot/comma marks supported                                                                        |
 | Commodities                                                | Unquoted identifiers/symbols, no commodity, and a strict [quoted-name subset](quoted-commodities.md)                                                                       |
 | One omitted amount                                         | Inferred when explicit amounts use exactly one commodity                                                                                                                   |
@@ -93,5 +93,8 @@ Implementation choices, such as stricter date validation or omitted-amount handl
 are tested as jledger behavior today. The corpus documents which cases have been compared with pinned reference tools.
 Uncovered behavior remains jledger-specific; never infer parity from superficial syntax.
 
-The current status filter selects transaction status; posting statuses are preserved
-but do not yet override that filter.
+The explorer [Status filter](posting-status.md) uses explicit posting markers with
+transaction-status inheritance. The same posting must match status, account,
+commodity and date scope. Register icons retain transaction status; details explain
+effective posting status. Marked hledger status queries have separate corpus
+evidence, without a general query-language or Ledger status-query parity claim.

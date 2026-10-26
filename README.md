@@ -116,7 +116,8 @@ installation is a later milestone.
   commodity across an account and its descendants. Assignments and total inclusive
   `==*` remain unsupported.
 - Interactive expense categories and monthly charts, plus inclusive [date ranges](docs/explorer-filters.md), status, commodity,
-  account, and text filters. Income/spending follows [journal account types](docs/account-types.md),
+  account, and text filters. [Posting status](docs/posting-status.md) overrides
+  transaction status, with inheritance explained in details. Income/spending follows [journal account types](docs/account-types.md),
   with inherited declarations, child overrides, and English-name defaults.
   Transaction details explain the classification source.
 - [Previous-month comparisons](docs/explorer-filters.md#previous-calendar-month-comparison)
@@ -193,7 +194,9 @@ CI and Pages run browser tests in the official Playwright container, with browse
 and Linux dependencies preinstalled. The shared
 [image resolver](.github/workflows/playwright-image.yml) derives the image tag from
 the exact `@playwright/test` version in `package.json`; no image tag needs updating
-when running `pnpm update @playwright/test`. Commit both `package.json` and
+when running `pnpm update @playwright/test`. The resolver uses the hosted runner’s
+preinstalled Node and needs no mise or browser installation; project
+checks still use mise-managed Node/pnpm in the selected container. Commit both `package.json` and
 `pnpm-lock.yaml` after an update. Frozen lockfile installs enforce consistency,
 and the resolver rejects version ranges. A new Playwright release must have its
 matching `-noble` image published before CI can run it. Node still follows

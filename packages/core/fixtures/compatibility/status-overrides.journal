@@ -1,0 +1,14 @@
+2024-01-01 * Cleared
+  ! expenses:food  2.00 USD
+  expenses:food  3.00 USD
+  assets:bank  -5.00 USD
+
+2024-01-02 Unmarked
+  * expenses:food  5.00 USD
+  ! expenses:food  7.00 USD
+  assets:bank  -12.00 USD
+
+2024-01-03 ! Pending
+  * expenses:food  11.00 USD
+  expenses:food  13.00 USD
+  assets:bank  -24.00 USD
