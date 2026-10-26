@@ -27,7 +27,7 @@ journals stay in memory; reimport them after a reload.
 ### Run locally
 
 Install [mise](https://mise.jdx.dev/getting-started.html) and activate it in your
-shell. Node **26** is pinned in `mise.toml`; mise reads pnpm's exact version from
+shell. Node **26.x** is selected in `mise.toml`; mise reads pnpm's exact version from
 `packageManager` in `package.json`. Local development and CI use the same setup.
 Run these commands at the repository root:
 
@@ -196,8 +196,10 @@ when running `pnpm update @playwright/test`. Commit both `package.json` and
 and the resolver rejects version ranges. A new Playwright release must have its
 matching `-noble` image published before CI can run it. Node still follows
 `mise.toml`, independently of the image's bundled Node version.
-To update Node within version 26, run `mise use --pin node@26` and commit
-`mise.toml`. Mise reads pnpm updates directly from `package.json`.
+Fresh installs resolve the latest available Node 26.x release. Run `mise upgrade node`
+to update an existing installation within that major; no config edit is needed.
+To change majors, run `mise use node@<major>` and commit `mise.toml`.
+Mise reads pnpm updates directly from `package.json`.
 
 All lint, type, unit, compatibility, formatting, root browser, and subpath browser
 checks remain enabled. Superseded pull-request CI runs are canceled automatically.
