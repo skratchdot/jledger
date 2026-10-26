@@ -132,7 +132,7 @@ installation is a later milestone.
   with include inheritance and directive source explanations. No clock-based year
   guess or automatic rollover is applied.
 - [Primary posting dates](docs/posting-dates.md), including month/day overrides in
-  the transaction year, for month filters, monthly charts,
+  the transaction year and attached continuation comments, for month filters, monthly charts,
   and assertion checks; transaction and posting dates remain visible in drill-down.
 - [Spending data tables](docs/explorer-filters.md#charts-and-data-tables) with exact
   signed amounts, all matching categories, bounded pages and keyboard account/month

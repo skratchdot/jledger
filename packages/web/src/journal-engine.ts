@@ -265,7 +265,18 @@ export class JournalEngine {
       excerpt:
         source?.text
           .split(/\r?\n/)
-          .slice(t.source.line - 1, t.postings.at(-1)?.source.line)
+          .slice(
+            t.source.line - 1,
+            t.postings.reduce(
+              (end, posting) =>
+                Math.max(
+                  end,
+                  posting.source.line,
+                  posting.dateSource?.line ?? 0,
+                ),
+              t.source.line,
+            ),
+          )
           .join('\n') ?? '',
     };
   }

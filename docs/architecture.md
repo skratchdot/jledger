@@ -98,7 +98,12 @@ from file/include context without consulting the clock. Includes inherit the yea
 and restore their parent on return; independent roots start unset. Canonical dates
 are established before assertions/reports, while optional inferred-year provenance
 reaches on-demand transaction details. Month/day posting overrides use the resolved
-transaction year, independently of the active directive; secondary and continuation date forms remain errors.
+transaction year, independently of the active directive; secondary dates remain errors.
+Attached indented semicolon continuation comments can supply the same primary date.
+The parser retains one pending posting reference per file and a separate optional
+`dateSource` for the marker. Ordinary posting source locations remain unchanged,
+and the on-demand worker excerpt includes final-posting date continuations.
+Duplicates across inline/continuation markers and unattached markers disable reports.
 [Primary posting dates](posting-dates.md) also drive monthly charts and filters;
 transaction rows retain their original date and expose posting overrides.
 The running-balance pass is skipped when no assertions are present. Assertion

@@ -1,0 +1,3 @@
+commodity USD
+  format 1.00 USD
+include parts/continuation-child.journal
