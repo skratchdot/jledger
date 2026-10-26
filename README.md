@@ -112,6 +112,8 @@ installation is a later milestone.
   account, and text filters. Income/spending follows [journal account types](docs/account-types.md),
   with inherited declarations, child overrides, and English-name defaults.
   Transaction details explain the classification source.
+- [Previous-month comparisons](docs/explorer-filters.md#previous-calendar-month-comparison)
+  show exact income/spending changes under the same filters, with prior-period drill-down.
 - [Active filter chips and named presets](docs/explorer-filters.md) make report
   scopes visible and reusable. Presets stay in memory for the open journal only.
 - [Explicit default years](docs/default-years.md) for month/day transaction headers,

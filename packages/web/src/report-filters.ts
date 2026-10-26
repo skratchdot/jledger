@@ -72,3 +72,28 @@ export function matchesPosting(
     (!filters.dateTo || date <= filters.dateTo)
   );
 }
+
+/** Compare whole calendar months only, keeping every non-date filter unchanged. */
+export function previousMonthFilters(filters: Filters): Filters | null {
+  if (
+    !filters.month ||
+    filters.month.startsWith('0000-') ||
+    filters.month === '0001-01'
+  )
+    return null;
+  let bounds: ReturnType<typeof monthBounds>;
+  try {
+    bounds = monthBounds(filters.month);
+  } catch {
+    return null;
+  }
+  if (
+    (filters.dateFrom && filters.dateFrom > bounds.dateFrom) ||
+    (filters.dateTo && filters.dateTo < bounds.dateTo)
+  )
+    return null;
+  const previous = new Date(`${filters.month}-01T00:00:00Z`);
+  previous.setUTCMonth(previous.getUTCMonth() - 1);
+  const month = previous.toISOString().slice(0, 7);
+  return { ...filters, month, ...monthBounds(month) };
+}

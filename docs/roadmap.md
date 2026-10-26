@@ -92,7 +92,10 @@ its scope, and every visible total can be traced back to source postings.
 
 ## Milestone 2 — a great everyday finance workspace
 
-- Income/spending trends with period comparisons and merchant/category drill-down.
+- [Previous calendar month comparisons](explorer-filters.md#previous-calendar-month-comparison)
+  now show exact income/spending/count changes under shared filters and link back
+  to prior-period transactions. Broader date-period comparisons, longer trends and
+  merchant/category drill-down remain.
 - Cash-flow timelines, recurring-payment exploration, and reconciliation views.
 - Budgets using explicit supported semantics, with actual-vs-plan comparisons.
 - Dashboard filters shared across charts and register; share/export _configuration_

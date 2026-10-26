@@ -87,6 +87,10 @@ export function Explorer() {
   const accountMatches = engine.accountView.matchCount;
   const accountAncestors = engine.accountView.count - accountMatches;
   const categories = report.categories.slice(0, 30);
+  const comparison =
+    !busy && report.comparison?.month === month ? report.comparison : undefined;
+  const signedAmount = (value: string) =>
+    `${value.startsWith('-') ? '' : '+'}${metric(value, currency)}`;
   const biggest = Math.max(
     1,
     ...categories.map(([, value]) => Math.abs(Number(value))),
@@ -95,6 +99,7 @@ export function Explorer() {
   const searchInput = useRef<HTMLInputElement>(null);
   const fromDateInput = useRef<HTMLInputElement>(null);
   const statusInput = useRef<HTMLSelectElement>(null);
+  const monthInput = useRef<HTMLSelectElement>(null);
   const nextLocal = useRef(false);
   const importFilters = useRef(filters);
   const importTrigger = useRef<HTMLButtonElement>(null);
@@ -460,11 +465,17 @@ export function Explorer() {
                     <label>
                       <span className="sr-only">Month</span>
                       <select
+                        ref={monthInput}
                         aria-label="Month"
                         value={month}
                         onChange={(e) => selectMonth(e.target.value)}
                       >
                         <option value="">All dates / custom range</option>
+                        {month && !months.includes(month) && (
+                          <option value={month}>
+                            {month} (no journal postings)
+                          </option>
+                        )}
                         {months.map((m) => (
                           <option key={m}>{m}</option>
                         ))}
@@ -561,7 +572,8 @@ export function Explorer() {
                   </section>
                   <p id="date-range-help" className="date-range-help">
                     From and Through include both boundary dates. Filters use
-                    posting dates.
+                    posting dates. Choose a month shortcut to compare with the
+                    previous calendar month.
                   </p>
                   <ActiveFilters
                     filters={{ ...filters, commodity: currency }}
@@ -608,6 +620,68 @@ export function Explorer() {
                               <small>Matching your filters</small>
                             </div>
                           </section>
+                          {comparison && (
+                            <section
+                              className="panel comparison-panel"
+                              aria-label="Previous month comparison"
+                            >
+                              <h2>Compared with {comparison.previousMonth}</h2>
+                              <p className="muted">
+                                Full calendar months with the same search,
+                                account, commodity and status filters. Totals
+                                reflect the imported journals.
+                              </p>
+                              <dl className="comparison-summary">
+                                <div>
+                                  <dt>Previous income</dt>
+                                  <dd>
+                                    {metric(comparison.income, currency)}
+                                    <span>
+                                      Change:{' '}
+                                      {signedAmount(comparison.incomeChange)}
+                                    </span>
+                                  </dd>
+                                </div>
+                                <div>
+                                  <dt>Previous spending</dt>
+                                  <dd>
+                                    {metric(comparison.spending, currency)}
+                                    <span>
+                                      Change:{' '}
+                                      {signedAmount(comparison.spendingChange)}
+                                    </span>
+                                  </dd>
+                                </div>
+                                <div>
+                                  <dt>Previous transactions</dt>
+                                  <dd>
+                                    {comparison.count.toLocaleString()}
+                                    <span>
+                                      Change:{' '}
+                                      {comparison.countChange >= 0 ? '+' : ''}
+                                      {comparison.countChange.toLocaleString()}
+                                    </span>
+                                  </dd>
+                                </div>
+                              </dl>
+                              {comparison.count === 0 && (
+                                <p className="muted">
+                                  No transactions match in the previous month.
+                                  This does not establish whether the imported
+                                  journals cover that period.
+                                </p>
+                              )}
+                              <Button
+                                variant="outline"
+                                onClick={() => {
+                                  selectMonth(comparison.previousMonth);
+                                  monthInput.current?.focus();
+                                }}
+                              >
+                                Explore {comparison.previousMonth}
+                              </Button>
+                            </section>
+                          )}
                           <div
                             className="spending-display"
                             role="group"

@@ -56,6 +56,12 @@ parsing or aggregation acceptable.
   queries; already-started projections run synchronously in the worker. Cached
   path text, parent/direct indices and match/context flags add memory. This is not
   a new account-count, latency or memory guarantee.
+- Full-month comparisons check current and previous posting scopes in the same
+  cancellable worker scan. They reuse the account-type resolver and exact decimal
+  operations; only the current period populates register IDs/category/month data.
+  Previous totals, deltas and count add bounded metadata. Matching two date scopes
+  adds work for month queries; all-dates/custom-range queries skip that comparison.
+  This is not a new latency or memory guarantee.
 - React receives a summary and report aggregates, not the entire transaction set.
 - Named filter presets retain at most 20 seven-field configurations with 80-character
   names per open journal. Copying/comparing this bounded metadata does not scan
@@ -159,3 +165,13 @@ old worker's exact reports, source drill-down, filters, presets and folded accou
 They also test initial cancellation, replacing/closing a pending import, narrow
 controls, stale progress/results and local-fetch cancellation/retry. The test worker
 proves the termination mechanism; it is not a real-journal performance guarantee.
+
+## Monthly comparison regression
+
+Worker tests cover calendar/leap/year boundaries, whole-month eligibility, combined
+filters, split posting dates, signed refunds, exact large/unitless changes, empty
+prior periods and cancellation without committing stale register results. Browser
+cases exercise linked prior-month navigation, missing-month scope labels, keyboard
+focus, commodity/search/status/account changes, narrow layout and invalid reports.
+The existing 200,000-transaction regression remains a synthetic responsiveness
+check rather than a guarantee for every month-comparison workload.
