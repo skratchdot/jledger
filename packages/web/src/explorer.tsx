@@ -1163,12 +1163,27 @@ export function Explorer() {
                           ? ' · English-name default'
                           : ''}
                     </small>
+                    {p.amount.commoditySource && (
+                      <small>
+                        {' '}
+                        · commodity from D at {p.amount.commoditySource.file}:
+                        {p.amount.commoditySource.line}
+                      </small>
+                    )}
                     {p.date && <small> · posted {p.date}</small>}
                     {p.dateSource && (
                       <small>
                         {' '}
                         · date from continuation at {p.dateSource.file}:
                         {p.dateSource.line}
+                      </small>
+                    )}
+                    {p.balanceAssertion?.commoditySource && (
+                      <small>
+                        {' '}
+                        · assertion commodity from D at{' '}
+                        {p.balanceAssertion.commoditySource.file}:
+                        {p.balanceAssertion.commoditySource.line}
                       </small>
                     )}
                     {p.balanceAssertion && (

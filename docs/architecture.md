@@ -80,6 +80,12 @@ addition, so JSON and browser/Node boundaries do not lose precision.
 string operations. Decimal marks follow file/include scope; commodity styles flow
 through include expansion in source order. No format context is transferred to the
 UI or applied as rounding to financial report quantities.
+[Default commodities](default-commodities.md) and their fallback formats are copied
+with file-local context into includes and restored on return. They do not mutate
+the shared commodity-format map. Bare posting/assertion amounts carry an optional
+shared `commoditySource` location; explicit and balancing-inferred amounts omit it.
+Financial normalization and default resolution stay in the worker, with directive
+locations exposed only through existing row/detail metadata.
 [Quoted commodity names](quoted-commodities.md) decode to literal identities in
 the worker parser. Amount splitting preserves their whitespace; formats, assertions
 and report matching share those same keys. Read-only display adds necessary quotes.

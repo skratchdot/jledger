@@ -1289,5 +1289,116 @@
   {
     "id": "continuation-date-separated",
     "supported": false
+  },
+  {
+    "id": "default-commodity-basic",
+    "supported": true,
+    "ledgerParity": false
+  },
+  {
+    "id": "default-commodity-explicit",
+    "supported": true
+  },
+  {
+    "id": "default-commodity-grouped",
+    "supported": true,
+    "ledgerParity": false
+  },
+  {
+    "id": "default-commodity-comma",
+    "supported": true,
+    "ledgerParity": false
+  },
+  {
+    "id": "default-commodity-quoted",
+    "supported": true,
+    "ledgerParity": false
+  },
+  {
+    "id": "default-commodity-assertion",
+    "supported": true,
+    "referenceAcceptance": {
+      "ledger": false
+    }
+  },
+  {
+    "id": "default-commodity-includes",
+    "supported": true,
+    "ledgerParity": false,
+    "sources": [
+      "default-commodity-includes.journal",
+      "parts/default-commodity-child.journal"
+    ]
+  },
+  {
+    "id": "default-commodity-roots",
+    "supported": true,
+    "ledgerParity": false,
+    "sources": [
+      "default-commodity-roots.journal",
+      "parts/default-commodity-root.journal"
+    ],
+    "referenceFiles": [
+      "default-commodity-roots.journal",
+      "parts/default-commodity-root.journal"
+    ]
+  },
+  {
+    "id": "default-commodity-before",
+    "supported": true,
+    "ledgerParity": false
+  },
+  {
+    "id": "default-commodity-exact",
+    "supported": true,
+    "ledgerParity": false,
+    "exactHledger": true
+  },
+  {
+    "id": "default-commodity-style-change",
+    "supported": false
+  },
+  {
+    "id": "default-commodity-integer",
+    "supported": false
+  },
+  {
+    "id": "default-commodity-empty",
+    "supported": false
+  },
+  {
+    "id": "default-commodity-unitless",
+    "supported": false
+  },
+  {
+    "id": "default-commodity-conflict",
+    "supported": false
+  },
+  {
+    "id": "default-commodity-mark-conflict",
+    "supported": false
+  },
+  {
+    "id": "default-commodity-cost",
+    "supported": false
+  },
+  {
+    "id": "default-commodity-format-fallback",
+    "supported": true,
+    "ledgerParity": false
+  },
+  {
+    "id": "default-commodity-format-reset",
+    "supported": true,
+    "ledgerParity": false
+  },
+  {
+    "id": "default-commodity-include-formats",
+    "supported": true,
+    "ledgerParity": false,
+    "sources": [
+      "default-commodity-include-formats.journal",
+      "parts/default-commodity-formats-child.journal"
+    ]
   }
 ]

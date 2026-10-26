@@ -72,6 +72,8 @@ export interface Diagnostic extends Location {
 export interface Amount {
   quantity: string;
   commodity: string;
+  /** Present only when a bare quantity inherited its commodity from a D directive. */
+  commoditySource?: Location;
 }
 export type Status = '' | '*' | '!';
 export interface Posting {
@@ -177,6 +179,9 @@ export function parseJournal(sources: Source[]): Journal {
     aliases?: AccountAliases;
     defaultYear?: NonNullable<Transaction['inferredYear']>;
     decimalMark?: DecimalMark;
+    defaultCommodity?: string;
+    defaultCommoditySource?: Location;
+    defaultCommodityFormat?: CommodityFormat;
     commodityFormats: Map<string, CommodityFormat>;
   }
   function parseSource(source: Source, inherited: ParsingContext) {
@@ -384,10 +389,34 @@ export function parseJournal(sources: Source[]): Journal {
           else context.decimalMark = match[1] as DecimalMark;
           continue;
         }
+        if (/^D(?:\s|$)/.test(content)) {
+          const declaration = parseCommodityFormat(
+            content.slice(1).trim(),
+            context.decimalMark ?? context.defaultCommodityFormat?.decimalMark,
+          );
+          const previousFormat =
+            declaration && context.commodityFormats.get(declaration.commodity);
+          if (
+            !declaration?.format ||
+            (previousFormat &&
+              previousFormat.decimalMark !== declaration.format.decimalMark)
+          ) {
+            error(
+              location,
+              'default-commodity',
+              'Use D with an unsigned numeric format example and a supported commodity, such as D 1.00 USD. Include a decimal separator and agree with existing commodity/decimal-mark formats. Clearing defaults and conflicting styles are not supported.',
+            );
+          } else {
+            context.defaultCommodity = declaration.commodity;
+            context.defaultCommoditySource = location;
+            context.defaultCommodityFormat = declaration.format;
+          }
+          continue;
+        }
         if (/^commodity(?:\s|$)/.test(content)) {
           const declaration = parseCommodityFormat(
             content.slice('commodity'.length).trim(),
-            context.decimalMark,
+            context.decimalMark ?? context.defaultCommodityFormat?.decimalMark,
           );
           if (!declaration)
             error(
@@ -499,7 +528,7 @@ export function parseJournal(sources: Source[]): Journal {
         if (!tx && commodityBlock && /^format(?:\s|$)/.test(content.trim())) {
           const declaration = parseCommodityFormat(
             content.trim().slice('format'.length).trim(),
-            context.decimalMark,
+            context.decimalMark ?? context.defaultCommodityFormat?.decimalMark,
           );
           if (!declaration?.format || declaration.commodity !== commodityBlock)
             error(

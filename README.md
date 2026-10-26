@@ -128,6 +128,9 @@ installation is a later milestone.
   recent scopes, including complete month shortcuts and preset applications.
 - [Active filter chips and named presets](docs/explorer-filters.md) make report
   scopes visible and reusable. Presets stay in memory for the open journal only.
+- [Explicit default commodities](docs/default-commodities.md) assign currencies and
+  format fallback to bare posting/assertion quantities with file-local include scope
+  and directive source explanations.
 - [Explicit default years](docs/default-years.md) for month/day transaction headers,
   with include inheritance and directive source explanations. No clock-based year
   guess or automatic rollover is applied.

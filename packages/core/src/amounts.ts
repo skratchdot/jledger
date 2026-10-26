@@ -1,5 +1,5 @@
 import { add } from './decimal.js';
-import type { Amount } from './index.js';
+import type { Amount, Location } from './index.js';
 
 export type DecimalMark = '.' | ',';
 export interface CommodityFormat {
@@ -7,6 +7,9 @@ export interface CommodityFormat {
 }
 export interface AmountContext {
   decimalMark?: DecimalMark;
+  defaultCommodity?: string;
+  defaultCommoditySource?: Location;
+  defaultCommodityFormat?: CommodityFormat;
   commodityFormats?: ReadonlyMap<string, CommodityFormat>;
 }
 const commodity = '[\\p{L}][\\p{L}\\p{N}._-]*|[$€£]';
@@ -89,11 +92,22 @@ export function parseAmount(
 ): Amount | null {
   const amount = tokens(text);
   if (!amount) return null;
+  const defaulted = !amount.commodity && Boolean(context.defaultCommodity);
+  const commodity = amount.commodity || context.defaultCommodity || '';
   const mark =
     context.decimalMark ??
-    context.commodityFormats?.get(amount.commodity)?.decimalMark;
+    context.commodityFormats?.get(commodity)?.decimalMark ??
+    context.defaultCommodityFormat?.decimalMark;
   const quantity = normalize(amount.quantity, mark);
-  return quantity === null ? null : { commodity: amount.commodity, quantity };
+  return quantity === null
+    ? null
+    : {
+        commodity,
+        quantity,
+        ...(defaulted && context.defaultCommoditySource
+          ? { commoditySource: context.defaultCommoditySource }
+          : {}),
+      };
 }
 
 /** A bare commodity resets its parsing style; a numeric example declares an explicit mark. */

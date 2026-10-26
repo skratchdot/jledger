@@ -1,0 +1,5 @@
+D 1.00 USD
+include parts/default-commodity-formats-child.journal
+2024-01-02 Parent
+  expenses:parent  1.234 EUR
+  assets:parent

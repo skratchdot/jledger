@@ -36,7 +36,9 @@ checks and retain the original source.
   assertion's commodity. The Accounts view's inclusive display does not change
   assertion scope. Other commodities in that account are unchecked. An absent
   commodity has a zero balance; a quantity without a commodity checks the literal
-  empty commodity, not an inferred currency from the posting.
+  empty commodity when no `D` is active, not an inferred currency from the posting.
+  An active [default commodity](default-commodities.md) supplies the currency and
+  fallback format for a bare assertion, with separate directive provenance.
 - Total `==` checks that same direct account and asserted commodity, and also
   requires **every other commodity balance to be exactly zero**. Subaccounts are
   still excluded. Quantities from different commodities never offset each other.

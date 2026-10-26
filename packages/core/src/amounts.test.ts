@@ -167,7 +167,7 @@ describe('explicit amount formats', () => {
     rejected('commodity "quoted;name"\n' + tx('1.23 USD'), 'commodity-format');
     rejected('commodity EUR\n  format 1.000,00 USD\n', 'commodity-format');
     rejected('commodity EUR\n  price 1 USD\n', 'posting');
-    rejected('D 1.00 USD\n' + tx('1.23 USD'), 'unsupported');
+    expect(parse('D 1.00 USD\n' + tx('1.23 USD')).diagnostics).toEqual([]);
   });
 
   it('retains original formatted source and diagnostic locations under BOM/CRLF', () => {
