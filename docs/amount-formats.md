@@ -13,7 +13,8 @@ commodity EUR
 ```
 
 A compact `commodity 1.000,00 EUR` declaration is supported too. A bare
-`commodity EUR` declaration resets that commodity to the default parsing style.
+`commodity EUR` declaration resets that commodity to the default parsing style
+(the active `D` fallback if present, otherwise strict dot decimals).
 A simple `format` subdirective must immediately follow its commodity declaration
 (or ordinary line comments) and name the same commodity. Other indented attributes are errors.
 
@@ -56,6 +57,11 @@ These rules follow the sampled hledger 1.52 behavior:
   child's declaration can affect amounts read later in the parent. A bare commodity
   declaration clears the corresponding format, including an inherited format.
 - An explicit file-local mark takes precedence over commodity-specific formats.
+- [Default commodity `D` directives](default-commodities.md) supply a file-local
+  fallback format for amounts without a commodity-specific style, as well as a
+  currency for bare quantities. Both defaults restore after includes; `D` itself
+  does not change the shared commodity-format map. Conflicting later directive
+  examples remain deliberately unsupported in this slice.
 - Independently selected graph roots start with independent parsing contexts, as
   hledger does when reading independent `-f` files. Select a shared definitions
   file through an include when it must affect a root's input interpretation.

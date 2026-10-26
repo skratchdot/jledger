@@ -90,7 +90,7 @@ are evidence from the tools, never generated from jledger's own expected results
 ## Selected-source includes and remaining scope
 
 The [source-preserving syntax layer](syntax.md) and [selected-source include graph](includes.md)
-are implemented. The corpus now contains 206 cases, including posting and direct
+are implemented. The corpus now contains 226 cases, including posting and direct
 balance parity for simple and nested includes, plus acceptance-only captures for
 missing and repeated includes. Included sources are supplied explicitly in fixture
 metadata; references read the root journal and follow its real relative paths.
@@ -346,3 +346,18 @@ reference meaning; jledger rejects them instead of silently interpreting them as
 posting dates. Only the promoted case changes among the original 194 captures.
 See [posting dates](posting-dates.md#continuation-comments) for attachment and source
 provenance; no secondary-date, authoring or general comment-grammar support is implied.
+
+## Explicit default commodities
+
+Twenty cases bring the corpus to **226**, with all previous 206 captures unchanged.
+The [D directive slice](default-commodities.md) covers bare quantities, explicit
+currency overrides, grouping/comma/quoted styles, bare assertions, exact fine
+quantities, source order, include/root scope and file-local format restoration.
+D's fallback format also affects explicit currencies without their own style and
+survives a bare commodity declaration; dedicated cases protect those semantics.
+Supported complete projections compare against hledger. Ledger bare-quantity/style
+differences use explicit `ledgerParity: false`; its bare-assertion rejection is
+separate. The explicit-currency case compares fully against both tools. Unsupported
+integer/empty/unitless/conflicting directives and costs retain acceptance-only
+captures. Directive provenance is jledger metadata checked in core/worker/browser
+cases, separately from reference arithmetic. No valuation or currency conversion is added.

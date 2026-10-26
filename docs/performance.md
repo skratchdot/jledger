@@ -243,3 +243,13 @@ whole journals to React. Core/worker/browser cases cover effective report dates,
 assertion order, source boundaries, malformed/duplicate/orphaned markers and final
 inferred-posting source drill-down. Existing large-journal regressions remain
 required; this does not establish a new latency or memory guarantee.
+
+## Default commodity regression
+
+D resolution adds a small commodity/format/source value to the existing file-local
+worker parsing context. It performs no additional journal scan and does not round
+quantities. Affected bare posting/assertion amounts reference the shared directive
+location; explicit and balancing-inferred amounts carry no new provenance. Parser,
+worker and browser cases cover exact totals, include restoration, separate
+commodities, comparisons and directive drill-down. Existing large-journal tests
+remain required; this is not an incremental parser or a new latency/memory guarantee.

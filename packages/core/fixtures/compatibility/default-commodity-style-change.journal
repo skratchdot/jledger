@@ -1,0 +1,6 @@
+D 1.00 USD
+commodity USD
+  format 1.000,00 USD
+2024-01-01 Style
+  expenses:food  1.234,56
+  assets:cash

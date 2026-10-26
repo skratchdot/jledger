@@ -1,0 +1,7 @@
+2024-01-01 Before default
+  expenses:plain  0.10
+  assets:plain
+D 1.00 USD
+2024-01-02 After default
+  expenses:usd  0.20
+  assets:usd
