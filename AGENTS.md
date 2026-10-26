@@ -2,7 +2,8 @@
 
 - Use the existing checkout. Cloud tasks already run in isolated environments;
   do not create a Git worktree unless the user explicitly asks.
-- Use Node 24 and the pnpm version in package.json. Keep the lockfile committed.
+- Use mise to install Node 26 from mise.toml and pnpm from package.json.
+  Keep the lockfile committed.
 - The primary product is an excellent private/offline-capable journal explorer.
   Everyday income and spending comes first; investments and net worth follow.
 - Keep core browser-safe: no filesystem, Node-only dependencies, network calls,

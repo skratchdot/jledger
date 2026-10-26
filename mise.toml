@@ -1,0 +1,6 @@
+[tools]
+node = "26"
+
+[settings]
+# Read pnpm's exact version from package.json instead of maintaining a second pin.
+idiomatic_version_file_enable_tools = ["pnpm"]
