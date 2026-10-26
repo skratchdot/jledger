@@ -102,6 +102,14 @@ These are explorer comparisons, not new hledger query or financial-statement par
 
 ## Charts and data tables
 
+Expense categories rank by their exact signed net-spending quantities, descending.
+The top-30 chart and the complete paginated category table share that worker order.
+Close amounts beyond floating-point precision remain distinct, including the chart
+cutoff; refunds and zero balances retain their numeric order. Numerically equal
+values retain their existing encounter order, independently of decimal scale.
+The order never changes the exact quantities, register membership or commodity scope.
+Chart dimensions remain approximate; financial ranking and labels use exact values.
+
 Choose **Tables** above the spending panels for native tables with captions,
 column headers, row headers, exact signed net amounts, and the selected commodity.
 **Charts** returns to the visual presentation without changing report filters.

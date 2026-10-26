@@ -81,7 +81,9 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    and native keyboard controls. Account-name search now reveals matching paths
    with ancestor context while preserving folds and full-journal amounts. Exact,
    paginated spending tables now provide keyboard-accessible chart equivalents,
-   all expense categories and shared account/month drill-down. [Posting status](posting-status.md)
+   all expense categories and shared account/month drill-down. Exact signed
+   category ranking now preserves close amounts beyond floating-point precision
+   through top-30 chart selection and table pagination. [Posting status](posting-status.md)
    now uses explicit markers with transaction inheritance across reports, previews
    and comparison periods, with hledger membership evidence and source explanations. Broader keyboard
    navigation remains. Specify hledger query compatibility separately from simple

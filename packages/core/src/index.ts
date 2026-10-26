@@ -55,7 +55,7 @@ export {
   printJournalSyntax,
 } from './syntax.js';
 export type { SyntaxKind, SyntaxLine, JournalSyntax } from './syntax.js';
-export { add, negate, isZero } from './decimal.js';
+export { add, negate, isZero, compare } from './decimal.js';
 
 export interface Source {
   name: string;
