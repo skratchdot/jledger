@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     container: debian:trixie
     steps:
-      - run: apt-get update && apt-get install -y --no-install-recommends ca-certificates curl git ledger=3.3.2-1+b4
+      - run: apt-get update && apt-get install -y --no-install-recommends ca-certificates curl git libatomic1 ledger=3.3.2-1+b4
       - uses: actions/checkout@v7
       - uses: ./.github/actions/setup
       - name: Install pinned hledger
