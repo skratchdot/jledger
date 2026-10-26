@@ -90,7 +90,7 @@ are evidence from the tools, never generated from jledger's own expected results
 ## Selected-source includes and remaining scope
 
 The [source-preserving syntax layer](syntax.md) and [selected-source include graph](includes.md)
-are implemented. The corpus now contains 188 cases, including posting and direct
+are implemented. The corpus now contains 194 cases, including posting and direct
 balance parity for simple and nested includes, plus acceptance-only captures for
 missing and repeated includes. Included sources are supplied explicitly in fixture
 metadata; references read the root journal and follow its real relative paths.
@@ -319,3 +319,16 @@ ten-place fractional limit; selecting exact capture is explicit. Ledger continue
 to use its existing quantity expressions and CSV postings. The fine residuals and
 large quantities agree with core, and mutation checks reject rounded-away balances.
 No product behavior, arithmetic, display precision or storage policy changes.
+
+## Literal include paths with spaces
+
+Six cases bring the corpus to **194**. Supported cases cover a spaced filename,
+Unicode and spaced directories, doubled internal spaces, nested parent traversal,
+inline comments, and inherited commodity formats/default years with exact assertions.
+Complete postings and direct balances compare against both tools when accepted.
+The inline-comment case explicitly records Ledger 3.3.2 rejection: it treats the
+semicolon suffix as part of the path, unlike hledger 1.52. Missing and double-quoted
+targets retain rejection evidence from both tools and disable jledger reports.
+All previous 188 captures remain unchanged. This slice grants no discovery, glob,
+quote-unescaping, URL, tilde or environment-expansion semantics. See [include
+resolution](includes.md) for the selected-source policy and adapter validation.

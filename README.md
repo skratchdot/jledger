@@ -44,7 +44,8 @@ pnpm dev
 Import/drop one or more UTF-8 journals.
 Imports replace the currently open set; choose all files together. The current
 limit is 256 MiB total and 4,096 files. Literal relative includes resolve only
-among selected files; select the root and every referenced journal together.
+among selected files, including unquoted paths with spaces; select the root and
+every referenced journal together.
 For nested folders, choose **Import journal folder** where supported, preserving
 relative paths. The folder picker imports every file: choose a journal-only folder.
 A [progress indicator and Cancel import control](docs/imports.md) let you stop a

@@ -7345,5 +7345,191 @@
         "quantity": "-0.000000000000000001"
       }
     ]
+  },
+  "include-spaces": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Before",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.01"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Before",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.01"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Child",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Child",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-01-03",
+        "description": "After",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "-0.03"
+      },
+      {
+        "date": "2024-01-03",
+        "description": "After",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "0.03"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.08"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.08"
+      }
+    ]
+  },
+  "include-spaces-nested": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Nested",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Nested",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.2"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Doubled space",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "-0.07"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Doubled space",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "0.07"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.13"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.13"
+      }
+    ]
+  },
+  "include-spaces-comment": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-02",
+        "description": "Child",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Child",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      }
+    ]
+  },
+  "include-spaces-scope": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-02",
+        "description": "Scoped child",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Scoped child",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-01-03",
+        "description": "Parent after",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "-0.03"
+      },
+      {
+        "date": "2024-01-03",
+        "description": "Parent after",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "0.03"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "-0.07"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.07"
+      }
+    ]
+  },
+  "include-spaces-quoted": {
+    "accepted": false
+  },
+  "include-spaces-missing": {
+    "accepted": false
   }
 }

@@ -1178,5 +1178,59 @@
     "supported": true,
     "exactHledger": true,
     "hierarchy": ["hledger", "ledger"]
+  },
+  {
+    "id": "include-spaces",
+    "supported": true,
+    "sources": ["include-spaces.journal", "space parts/child journal.journal"]
+  },
+  {
+    "id": "include-spaces-nested",
+    "supported": true,
+    "sources": [
+      "include-spaces-nested.journal",
+      "space parts/\u00e9t\u00e9 journal.journal",
+      "double  space journal.journal"
+    ]
+  },
+  {
+    "id": "include-spaces-comment",
+    "supported": true,
+    "sources": [
+      "include-spaces-comment.journal",
+      "space parts/child journal.journal"
+    ],
+    "referenceAcceptance": {
+      "ledger": false
+    }
+  },
+  {
+    "id": "include-spaces-scope",
+    "supported": true,
+    "sources": [
+      "include-spaces-scope.journal",
+      "space parts/yearless journal.journal"
+    ]
+  },
+  {
+    "id": "include-spaces-quoted",
+    "supported": false,
+    "sources": [
+      "include-spaces-quoted.journal",
+      "space parts/child journal.journal"
+    ],
+    "referenceAcceptance": {
+      "hledger": false,
+      "ledger": false
+    }
+  },
+  {
+    "id": "include-spaces-missing",
+    "supported": false,
+    "sources": ["include-spaces-missing.journal"],
+    "referenceAcceptance": {
+      "hledger": false,
+      "ledger": false
+    }
   }
 ]

@@ -35,11 +35,11 @@ privacy boundary described in architecture.md.
 ## Supported subset and accounting behavior
 
 - Paths use `/` and are case-sensitive. Targets contain only letters, numbers,
-  dots, underscores, hyphens, and slashes. `./` and `../` are allowed when they stay
-  within the selected hierarchy. Intermediate directories must be evidenced by
+  ordinary ASCII spaces, dots, underscores, hyphens, and slashes. `./` and `../`
+  are allowed when they stay within the selected hierarchy. Intermediate directories must be evidenced by
   selected paths; a missing directory or file cannot be normalized away.
 - A semicolon comment may follow whitespace after the target. Quoted names,
-  spaces in target names, glob patterns, environment/tilde expansion, URLs,
+  tabs inside targets, glob patterns, environment/tilde expansion, URLs,
   absolute paths, drive letters, and backslashes are errors. Nothing is fetched,
   expanded, decoded from URLs, or matched by basename.
 - Unreferenced selected files are entry points, in selection order. Children are
@@ -52,9 +52,32 @@ privacy boundary described in architecture.md.
   jledger intentionally rejects it to avoid unexpected double counting. Repeat
   semantics and explicit root selection need a separate implementation.
 - Transactions do not span include/file boundaries. Unknown directives, costs,
-  assignment/total/inclusive assertions, unsupported date forms, and other unsupported
-  financial syntax in children still disable every report. Plain `=` assertions validate across the expanded
-  bundle in effective posting-date order. Includes do not make incomplete totals usable.
+  balance assignments, total inclusive `==*` assertions, unsupported date forms,
+  and other unsupported financial syntax in children still disable every report.
+  Plain `=` assertions validate across the expanded bundle in effective posting-date
+  order. Includes do not make incomplete totals usable.
+
+Paths with spaces are literal and **unquoted inside the journal**:
+
+```journal
+include monthly exports/january.journal
+```
+
+Select `main.journal` and `monthly exports/january.journal` together. CLI arguments
+with spaces still need ordinary shell quoting:
+
+```sh
+pnpm jledger -f main.journal -f 'monthly exports/january.journal' check
+```
+
+Leading/trailing directive whitespace is trimmed; internal spaces, including doubled
+spaces and spaces in directory names, remain exact name bytes. Spaces are never
+collapsed, percent-decoded or substituted. Use the folder picker for nested paths.
+Double/single quote delimiters and escapes in include targets remain errors: neither
+pinned reference treats the sampled double-quoted target as shell-style quoting.
+A semicolon comment after whitespace follows hledger behavior; Ledger 3.3.2 treats
+that suffix as part of the filename and rejects the corpus sample. This is an
+explicit acceptance difference, not broad include-language parity.
 
 Core first validates the complete graph, including rootless cycles. Missing targets,
 normalized path collisions, file/directory ambiguity, cycles, repeats, and limits
@@ -71,7 +94,8 @@ limits, not performance or memory guarantees. Graphs with no include-shaped text
 avoid an extra syntax scan; graphs with includes retain only edges, not full trees.
 
 The pinned corpus compares ordered postings and exact flat balances for simple
-and nested includes against hledger 1.52 and Ledger 3.3.2. Unit/integration cases
+and nested includes against hledger 1.52 and Ledger 3.3.2, including literal
+space/Unicode paths and inherited format/year/assertion scope. Unit/integration cases
 cover path restrictions, missing/ambiguous targets, cycles, repeats, limits,
 unsupported child syntax, symlink substitution, and selected-only reload. Browser
 cases cover flat imports, real folder imports, replacement forgetting targets,

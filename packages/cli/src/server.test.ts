@@ -82,8 +82,8 @@ describe('private read-only server', () => {
   it('serves selected include bundles but never discovers new include targets on reload', async () => {
     await new Promise<void>((resolve) => server.close(() => resolve()));
     const main = join(root, 'main.journal');
-    const child = join(root, 'child.journal');
-    await writeFile(main, 'include child.journal\n');
+    const child = join(root, 'child journal.journal');
+    await writeFile(main, 'include child journal.journal\n');
     await writeFile(child, '2026-01-01 Included\n  a  1 USD\n  b\n');
     server = await createJournalServer([main, child], join(root, 'public'));
     await new Promise<void>((resolve) =>
@@ -94,14 +94,17 @@ describe('private read-only server', () => {
     const sources = await (await fetch(url)).json();
     expect(parseJournal(sources).diagnostics).toEqual([]);
     expect(parseJournal(sources).transactions).toHaveLength(1);
-    await writeFile(join(root, 'unselected.journal'), 'must never be served');
-    await writeFile(main, 'include unselected.journal\n');
+    await writeFile(
+      join(root, 'unselected journal.journal'),
+      'must never be served',
+    );
+    await writeFile(main, 'include unselected journal.journal\n');
     const response = await fetch(url);
     expect(response.headers.get('cache-control')).toBe('no-store');
     const reloaded = await response.json();
     expect(reloaded.map((s: { name: string }) => s.name)).toEqual([
       'main.journal',
-      'child.journal',
+      'child journal.journal',
     ]);
     expect(JSON.stringify(reloaded)).not.toContain('must never be served');
     expect(parseJournal(reloaded).diagnostics[0]!.code).toBe('include-missing');

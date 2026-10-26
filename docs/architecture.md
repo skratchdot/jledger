@@ -136,9 +136,9 @@ and page state remain in component memory and are excluded from filter presets.
 
 `jledger server` resolves file-selection precedence once, binds only to IPv4
 loopback, and exposes `GET /api/journals`. The endpoint accepts no path parameters.
-A reload rereads only the selected paths. Literal relative `include` directives
-resolve among that explicit file allowlist in core; they never cause filesystem
-discovery. Source names are relative to the selected files’ common directory.
+A reload rereads only the selected paths. Literal unquoted relative `include`
+directives, including paths with spaces, resolve among that explicit file allowlist
+in core; they never cause filesystem discovery. Source names are relative to the selected files’ common directory.
 Canonical selected paths are revalidated on each read, and final symlink opens are
 refused. The common directory is a naming boundary, not authority to read its other
 files. The browser enters this mode only with `?local=1`;

@@ -113,14 +113,14 @@ export function resolveIncludes(sources: readonly Source[]): IncludeGraph {
       const target = content.slice('include'.length).trim();
       const comment = body.indexOf(';');
       if (
-        !/^[\p{L}\p{N}._/-]+$/u.test(target) ||
+        !/^[\p{L}\p{N}._/ -]+$/u.test(target) ||
         (comment >= 0 && !/\s/.test(body[comment - 1] ?? ''))
       ) {
         error(
           source.name,
           node.line,
           'include-path',
-          'Use an unquoted relative path with letters, numbers, dots, slashes, underscores or hyphens. Globs, quoted paths and expansions are not supported yet.',
+          'Use a literal unquoted relative path with letters, numbers, spaces, dots, slashes, underscores or hyphens. Globs, quoted paths, tabs and expansions are not supported.',
         );
         continue;
       }

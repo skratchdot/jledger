@@ -39,7 +39,7 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    balanced postings, and direct balances against hledger 1.52 and a pinned Ledger
    release; document intentional differences. Prioritize representative journals
    before adding many unrelated features.
-   The initial [corpus v1](conformance.md) now covers 188 synthetic cases with
+   The initial [corpus v1](conformance.md) now covers 194 synthetic cases with
    pinned hledger 1.52 / Ledger 3.3.2 captures and a live differential command.
    [Closed/zero account cases](conformance.md#closed-accounts-and-zero-report-rows)
    now distinguish arithmetic parity from reference omission/commodity-label
@@ -48,8 +48,8 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
 2. Add a lossless syntax tree and include graph. The initial read-only,
    [source-preserving line tree](syntax.md) now shares a streaming scanner with
    accounting interpretation. The [selected-source graph](includes.md) now expands
-   literal relative includes in both adapters, with browser folder mapping, cycle/
-   missing-target diagnostics, and no file discovery. Optional CLI discovery needs
+   literal relative includes (including paths with spaces) in both adapters, with
+   browser folder mapping, cycle/missing-target diagnostics, and no file discovery. Optional CLI discovery needs
    an explicit allowed-root policy; broader include syntax and root selection remain.
 3. Implement commodity styles, grouping/decimal marks, balance assertions,
    aliases/default-year rules, and posting/secondary dates with tested semantics.
