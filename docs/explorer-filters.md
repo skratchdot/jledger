@@ -6,8 +6,8 @@ both blank for all dates. Selecting the same date on both sides shows that day.
 Native calendar controls enter calendar dates; comparisons use validated ISO date
 strings without local-time or daylight-saving conversions.
 
-The filters compose with text search, account drill-down, commodity, and transaction
-status. A posting must match the account, commodity and complete date scope together.
+The filters compose with text search, account drill-down, commodity, and [effective posting status](posting-status.md). A posting must match status,
+account, commodity and complete date scope together.
 Only matching postings contribute to income, spending, categories and monthly totals.
 Rows count each matching transaction once, even if several postings match.
 
@@ -34,7 +34,7 @@ A custom range may therefore show a partial month's total.
 Select a full month with the dropdown, a chart/table month button, or a saved month
 scope to compare income, net spending and matching transaction counts against the
 immediately preceding calendar month. The comparison uses the same search, account
-(and descendants), commodity and transaction status. Its date scope alone changes
+(and descendants), commodity and effective posting status. Its date scope alone changes
 to the full prior month; it never compares a partial month with a full one.
 
 The main metric cards, charts, tables and register remain scoped to the selected
@@ -102,7 +102,7 @@ perform money arithmetic, export data, or persist financial information.
 ## Visible scope and saved filters
 
 Active filter chips show search text, an account and its descendants, dates/month,
-transaction status, and the selected commodity. Clear one optional chip without
+effective posting status, and the selected commodity. Clear one optional chip without
 changing the others. Removing a chip returns keyboard focus to the relevant
 control (search for account/search chips, From for dates, or Status).
 Dates are one scope: clearing that chip removes both bounds
@@ -141,7 +141,7 @@ the selected commodity.
 
 Use **Undo** and **Redo** in **Filter history** to restore recent report scopes.
 Each step restores all seven fields together: search, account, month shortcut,
-From, Through, commodity and transaction status. Month shortcuts, chart/account
+From, Through, commodity and effective posting status. Month shortcuts, chart/account
 clicks, clearing filters/chips and applying a named preset are single steps, so
 undoing a month selection also restores its date bounds. Month comparisons are
 recomputed from the restored scope by the worker.

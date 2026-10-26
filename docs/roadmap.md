@@ -39,7 +39,7 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    balanced postings, and direct balances against hledger 1.52 and a pinned Ledger
    release; document intentional differences. Prioritize representative journals
    before adding many unrelated features.
-   The initial [corpus v1](conformance.md) now covers 177 synthetic cases with
+   The initial [corpus v1](conformance.md) now covers 184 synthetic cases with
    pinned hledger 1.52 / Ledger 3.3.2 captures and a live differential command.
    [Closed/zero account cases](conformance.md#closed-accounts-and-zero-report-rows)
    now distinguish arithmetic parity from reference omission/commodity-label
@@ -80,7 +80,9 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    and native keyboard controls. Account-name search now reveals matching paths
    with ancestor context while preserving folds and full-journal amounts. Exact,
    paginated spending tables now provide keyboard-accessible chart equivalents,
-   all expense categories and shared account/month drill-down. Broader keyboard
+   all expense categories and shared account/month drill-down. [Posting status](posting-status.md)
+   now uses explicit markers with transaction inheritance across reports, previews
+   and comparison periods, with hledger membership evidence and source explanations. Broader keyboard
    navigation remains. Specify hledger query compatibility separately from simple
    free-text search.
 6. Extend the existing worker and virtualization foundation with streaming/incremental

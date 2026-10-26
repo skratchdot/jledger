@@ -76,6 +76,12 @@ parsing or aggregation acceptable.
   Previous totals, deltas and count add bounded metadata. Matching two date scopes
   adds work for month queries; all-dates/custom-range queries skip that comparison.
   This is not a new latency or memory guarantee.
+- Effective posting status adds a marker/inheritance comparison to the shared
+  worker posting matcher and the existing bounded register previews. Header-only
+  status rejection is removed so split statuses remain correct. There is no new
+  status index, journal transfer or UI-thread money computation. A 5,000-transaction
+  browser case browses 2,500 pending results with bounded rows and final source
+  drill-down; this is not a new latency/memory guarantee.
 - React receives a summary and report aggregates, not the entire transaction set.
 - Undo/redo retains at most 50 recent seven-field configurations across the two
   history stacks. Nearby typing coalesces into one step; no journal scan or money

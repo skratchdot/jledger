@@ -1,0 +1,6 @@
+alias bank = assets:bank
+2024-01-01 * Opening
+  bank  0.50 USD
+  equity:opening
+
+include parts/status-child.journal

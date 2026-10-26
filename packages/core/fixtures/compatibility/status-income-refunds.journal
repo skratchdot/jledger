@@ -1,0 +1,7 @@
+2024-01-01 * Salary
+  ! income:salary  -10.00 USD
+  assets:bank
+
+2024-01-02 ! Refund
+  * expenses:food  -0.10 USD
+  assets:bank

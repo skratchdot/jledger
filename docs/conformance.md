@@ -14,10 +14,10 @@ Three separate questions are tested:
    description, account, commodity, and exact quantity, including inferred amounts.
 3. **Report arithmetic parity:** supported fixtures compare nonzero flat, direct,
    commodity-specific balances; marked fixtures also compare inclusive rollups with explicit scope.
-   Marked cases separately compare hledger account classification query sets.
+   Marked cases separately compare hledger account classification and effective
+   posting-status query membership.
    General hierarchical presentation, query languages, valuation, text layout,
-   status inheritance, zero-row presentation, and rounding/display precision are
-   outside this comparison. Only exact zero report rows are excluded; complete
+   zero-row presentation and rounding/display precision are outside this comparison. Only exact zero report rows are excluded; complete
    posting projections retain all amounts, accounts and commodity identities.
 
 | Cases                                                                                                                                              | jledger                                                   | hledger 1.52 | Ledger 3.3.2                   |
@@ -90,7 +90,7 @@ are evidence from the tools, never generated from jledger's own expected results
 ## Selected-source includes and remaining scope
 
 The [source-preserving syntax layer](syntax.md) and [selected-source include graph](includes.md)
-are implemented. The corpus now contains 177 cases, including posting and direct
+are implemented. The corpus now contains 184 cases, including posting and direct
 balance parity for simple and nested includes, plus acceptance-only captures for
 missing and repeated includes. Included sources are supplied explicitly in fixture
 metadata; references read the root journal and follow its real relative paths.
@@ -227,7 +227,7 @@ Only the promoted sample's hledger capture changes among the previous 145 cases.
 
 ## Closed accounts and zero report rows
 
-The corpus now has **177 cases**, including 16 new zero/residual cases. Existing
+The zero-report slice brought the corpus to **177 cases**, adding 16 zero/residual cases. Existing
 161-case captures remain unchanged. New cases cover closed accounts, canceled USD
 and EUR, unitless/quoted commodities, zero parents with nonzero direct postings,
 aliases/includes, refunds, direct/total/inclusive assertions, large exact offsets,
@@ -268,3 +268,15 @@ JSON output limit; an exact alternative hledger report capture remains future wo
 Core/browser checks separately protect `0.000000000000000001` in jledger. The failed
 assertion case records reference rejection at that finer precision. No production
 money arithmetic is rounded to accommodate reference output.
+
+## Effective posting status
+
+The [posting-status slice](posting-status.md) adds seven cases, bringing the corpus
+to 184. Both tools accept the journals, and complete posting and direct-balance
+projections still compare. Each marked `postingStatuses` case also captures three
+hledger register membership queries: Cleared (`status:*`), Pending (`status:!`) and
+Unmarked (`status:`). The comparison checks selected effective dates, descriptions,
+accounts, commodities and exact quantities without dropping any selected posting.
+These 21 captures establish the sampled hledger status semantics separately from
+report parity. No Ledger status-query parity is claimed. All previous 177 reference
+captures remain unchanged. General hledger query parsing remains unsupported.

@@ -11,6 +11,7 @@ import {
   matchesAccountType,
   balances,
   effectivePostingDate,
+  effectivePostingStatus,
   parseJournal,
 } from './index.js';
 
@@ -127,6 +128,26 @@ describe('compatibility corpus v1 (captured hledger 1.52 / Ledger 3.3.2)', () =>
                 matchesAccountType(classify(account).type, type),
               ),
             ).toEqual(expected.accountTypes[type]);
+        }
+        if (tool === 'hledger' && fixture.postingStatuses) {
+          if (!('statusPostings' in expected))
+            throw new Error('Missing hledger status membership capture');
+          for (const status of ['*', '!', ''] as const) {
+            const filtered = journal.transactions
+              .flatMap((t) =>
+                t.postings
+                  .filter((p) => effectivePostingStatus(p, t.status) === status)
+                  .map((p) => ({
+                    date: effectivePostingDate(p, t.date),
+                    description: t.description,
+                    account: p.account,
+                    commodity: p.amount.commodity,
+                    quantity: canonical(p.amount.quantity),
+                  })),
+              )
+              .sort((a, b) => a.date.localeCompare(b.date));
+            expect(filtered).toEqual(expected.statusPostings[status]);
+          }
         }
         if (fixture.hierarchy?.includes(tool)) {
           const hierarchy = accountHierarchy(journal);

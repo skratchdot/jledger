@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ACCOUNT_TYPE_LABELS, formatAmount, type Source } from '@jledger/core';
+import {
+  ACCOUNT_TYPE_LABELS,
+  effectivePostingStatus,
+  formatAmount,
+  type Source,
+} from '@jledger/core';
 import demo from '@jledger/examples/demo.journal?raw';
 import { useJournal } from './use-journal';
 import { useFilterHistory } from './filter-history';
@@ -546,6 +551,7 @@ export function Explorer() {
                       <select
                         ref={statusInput}
                         aria-label="Status"
+                        aria-describedby="date-range-help"
                         value={status}
                         onChange={(e) => setStatus(e.target.value)}
                       >
@@ -569,7 +575,8 @@ export function Explorer() {
                   <p id="date-range-help" className="date-range-help">
                     From and Through include both boundary dates. Filters use
                     posting dates. Choose a month shortcut to compare with the
-                    previous calendar month.
+                    previous calendar month. Status uses posting markers, then
+                    transaction status. Register icons show transaction status.
                   </p>
                   <ActiveFilters
                     filters={{ ...filters, commodity: currency }}
@@ -1011,6 +1018,7 @@ export function Explorer() {
                           <span>Newest first · select to inspect</span>
                         </div>
                         <VirtualRegister
+                          status={status}
                           count={report.count}
                           window={engine.window}
                           filterKey={JSON.stringify(filters)}
@@ -1085,12 +1093,23 @@ export function Explorer() {
           <dl>
             {selected.postings.map((p, i) => {
               const classification = selected.postingTypes[i]!;
+              const postingStatus = effectivePostingStatus(p, selected.status);
               return (
                 <div key={i}>
                   <dt>{p.account}</dt>
                   <dd>
                     {formatAmount(p.amount)}
                     {p.inferred && <small> inferred</small>}
+                    <small>
+                      {' '}
+                      ·{' '}
+                      {postingStatus === '*'
+                        ? 'Cleared'
+                        : postingStatus === '!'
+                          ? 'Pending'
+                          : 'Unmarked'}
+                      {p.status ? ' (posting status)' : ' (transaction status)'}
+                    </small>
                     {p.accountAlias && (
                       <small>
                         {' '}

@@ -116,7 +116,8 @@ installation is a later milestone.
   commodity across an account and its descendants. Assignments and total inclusive
   `==*` remain unsupported.
 - Interactive expense categories and monthly charts, plus inclusive [date ranges](docs/explorer-filters.md), status, commodity,
-  account, and text filters. Income/spending follows [journal account types](docs/account-types.md),
+  account, and text filters. [Posting status](docs/posting-status.md) overrides
+  transaction status, with inheritance explained in details. Income/spending follows [journal account types](docs/account-types.md),
   with inherited declarations, child overrides, and English-name defaults.
   Transaction details explain the classification source.
 - [Previous-month comparisons](docs/explorer-filters.md#previous-calendar-month-comparison)

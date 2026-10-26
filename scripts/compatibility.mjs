@@ -226,6 +226,44 @@ for (const tool of tools) {
         );
       }
     }
+    // hledger status queries are posting-scoped: explicit posting markers win,
+    // otherwise transaction status applies. Capture membership separately from
+    // complete postings/balances; no Ledger status-query parity is implied.
+    if (entry.accepted && fixture.postingStatuses && tool.name === 'hledger') {
+      const transactions = new Map(
+        JSON.parse(
+          parsed.stdout.replace(/("decimalMantissa"\s*:\s*)(-?\d+)/g, '$1"$2"'),
+        ).map((transaction) => [String(transaction.tindex), transaction]),
+      );
+      entry.statusPostings = {};
+      for (const status of ['*', '!', '']) {
+        const result = run(tool, [
+          ...prefix,
+          'register',
+          `status:${status}`,
+          '-O',
+          'json',
+        ]);
+        assert.equal(result.status, 0, result.stderr);
+        entry.statusPostings[status] = JSON.parse(
+          result.stdout.replace(/("decimalMantissa"\s*:\s*)(-?\d+)/g, '$1"$2"'),
+        )
+          .flatMap(([, , , posting]) => {
+            const transaction = transactions.get(String(posting.ptransaction_));
+            assert(
+              transaction,
+              'Status query refers to an unknown transaction',
+            );
+            return posting.pamount.map((amount) => ({
+              date: posting.pdate ?? transaction.tdate,
+              description: transaction.tdescription,
+              account: posting.paccount,
+              ...hledgerAmount(amount),
+            }));
+          })
+          .sort((a, b) => a.date.localeCompare(b.date));
+      }
+    }
     // Account classification is separate from posting/balance parity. Ledger's
     // tag system has no equivalent hledger type query, so do not imply parity.
     if (entry.accepted && fixture.accountTypes && tool.name === 'hledger') {

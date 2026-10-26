@@ -1121,5 +1121,41 @@
   {
     "id": "zero-refund",
     "supported": true
+  },
+  {
+    "id": "status-inheritance",
+    "supported": true,
+    "postingStatuses": true
+  },
+  {
+    "id": "status-overrides",
+    "supported": true,
+    "postingStatuses": true
+  },
+  {
+    "id": "status-inferred",
+    "supported": true,
+    "postingStatuses": true
+  },
+  {
+    "id": "status-posting-dates",
+    "supported": true,
+    "postingStatuses": true
+  },
+  {
+    "id": "status-includes",
+    "supported": true,
+    "postingStatuses": true,
+    "sources": ["status-includes.journal", "parts/status-child.journal"]
+  },
+  {
+    "id": "status-commodities",
+    "supported": true,
+    "postingStatuses": true
+  },
+  {
+    "id": "status-income-refunds",
+    "supported": true,
+    "postingStatuses": true
   }
 ]

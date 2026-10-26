@@ -42,6 +42,7 @@ import {
   parsePostingDateComment,
 } from './dates.js';
 export { effectivePostingDate } from './dates.js';
+export { effectivePostingStatus } from './statuses.js';
 export {
   resolveIncludes,
   MAX_INCLUDE_DEPTH,
