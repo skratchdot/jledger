@@ -1,0 +1,8 @@
+2024-01-01 Large
+  expenses:food  9007199254740993.01 "123"
+  assets:food
+
+2024-01-01 Refund
+  expenses:food  -0.02 "123"
+  assets:food
+

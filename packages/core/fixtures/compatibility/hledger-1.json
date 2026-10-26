@@ -3465,5 +3465,505 @@
         "quantity": "0.3"
       }
     ]
+  },
+  "quoted-basic": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Spaced suffix",
+        "account": "expenses:food",
+        "commodity": "US Dollar",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Spaced suffix",
+        "account": "assets:food",
+        "commodity": "US Dollar",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Adjacent prefix",
+        "account": "expenses:food",
+        "commodity": "US Dollar",
+        "quantity": "0.2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Adjacent prefix",
+        "account": "assets:food",
+        "commodity": "US Dollar",
+        "quantity": "-0.2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Refund",
+        "account": "expenses:food",
+        "commodity": "US Dollar",
+        "quantity": "-0.03"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Refund",
+        "account": "assets:food",
+        "commodity": "US Dollar",
+        "quantity": "0.03"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Adjacent suffix",
+        "account": "expenses:food",
+        "commodity": "US Dollar",
+        "quantity": "0.04"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Adjacent suffix",
+        "account": "assets:food",
+        "commodity": "US Dollar",
+        "quantity": "-0.04"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:food",
+        "commodity": "US Dollar",
+        "quantity": "-0.31"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "US Dollar",
+        "quantity": "0.31"
+      }
+    ]
+  },
+  "quoted-numeric": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Large",
+        "account": "expenses:food",
+        "commodity": "123",
+        "quantity": "9007199254740993.01"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Large",
+        "account": "assets:food",
+        "commodity": "123",
+        "quantity": "-9007199254740993.01"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Refund",
+        "account": "expenses:food",
+        "commodity": "123",
+        "quantity": "-0.02"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Refund",
+        "account": "assets:food",
+        "commodity": "123",
+        "quantity": "0.02"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:food",
+        "commodity": "123",
+        "quantity": "-9007199254740992.99"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "123",
+        "quantity": "9007199254740992.99"
+      }
+    ]
+  },
+  "quoted-punctuation": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Comma",
+        "account": "expenses:comma",
+        "commodity": "US, Dollar",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Comma",
+        "account": "assets:comma",
+        "commodity": "US, Dollar",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Unicode",
+        "account": "expenses:unicode",
+        "commodity": "Crédits repas",
+        "quantity": "0.2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Unicode",
+        "account": "assets:unicode",
+        "commodity": "Crédits repas",
+        "quantity": "-0.2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Literal at sign",
+        "account": "expenses:literal",
+        "commodity": "A@B",
+        "quantity": "0.3"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Literal at sign",
+        "account": "assets:literal",
+        "commodity": "A@B",
+        "quantity": "-0.3"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:comma",
+        "commodity": "US, Dollar",
+        "quantity": "-0.1"
+      },
+      {
+        "account": "assets:literal",
+        "commodity": "A@B",
+        "quantity": "-0.3"
+      },
+      {
+        "account": "assets:unicode",
+        "commodity": "Crédits repas",
+        "quantity": "-0.2"
+      },
+      {
+        "account": "expenses:comma",
+        "commodity": "US, Dollar",
+        "quantity": "0.1"
+      },
+      {
+        "account": "expenses:literal",
+        "commodity": "A@B",
+        "quantity": "0.3"
+      },
+      {
+        "account": "expenses:unicode",
+        "commodity": "Crédits repas",
+        "quantity": "0.2"
+      }
+    ]
+  },
+  "quoted-whitespace": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "One space",
+        "account": "expenses:one",
+        "commodity": "US Dollar",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "One space",
+        "account": "assets:one",
+        "commodity": "US Dollar",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Two spaces",
+        "account": "expenses:two",
+        "commodity": "US  Dollar",
+        "quantity": "0.2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Two spaces",
+        "account": "assets:two",
+        "commodity": "US  Dollar",
+        "quantity": "-0.2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Outer spaces",
+        "account": "expenses:outer",
+        "commodity": " US Dollar ",
+        "quantity": "0.3"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Outer spaces",
+        "account": "assets:outer",
+        "commodity": " US Dollar ",
+        "quantity": "-0.3"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:one",
+        "commodity": "US Dollar",
+        "quantity": "-0.1"
+      },
+      {
+        "account": "assets:outer",
+        "commodity": " US Dollar ",
+        "quantity": "-0.3"
+      },
+      {
+        "account": "assets:two",
+        "commodity": "US  Dollar",
+        "quantity": "-0.2"
+      },
+      {
+        "account": "expenses:one",
+        "commodity": "US Dollar",
+        "quantity": "0.1"
+      },
+      {
+        "account": "expenses:outer",
+        "commodity": " US Dollar ",
+        "quantity": "0.3"
+      },
+      {
+        "account": "expenses:two",
+        "commodity": "US  Dollar",
+        "quantity": "0.2"
+      }
+    ]
+  },
+  "quoted-alias": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Quoted",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Quoted",
+        "account": "assets:food",
+        "commodity": "USD",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Unquoted",
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Unquoted",
+        "account": "assets:food",
+        "commodity": "USD",
+        "quantity": "-0.2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:food",
+        "commodity": "USD",
+        "quantity": "-0.3"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "USD",
+        "quantity": "0.3"
+      }
+    ]
+  },
+  "quoted-format-block": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "expenses:food",
+        "commodity": "US Dollar",
+        "quantity": "1234.56"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:food",
+        "commodity": "US Dollar",
+        "quantity": "-1234.56"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:food",
+        "commodity": "US Dollar",
+        "quantity": "-1234.56"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "US Dollar",
+        "quantity": "1234.56"
+      }
+    ]
+  },
+  "quoted-inline-format": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "expenses:food",
+        "commodity": "US Dollar",
+        "quantity": "1234"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:food",
+        "commodity": "US Dollar",
+        "quantity": "-1234"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:food",
+        "commodity": "US Dollar",
+        "quantity": "-1234"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "US Dollar",
+        "quantity": "1234"
+      }
+    ]
+  },
+  "quoted-assertion": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "First",
+        "account": "expenses:food",
+        "commodity": "Meal Credits",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "First",
+        "account": "assets:food",
+        "commodity": "Meal Credits",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Second",
+        "account": "expenses:food",
+        "commodity": "Meal Credits",
+        "quantity": "0.2"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Second",
+        "account": "assets:food",
+        "commodity": "Meal Credits",
+        "quantity": "-0.2"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:food",
+        "commodity": "Meal Credits",
+        "quantity": "-0.3"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "Meal Credits",
+        "quantity": "0.3"
+      }
+    ]
+  },
+  "quoted-includes": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Child before reset",
+        "account": "expenses:food",
+        "commodity": "US Dollar",
+        "quantity": "1234.56"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Child before reset",
+        "account": "assets:food",
+        "commodity": "US Dollar",
+        "quantity": "-1234.56"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Parent after reset",
+        "account": "expenses:food",
+        "commodity": "US Dollar",
+        "quantity": "1.234"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Parent after reset",
+        "account": "assets:food",
+        "commodity": "US Dollar",
+        "quantity": "-1.234"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:food",
+        "commodity": "US Dollar",
+        "quantity": "-1235.794"
+      },
+      {
+        "account": "expenses:food",
+        "commodity": "US Dollar",
+        "quantity": "1235.794"
+      }
+    ]
+  },
+  "quoted-cost": {
+    "accepted": true
+  },
+  "quoted-malformed": {
+    "accepted": false
+  },
+  "quoted-escape": {
+    "accepted": false
+  },
+  "quoted-semicolon": {
+    "accepted": false
+  },
+  "quoted-empty": {
+    "accepted": true
+  },
+  "quoted-equals": {
+    "accepted": true
+  },
+  "quoted-whitespace-only": {
+    "accepted": true
+  },
+  "quoted-backslash": {
+    "accepted": true
+  },
+  "quoted-assertion-failure": {
+    "accepted": false
   }
 }

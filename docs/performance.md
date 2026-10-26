@@ -11,6 +11,10 @@ parsing or aggregation acceptable.
 - Plain assertion validation runs in the worker in effective posting-date order,
   only for journals containing assertions. It retains posting references and effective dates for a stable
   chronological sort and running direct balances; ordinary imports skip this pass.
+- Quoted commodity tokenization and exact-name format lookup stay in the worker
+  parser. Amount splitting preserves the original tail rather than rebuilding it.
+  Report formatting adds quotes where necessary, without converting quantities to
+  floats or adding a new scan/transfer of journals.
 - Explicit format state stays in the worker parser. Compiled amount patterns are
   reused; normalization removes grouping with string operations and uses exact
   decimals. Includes share commodity formats while copying the small file context.

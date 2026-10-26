@@ -23,6 +23,7 @@ export type { AccountHierarchy, AccountRollup } from './accounts.js';
 import {
   parseAmount,
   parseCommodityFormat,
+  formatCommodityName,
   type CommodityFormat,
   type DecimalMark,
 } from './amounts.js';
@@ -325,7 +326,7 @@ export function parseJournal(sources: Source[]): Journal {
             error(
               location,
               'commodity-format',
-              'Use an unquoted commodity or a supported numeric format example. Examples must agree with decimal-mark and use three-digit grouping.',
+              'Use a supported commodity name or numeric format example. Examples must agree with decimal-mark and use three-digit grouping.',
             );
           else {
             commodityBlock = declaration.commodity;
@@ -448,7 +449,9 @@ export function parseJournal(sources: Source[]): Journal {
           status = body[0] as Status;
           body = body.slice(1).trimStart();
         }
-        const [account = '', ...amountParts] = body.split(/\t+| {2,}/);
+        // Split only the first separator; spacing inside quoted commodities is literal.
+        const separator = /\t+| {2,}/.exec(body);
+        const account = separator ? body.slice(0, separator.index) : body;
         if (
           !account ||
           /[[\]()=]/.test(account) ||
@@ -461,7 +464,9 @@ export function parseJournal(sources: Source[]): Journal {
           );
           continue;
         }
-        const amountText = amountParts.join(' ').trim();
+        const amountText = separator
+          ? body.slice(separator.index + separator[0].length).trim()
+          : '';
         let postingAmountText = amountText;
         let balanceAssertion: Amount | null = null;
         if (amountText.includes('=')) {
@@ -500,7 +505,7 @@ export function parseJournal(sources: Source[]): Journal {
           error(
             location,
             'amount',
-            'Unsupported amount or grouping. Use exact decimals with a supported unquoted prefix/suffix commodity. Grouping and comma decimals require a compatible explicit directive; costs and expressions are not supported.',
+            'Unsupported amount or grouping. Use exact decimals with a supported prefix/suffix commodity. Grouping and comma decimals require a compatible explicit directive; costs and expressions are not supported.',
           );
           continue;
         }
@@ -611,5 +616,5 @@ export function formatAmount({ quantity, commodity }: Amount): string {
   const decimal = fraction.padEnd(minimumDigits, '0');
   const negative = quantity.startsWith('-') && /[1-9]/.test(integer + fraction);
   const number = `${negative ? '-' : ''}${symbolCurrency ? commodity : ''}${integer.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}${decimal ? `.${decimal}` : ''}`;
-  return `${number}${commodity && !symbolCurrency ? ` ${commodity}` : ''}`;
+  return `${number}${commodity && !symbolCurrency ? ` ${formatCommodityName(commodity)}` : ''}`;
 }

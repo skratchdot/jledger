@@ -1,0 +1,7 @@
+commodity "US Dollar"
+  format 1.000,00 "US Dollar"
+include parts/quoted-child.journal
+2024-01-01 Parent after reset
+  expenses:food  1.234 "US Dollar"
+  assets:food
+

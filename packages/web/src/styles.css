@@ -1369,3 +1369,14 @@ footer {
   flex-wrap: wrap;
   gap: 12px;
 }
+/* Literal quoted commodity names can contain significant repeated spaces. */
+.metric strong,
+.bar-label strong,
+.month-value,
+.posting-amounts,
+.account-select strong,
+.report-data td,
+.detail dd,
+select[aria-label='Commodity'] option {
+  white-space: pre-wrap;
+}

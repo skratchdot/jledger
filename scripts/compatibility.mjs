@@ -45,7 +45,11 @@ function csv(text) {
     quoted = false;
   for (let i = 0; i < text.length; i++) {
     const c = text[i];
-    if (c === '"') {
+    // Ledger's quoted() output backslash-escapes quotes/backslashes rather than
+    // using RFC CSV doubling. Preserve the enclosed raw commodity representation.
+    if (quoted && c === '\\' && ['"', '\\'].includes(text[i + 1])) {
+      field += text[++i];
+    } else if (c === '"') {
       if (quoted && text[i + 1] === '"') {
         field += '"';
         i++;
@@ -62,6 +66,10 @@ function csv(text) {
   assert.equal(quoted, false, 'Unclosed CSV field');
   if (field || row.length) rows.push([...row, field]);
   return rows;
+}
+function ledgerCommodity(text) {
+  // commodity(amount) renders necessary journal quotes; they are not name bytes.
+  return text.startsWith('"') && text.endsWith('"') ? text.slice(1, -1) : text;
 }
 function quantity(text) {
   // Canonical decimal strings, preserving exactness without binary floating point.
@@ -119,7 +127,7 @@ for (const tool of tools) {
                 date: date.replaceAll('/', '-'),
                 description,
                 account,
-                commodity,
+                commodity: ledgerCommodity(commodity),
                 quantity: quantity(q),
               }),
             )
@@ -160,7 +168,7 @@ for (const tool of tools) {
         tool.name === 'ledger'
           ? csv(report.stdout).map(([account, q, commodity]) => ({
               account,
-              commodity,
+              commodity: ledgerCommodity(commodity),
               quantity: quantity(q),
             }))
           : JSON.parse(
@@ -197,7 +205,7 @@ for (const tool of tools) {
           tool.name === 'ledger'
             ? csv(rollup.stdout).map(([account, q, commodity]) => ({
                 account,
-                commodity,
+                commodity: ledgerCommodity(commodity),
                 quantity: quantity(q),
               }))
             : JSON.parse(

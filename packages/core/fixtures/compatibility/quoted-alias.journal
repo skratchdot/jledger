@@ -1,0 +1,8 @@
+2024-01-01 Quoted
+  expenses:food  0.10 "USD"
+  assets:food
+
+2024-01-01 Unquoted
+  expenses:food  0.20 USD
+  assets:food
+

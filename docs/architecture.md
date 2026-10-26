@@ -62,6 +62,9 @@ addition, so JSON and browser/Node boundaries do not lose precision.
 string operations. Decimal marks follow file/include scope; commodity styles flow
 through include expansion in source order. No format context is transferred to the
 UI or applied as rounding to financial report quantities.
+[Quoted commodity names](quoted-commodities.md) decode to literal identities in
+the worker parser. Amount splitting preserves their whitespace; formats, assertions
+and report matching share those same keys. Read-only display adds necessary quotes.
 [Plain balance assertions](assertions.md) are checked after successful parsing and
 transaction balancing, in effective posting-date order across the expanded bundle.
 [Explicit default years](default-years.md) resolve month/day transaction headers

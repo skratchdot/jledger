@@ -85,7 +85,7 @@ are evidence from the tools, never generated from jledger's own expected results
 ## Selected-source includes and remaining scope
 
 The [source-preserving syntax layer](syntax.md) and [selected-source include graph](includes.md)
-are implemented. The corpus now contains 96 cases, including posting and direct
+are implemented. The corpus now contains 114 cases, including posting and direct
 balance parity for simple and nested includes, plus acceptance-only captures for
 missing and repeated includes. Included sources are supplied explicitly in fixture
 metadata; references read the root journal and follow its real relative paths.
@@ -175,3 +175,13 @@ accounts, commodities and exact quantities, and compare full direct balances.
 The live runner checks both entire captured date projections. Tag dates retain
 the separate `ledgerUsesTransactionDates` comparison because Ledger ignores them.
 No capture depends on the reference machine's current year.
+
+## Quoted commodity names
+
+The [quoted-name slice](quoted-commodities.md) adds 18 cases with literal decoded
+identities, explicit format/quote aliases, significant spaces and exact assertions.
+Ledger's CSV transport escaping and rendered commodity quotes are normalized before
+comparison; the original 96 captures remain unchanged. Inline-style and include-reset
+quantity differences use the existing explicit `ledgerParity: false` contract.
+Unsupported empty, malformed, escaped, delimiter-containing names and costs retain
+acceptance-only evidence and disable every jledger report.

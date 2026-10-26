@@ -12,7 +12,7 @@ commodity EUR
   equity:opening
 ```
 
-A compact `commodity 1.000,00 EUR` declaration is supported too. An unquoted bare
+A compact `commodity 1.000,00 EUR` declaration is supported too. A bare
 `commodity EUR` declaration resets that commodity to the default parsing style.
 A simple `format` subdirective must immediately follow its commodity declaration
 (or ordinary line comments) and name the same commodity. Other indented attributes are errors.
@@ -26,7 +26,8 @@ existing strict dot-decimal interpretation: commas and grouping are not guessed.
 
 - Exact signed integers and fractions with an integer part. Suffix commodities and
   unquoted identifier prefixes require whitespace; `$`, `€`, and `£` prefixes can
-  be adjacent to quantities. Quoted commodities remain unsupported.
+  be adjacent to quantities. [Quoted names](quoted-commodities.md) can contain
+  spaces/digits and can be adjacent to prefix/suffix quantities.
 - A numeric commodity example must contain a fractional separator. Its last dot or
   comma determines the decimal mark; any other separator is grouping. Its numeric
   precision does not round postings, assertions, balances, or explorer totals.
@@ -69,7 +70,8 @@ The explorer and CLI share English-style display formatting: comma thousands
 separators, a decimal point, and at least the currency's standard decimal places
 (for example, `1,234.50 USD`, `1,234 JPY`, and `1,234.500 KWD`). Common currency
 symbols appear before the quantity, with a leading minus for negatives, such as
-`-$1,234.50`. Currency codes and custom commodity names remain suffixes. Custom
+`-$1,234.50`. Currency codes and custom commodity names remain suffixes; names requiring
+quotes are displayed with quotes. Custom
 commodities receive grouping without extra decimal padding. Additional journal
 precision is always preserved, even for currencies; display never rounds or
 converts quantities to floating-point numbers.
