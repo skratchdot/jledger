@@ -86,7 +86,17 @@ export function Explorer() {
   const accountAncestors = engine.accountView.count - accountMatches;
   const categories = report.categories.slice(0, 30);
   const comparison =
-    !busy && report.comparison?.month === month ? report.comparison : undefined;
+    !busy &&
+    report.comparison?.month === month &&
+    report.comparison.dateFrom === dateFrom &&
+    report.comparison.dateTo === dateTo
+      ? report.comparison
+      : undefined;
+  const previousLabel =
+    comparison?.previousMonth ||
+    (comparison
+      ? `${comparison.previousDateFrom} through ${comparison.previousDateTo}`
+      : '');
   const signedAmount = (value: string) =>
     `${value.startsWith('-') ? '' : '+'}${metric(value, currency)}`;
   const biggest = Math.max(
@@ -659,13 +669,20 @@ export function Explorer() {
                           {comparison && (
                             <section
                               className="panel comparison-panel"
-                              aria-label="Previous month comparison"
+                              aria-label={
+                                comparison.previousMonth
+                                  ? 'Previous month comparison'
+                                  : 'Previous period comparison'
+                              }
                             >
-                              <h2>Compared with {comparison.previousMonth}</h2>
+                              <h2>Compared with {previousLabel}</h2>
                               <p className="muted">
-                                Full calendar months with the same search,
-                                account, commodity and status filters. Totals
-                                reflect the imported journals.
+                                {comparison.previousMonth
+                                  ? 'Full calendar months'
+                                  : 'Equal-length inclusive date ranges'}{' '}
+                                with the same search, account, commodity and
+                                status filters. Totals reflect the imported
+                                journals.
                               </p>
                               <dl className="comparison-summary">
                                 <div>
@@ -702,19 +719,33 @@ export function Explorer() {
                               </dl>
                               {comparison.count === 0 && (
                                 <p className="muted">
-                                  No transactions match in the previous month.
-                                  This does not establish whether the imported
+                                  No transactions match in the previous{' '}
+                                  {comparison.previousMonth
+                                    ? 'month'
+                                    : 'period'}
+                                  . This does not establish whether the imported
                                   journals cover that period.
                                 </p>
                               )}
                               <Button
                                 variant="outline"
+                                className="max-w-full whitespace-normal"
                                 onClick={() => {
-                                  selectMonth(comparison.previousMonth);
-                                  monthInput.current?.focus();
+                                  if (comparison.previousMonth) {
+                                    selectMonth(comparison.previousMonth);
+                                    monthInput.current?.focus();
+                                  } else {
+                                    applyFilters({
+                                      ...filters,
+                                      month: '',
+                                      dateFrom: comparison.previousDateFrom,
+                                      dateTo: comparison.previousDateTo,
+                                    });
+                                    fromDateInput.current?.focus();
+                                  }
                                 }}
                               >
-                                Explore {comparison.previousMonth}
+                                Explore {previousLabel}
                               </Button>
                             </section>
                           )}

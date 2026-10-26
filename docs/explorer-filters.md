@@ -55,8 +55,9 @@ gets an explicit temporary dropdown option so the selected scope stays visible.
 Zero matching transactions produce zero prior totals and an explanation; this
 does not establish whether the imported journals cover the period completely.
 
-Manual From/Through edits clear the month shortcut and hide the comparison.
-Worker requests combining a month with narrower bounds also omit it. All-dates
+Manual From/Through edits clear the month shortcut and use the custom-range
+comparison described below when both bounds are present. Worker requests combining
+a month with narrower bounds still omit comparisons. All-dates
 scopes and the earliest supported month (`0001-01`) have no comparison. Months
 before year 0001 are outside the comparison feature. Invalid date ranges and
 journal diagnostics hide reports; changing scope cannot bypass validation.
@@ -67,6 +68,37 @@ report is pending, and stale replies cannot replace the current comparison.
 Calculations share one cancellable worker scan and exact decimal arithmetic; React
 receives only a small set of totals/deltas. No comparison data is persisted,
 exported in URLs, uploaded or added to offline caches.
+
+## Previous equal-length range comparison
+
+Set both **From** and **Through** to compare a custom range with the immediately
+preceding, nonoverlapping range of the same number of inclusive calendar days.
+For example, March 1–2, 2024 compares with February 28–29. A one-day range compares
+with the prior day. UTC calendar arithmetic avoids local timezone and daylight
+saving changes; leap days and year boundaries count as ordinary calendar days.
+
+The panel names the exact prior bounds and uses the same search, account, commodity,
+effective posting status, account types, exact totals and signed changes as month
+comparisons. Current cards, charts, tables and register keep their current scope.
+A split transaction can count once in each period, but each total includes only
+postings matching that period and every other posting filter.
+
+**Explore FROM through THROUGH** applies both prior bounds as one filter-history
+step, keeps the non-date filters, and focuses **From**. Undo restores the original
+range atomically. Saved custom-range filters recreate comparisons when reapplied.
+The comparison is derived metadata, not an eighth saved filter or persisted state.
+
+Open-ended and all-dates ranges have no comparison. If the entire preceding range
+would extend before year 0001, the comparison is omitted rather than shortened.
+Invalid ranges and journals still disable reports. Empty prior results show zero
+values with the same journal-coverage caveat as month comparisons. Pending/stale
+requests cannot leave a comparison for different date bounds visible.
+
+Choosing a **Month** shortcut still compares full calendar months, which may have
+different lengths. Manually entering the same month's dates instead requests equal
+calendar-day counts: March 1–31, 2024 compares with January 30–February 29, rather
+than the shorter February calendar month. The panel explains which rule applies.
+These are explorer comparisons, not new hledger query or financial-statement parity.
 
 ## Charts and data tables
 

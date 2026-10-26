@@ -23,10 +23,11 @@ range errors are validated independently of journal diagnostics.
 [Posting status](posting-status.md) resolves explicit markers before transaction
 inheritance in core; the worker and bounded previews use the shared matcher. Raw
 markers/header status remain intact, with effective status explained in details.
-Full-month scopes optionally aggregate the prior calendar month in that same worker
-scan, keeping non-date filters fixed. Exact income/spending deltas and transaction
-counts cross as bounded report metadata. Only current-period IDs become register
-matches, and the existing query generation guard rejects stale comparisons.
+Full-month scopes aggregate the prior calendar month; closed custom date ranges
+aggregate the immediately preceding equal-length range in that same worker scan,
+keeping non-date filters fixed. Exact income/spending deltas, transaction counts
+and explicit prior date bounds cross as bounded report metadata. Only current-period
+IDs become register matches, and the existing query generation guard rejects stale comparisons.
 A bounded UI reducer retains up to 50 filter-history steps, grouping nearby text
 edits and recording complete scope changes atomically. Undo/redo reuse the same
 worker query/cancellation path; successful journal commits clear both stacks while

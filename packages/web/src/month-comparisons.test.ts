@@ -173,7 +173,7 @@ describe('worker month comparisons', () => {
       comparison: { spending: '9007199254740993.01', spendingChange: '-0.03' },
     });
   });
-  it('reports missing prior activity as zero and omits comparisons for a manual date range', async () => {
+  it('reports missing prior activity as zero and compares a closed manual date range', async () => {
     const engine = new JournalEngine();
     engine.load([
       {
@@ -189,9 +189,13 @@ describe('worker month comparisons', () => {
         spendingChange: '0.10',
       },
     });
-    expect(await engine.query({ ...filters, month: '' })).not.toHaveProperty(
-      'comparison',
-    );
+    expect(await engine.query({ ...filters, month: '' })).toMatchObject({
+      comparison: {
+        previousDateFrom: '2024-01-30',
+        previousDateTo: '2024-02-29',
+        count: 0,
+      },
+    });
     expect(
       await engine.query({ ...filters, dateFrom: '2024-03-02' }),
     ).not.toHaveProperty('comparison');
