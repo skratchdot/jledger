@@ -24,11 +24,7 @@ jobs:
       NODE_OPTIONS: --dns-result-order=ipv4first
     steps:
       - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
-      - uses: actions/setup-node@v7
-        with:
-          node-version-file: .node-version
-          cache: pnpm
+      - uses: ./.github/actions/setup
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: pnpm lint

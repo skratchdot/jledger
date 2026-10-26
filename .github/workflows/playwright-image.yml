@@ -14,6 +14,9 @@ jobs:
       image: ${{ steps.image.outputs.image }}
     steps:
       - uses: actions/checkout@v7
+      - uses: jdx/mise-action@v5
+        with:
+          install_args: node
       - name: Resolve image from package.json
         id: image
         shell: bash

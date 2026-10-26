@@ -26,10 +26,14 @@ journals stay in memory; reimport them after a reload.
 
 ### Run locally
 
-Use Node **24.x** (see `.node-version`) and **pnpm 12.15.0** (see `packageManager`).
+Install [mise](https://mise.jdx.dev/getting-started.html) and activate it in your
+shell. Node **26** is pinned in `mise.toml`; mise reads pnpm's exact version from
+`packageManager` in `package.json`. Local development and CI use the same setup.
 Run these commands at the repository root:
 
 ```sh
+mise trust
+mise install
 pnpm install --frozen-lockfile
 pnpm build
 pnpm dev
@@ -191,7 +195,9 @@ when running `pnpm update @playwright/test`. Commit both `package.json` and
 `pnpm-lock.yaml` after an update. Frozen lockfile installs enforce consistency,
 and the resolver rejects version ranges. A new Playwright release must have its
 matching `-noble` image published before CI can run it. Node still follows
-`.node-version`, independently of the image's bundled Node version.
+`mise.toml`, independently of the image's bundled Node version.
+To update Node within version 26, run `mise use --pin node@26` and commit
+`mise.toml`. Mise reads pnpm updates directly from `package.json`.
 
 All lint, type, unit, compatibility, formatting, root browser, and subpath browser
 checks remain enabled. Superseded pull-request CI runs are canceled automatically.
