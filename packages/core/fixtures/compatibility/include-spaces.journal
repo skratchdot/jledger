@@ -1,0 +1,7 @@
+2024-01-01 Before
+  expenses:food  0.01 USD
+  assets:cash
+include space parts/child journal.journal
+2024-01-03 After
+  expenses:food  -0.03 USD
+  assets:cash

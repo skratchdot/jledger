@@ -64,10 +64,10 @@ describe('journal file selection', () => {
   });
   it('maps selected nested paths without discovering unselected include targets', async () => {
     root = await mkdtemp(join(tmpdir(), 'jledger-includes-'));
-    await mkdir(join(root, 'parts'));
+    await mkdir(join(root, 'monthly exports'));
     const main = join(root, 'main.journal');
-    const child = join(root, 'parts/child.journal');
-    await writeFile(main, 'include parts/child.journal\n');
+    const child = join(root, 'monthly exports/child journal.journal');
+    await writeFile(main, 'include monthly exports/child journal.journal\n');
     await writeFile(
       child,
       '2026-01-01 Included\n  expenses:food  1.23 USD\n  assets:cash\n',
@@ -76,12 +76,14 @@ describe('journal file selection', () => {
     const sources = await readSources(selected);
     expect(sources.map((s) => s.name)).toEqual([
       'main.journal',
-      'parts/child.journal',
+      'monthly exports/child journal.journal',
     ]);
     const journal = parseJournal(sources);
     expect(journal.diagnostics).toEqual([]);
     expect(journal.transactions).toHaveLength(1);
-    expect(journal.transactions[0]!.source.file).toBe('parts/child.journal');
+    expect(journal.transactions[0]!.source.file).toBe(
+      'monthly exports/child journal.journal',
+    );
     const missing = parseJournal(await readSources(await resolveFiles([main])));
     expect(missing.diagnostics[0]!.code).toBe('include-missing');
     expect(() => balances(missing)).toThrow('reports are disabled');

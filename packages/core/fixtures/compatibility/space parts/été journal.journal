@@ -1,0 +1,4 @@
+2024-01-01 Nested
+  expenses:food  0.20 USD
+  assets:cash
+include ../double  space journal.journal

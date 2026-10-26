@@ -63,6 +63,88 @@ describe('selected-source include graphs', () => {
     ).toEqual([{ commodity: 'USD', quantity: '3.11' }]);
   });
 
+  it('preserves literal internal spaces and Unicode through nested includes and source spans', () => {
+    const sources = [
+      {
+        name: 'main journal',
+        text: '\uFEFFinclude ./monthly exports/child  journal ; note\r\n',
+      },
+      {
+        name: 'monthly exports/child  journal',
+        text:
+          transaction('child', '0.10') +
+          'include ../été records/refund journal\n',
+      },
+      {
+        name: 'été records/refund journal',
+        text: transaction('refund', '-0.03'),
+      },
+    ];
+    const graph = resolveIncludes(sources);
+    expect(graph.diagnostics).toEqual([]);
+    expect(graph.entryPoints).toEqual(['main journal']);
+    expect(graph.edges.map((edge) => edge.to)).toEqual([
+      'monthly exports/child  journal',
+      'été records/refund journal',
+    ]);
+    expect(
+      sources[0]!.text.slice(graph.edges[0]!.start, graph.edges[0]!.end),
+    ).toBe('\uFEFFinclude ./monthly exports/child  journal ; note\r\n');
+    const journal = parseJournal(sources);
+    expect(journal.diagnostics).toEqual([]);
+    expect(journal.transactions.map((t) => t.source.file)).toEqual([
+      'monthly exports/child  journal',
+      'été records/refund journal',
+    ]);
+    expect(
+      balances(journal).find((row) => row.account === 'expenses:food')!.amounts,
+    ).toEqual([{ commodity: 'USD', quantity: '0.07' }]);
+  });
+
+  it('does not collapse spaces, decode names, discover files or bypass graph restrictions', () => {
+    for (const target of [
+      'child  journal',
+      'Child journal',
+      'parts dir/child journal',
+      'absent dir/../child journal',
+    ]) {
+      invalid(
+        [
+          { name: 'main', text: `include ${target}\n` },
+          { name: 'child journal', text: transaction('selected') },
+        ],
+        'include-missing',
+      );
+    }
+    invalid(
+      [
+        {
+          name: 'main',
+          text: 'include child journal\ninclude ./child journal\n',
+        },
+        { name: 'child journal', text: transaction('selected') },
+      ],
+      'include-repeat',
+    );
+    invalid(
+      [
+        { name: 'main journal', text: 'include child journal\n' },
+        { name: 'child journal', text: 'include main journal\n' },
+      ],
+      'include-cycle',
+    );
+    invalid(
+      [
+        { name: 'main', text: 'include child journal\n' },
+        {
+          name: 'child journal',
+          text: transaction('cost').replace('1.00 USD', '1 USD @ 2 EUR'),
+        },
+      ],
+      'amount',
+    );
+  });
+
   it('ignores include-shaped text in comments and retains BOM/CRLF line locations', () => {
     const journal = parseJournal([
       {
@@ -102,9 +184,14 @@ describe('selected-source include graphs', () => {
     'child*',
     'a?[x]',
     '"child"',
-    'child journal',
     '',
     'child\0',
+    'child\tjournal',
+    'child\u00a0journal',
+    '"child journal"',
+    'parts dir/../../secret',
+    '/parts dir/child',
+    'parts dir/$HOME/child',
     'child;other',
     'child#other',
     '$HOME/child',
