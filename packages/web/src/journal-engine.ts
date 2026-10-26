@@ -5,6 +5,7 @@ import {
 } from './account-view';
 import {
   add,
+  compare,
   negate,
   effectivePostingDate,
   accountHierarchy,
@@ -234,7 +235,7 @@ export class JournalEngine {
       count: matches.length,
       income: shownIncome,
       spending,
-      categories: [...categories].sort((a, b) => Number(b[1]) - Number(a[1])),
+      categories: [...categories].sort((a, b) => compare(b[1], a[1])),
       monthly: this.summary.months
         .filter(
           (month) =>

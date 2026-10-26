@@ -28,3 +28,13 @@ export function negate(value: string): string {
 export function isZero(value: string): boolean {
   return parts(value)[0] === 0n;
 }
+
+/** Compare exact decimal quantities numerically, independently of their scale. */
+export function compare(a: string, b: string): -1 | 0 | 1 {
+  const [left, ls] = parts(a);
+  const [right, rs] = parts(b);
+  const scale = Math.max(ls, rs);
+  const alignedLeft = left * 10n ** BigInt(scale - ls);
+  const alignedRight = right * 10n ** BigInt(scale - rs);
+  return alignedLeft < alignedRight ? -1 : alignedLeft > alignedRight ? 1 : 0;
+}

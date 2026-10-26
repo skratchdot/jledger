@@ -128,7 +128,9 @@ GitHub Pages-compatible navigation strategy; do not assume Pages rewrites unknow
 URLs to an SPA shell. Base paths are explicit in Vite, the router, and the worker.
 
 Spending tables consume the same category/month aggregates as charts, without a
-second accounting path. Native table pages mount at most 25 data rows each; the
+second accounting path. Category ranking uses exact decimal comparisons in the
+worker, so approximate chart dimensions cannot decide which categories make the
+top-30 cutoff. Native table pages mount at most 25 data rows each; the
 worker continues to own scanning, exact totals and filter matching. Pagination does
 not reduce the existing aggregate payload or establish a new memory limit. Display
 and page state remain in component memory and are excluded from filter presets.

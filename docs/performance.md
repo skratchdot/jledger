@@ -98,7 +98,10 @@ parsing or aggregation acceptable.
 - Search debounces for 100 ms. Queries yield every 8,192 records to allow newer
   requests to cancel stale scans; request IDs discard stale UI responses.
 - Details and original source snippets are retrieved on demand.
-- Charts show the top 30 expense categories. Spending tables expose all worker
+- Expense categories sort in the worker using exact BigInt-backed decimal
+  comparisons, avoiding floating-point ties at the top-30 cutoff. Sort cost grows
+  with category count and decimal length; this is not a new latency guarantee.
+  Charts show the top 30 expense categories. Spending tables expose all worker
   category aggregates and existing journal months in pages of at most 25 data rows
   each. React slices only the visible page and formats exact strings; it does not
   recompute financial totals. Aggregate arrays already cross the worker boundary,
@@ -220,3 +223,12 @@ invalid/open-ended scopes, source details, focus and narrow layout. The existing
 200,000-transaction regression also exercises closed ranges. Comparisons still
 share one cancellable worker scan and add bounded metadata, without a new query
 index or streaming/latency/memory guarantee.
+
+## Exact category ranking regression
+
+Core tests compare signed values, equal scales, quantities beyond safe integers and
+floating-point range, and tiny residuals without rounding. Worker/browser cases
+rank 32 near-equal large amounts, verify the true top-30 cutoff and bounded table
+pages, then drill into the highest category's exact posting and original source.
+Worker cases also retain stable numeric ties, zero/refund order and commodity
+separation. The existing large-journal regressions remain required.
