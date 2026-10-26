@@ -22,7 +22,7 @@ jobs:
           import { appendFileSync, readFileSync } from 'node:fs';
           const { devDependencies } = JSON.parse(readFileSync('package.json', 'utf8'));
           const version = devDependencies['@playwright/test'];
-          if (typeof version !== 'string' || !/^[0-9]+\.[0-9]+\.[0-9]+$/.test(version)) {
+          if (typeof version !== 'string' || version.trim() !== version || !/^[0-9]+\.[0-9]+\.[0-9]+$/.test(version)) {
             throw new Error('Pin @playwright/test to an exact stable version for the CI image.');
           }
           appendFileSync(process.env.GITHUB_OUTPUT, `image=mcr.microsoft.com/playwright:v${version}-noble\n`);
