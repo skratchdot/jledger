@@ -20,8 +20,9 @@ Editing either date clears the month shortcut so no hidden month restriction rem
 
 **Clear dates** removes both bounds and the month shortcut while retaining text,
 account, commodity and status choices. **Clear filters** also resets the other
-optional filters. Imports, demo selection, closing journals and local reload reset
-the optional filters, including the date range, using the existing reset flow.
+optional filters. Successful imports, demo selection, closing journals and local
+reload reset the unchanged optional filters, including the date range. Values
+changed during an import remain in place and apply to the replacement journal.
 
 Monthly charts show the existing journal months that overlap the selected scope,
 with totals calculated only from matching postings in those months. They do not
@@ -92,9 +93,10 @@ small filter configuration.
 
 Saved filters belong to the **currently open journal session**. A newly loaded
 journal, closing journals, demo selection, a successful local file reload, or a
-page refresh clears them, even if file names are unchanged. A failed file read
-retains the prior complete journal and its saved filters. Clear filters clears
-optional filter values, not saved presets, and keeps the selected commodity.
+page refresh clears them, even if file names are unchanged. A failed file read or
+cancelled import retains the prior complete journal, current filters and saved
+filters. Clear filters clears optional filter values, not saved presets, and keeps
+the selected commodity.
 
 ## Transaction and journal scope
 

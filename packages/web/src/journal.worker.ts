@@ -3,6 +3,10 @@ import { JournalEngine, type Filters } from './journal-engine';
 import { InvalidDateRangeError } from './report-filters';
 import { MAX_JOURNAL_SOURCES, type Source } from '@jledger/core';
 
+export type ImportProgress =
+  | { phase: 'reading'; completed: number; total: number }
+  | { phase: 'fetching' | 'processing' };
+
 export type Request =
   | {
       type: 'load';
@@ -40,6 +44,8 @@ self.onmessage = async (event: MessageEvent<Request>) => {
   try {
     if (request.type === 'load') {
       const current = ++generation;
+      const progress = (value: ImportProgress) =>
+        self.postMessage({ type: 'progress', id: request.id, progress: value });
       let sources = request.sources ?? [];
       if (request.files) {
         if (request.files.length > MAX_JOURNAL_SOURCES)
@@ -49,14 +55,30 @@ self.onmessage = async (event: MessageEvent<Request>) => {
         if (request.files.reduce((sum, file) => sum + file.size, 0) > MAX_BYTES)
           throw new Error('Choose files totaling 256 MiB or less.');
         const decoder = new TextDecoder('utf-8', { fatal: true });
-        sources = await Promise.all(
-          request.files.map(async (file) => ({
-            name: file.webkitRelativePath || file.name,
-            text: decoder.decode(await file.arrayBuffer()),
-          })),
-        );
+        sources = [];
+        progress({
+          phase: 'reading',
+          completed: 0,
+          total: request.files.length,
+        });
+        for (const file of request.files) {
+          const text = decoder.decode(await file.arrayBuffer());
+          if (current !== generation) return;
+          sources.push({ name: file.webkitRelativePath || file.name, text });
+          // Bound progress traffic for large selected folders.
+          if (
+            sources.length % 32 === 0 ||
+            sources.length === request.files.length
+          )
+            progress({
+              phase: 'reading',
+              completed: sources.length,
+              total: request.files.length,
+            });
+        }
       }
       if (request.localUrl) {
+        progress({ phase: 'fetching' });
         const response = await fetch(request.localUrl, {
           cache: 'no-store',
           credentials: 'same-origin',
@@ -77,6 +99,7 @@ self.onmessage = async (event: MessageEvent<Request>) => {
         sources = data as Source[];
       }
       if (current !== generation) return;
+      progress({ phase: 'processing' });
       const summary = engine.load(sources);
       activeLoad = request.id;
       activeAccountView = 0;

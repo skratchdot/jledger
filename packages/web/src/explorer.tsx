@@ -95,6 +95,9 @@ export function Explorer() {
   const searchInput = useRef<HTMLInputElement>(null);
   const fromDateInput = useRef<HTMLInputElement>(null);
   const statusInput = useRef<HTMLSelectElement>(null);
+  const nextLocal = useRef(false);
+  const importFilters = useRef(filters);
+  const importTrigger = useRef<HTMLButtonElement>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const folderInput = useRef<HTMLInputElement>(null);
   function resetFilters() {
@@ -144,7 +147,8 @@ export function Explorer() {
     setSelected(null);
   }
   function replaceSources(next: Source[]) {
-    resetFilters();
+    nextLocal.current = false;
+    importFilters.current = filters;
     load({ sources: next });
   }
   function importFiles(files: File[]) {
@@ -153,15 +157,29 @@ export function Explorer() {
       setMessage('Choose files totaling 256 MiB or less.');
       return;
     }
-    resetFilters();
-    setLocal(false);
+    nextLocal.current = false;
+    importFilters.current = filters;
     load({ files });
   }
   function loadLocal() {
-    resetFilters();
-    setLocal(true);
+    nextLocal.current = true;
+    importFilters.current = filters;
     load({ localUrl: `${BASE}api/journals` });
   }
+  useEffect(() => {
+    if (journalRevision) {
+      // Clear the previous scope without erasing input entered during parsing.
+      const before = importFilters.current;
+      setQuery((current) => (current === before.query ? '' : current));
+      setAccount((current) => (current === before.account ? '' : current));
+      setMonth((current) => (current === before.month ? '' : current));
+      setDateFrom((current) => (current === before.dateFrom ? '' : current));
+      setDateTo((current) => (current === before.dateTo ? '' : current));
+      setStatus((current) => (current === before.status ? 'all' : current));
+      setSelected(null);
+      setLocal(nextLocal.current);
+    }
+  }, [journalRevision]);
   useEffect(() => {
     if (new URLSearchParams(window.location.search).get('local') === '1') {
       setLocal(true);
@@ -229,6 +247,7 @@ export function Explorer() {
           )}
         </div>
         <Button
+          ref={importTrigger}
           className="sidebar-import"
           onClick={() => fileInput.current?.click()}
         >
@@ -317,11 +336,32 @@ export function Explorer() {
               e.target.value = '';
             }}
           />
-          {busy && (
-            <div className="work-status" role="status">
-              Processing journals in the background… You can keep using the
-              explorer.
+          {engine.importing ? (
+            <div className="work-status import-status">
+              <span role="status" aria-label="Import progress">
+                {engine.importProgress?.phase === 'reading'
+                  ? `Reading journal files: ${engine.importProgress.completed} of ${engine.importProgress.total}.`
+                  : engine.importProgress?.phase === 'fetching'
+                    ? 'Reading selected local journals…'
+                    : 'Parsing journals and building indexes…'}{' '}
+                The open journal is replaced only when this import finishes.
+              </span>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  engine.cancelImport();
+                  importTrigger.current?.focus();
+                }}
+              >
+                Cancel import
+              </Button>
             </div>
+          ) : (
+            busy && (
+              <div className="work-status" role="status">
+                Updating reports in the background…
+              </div>
+            )
           )}
           {message && !invalidDateRange && (
             <div className="notice" role="alert">
@@ -350,15 +390,14 @@ export function Explorer() {
                   className="secondary"
                   onClick={() => {
                     replaceSources([{ name: 'demo.journal', text: demo }]);
-                    setLocal(false);
                   }}
                 >
                   Explore sample journal
                 </Button>
               </div>
               <small>
-                Ledger-style journals · Multiple files · Read-only · 10 MiB
-                limit
+                Ledger-style journals · Multiple files · Read-only · 256 MiB
+                total limit
               </small>
               <p className="compat-note">
                 Early preview: a strict journal subset is supported. Unsupported
@@ -379,7 +418,6 @@ export function Explorer() {
                   className="text-button"
                   onClick={() => {
                     replaceSources([]);
-                    setLocal(false);
                   }}
                 >
                   Close journals

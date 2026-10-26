@@ -29,6 +29,11 @@ parsing or aggregation acceptable.
   computation; source comments and the transaction date remain available in details.
 - Core streams source-span line nodes while parsing, without retaining an extra
   syntax tree or split-line array. Explicit syntax inspection can opt into a tree.
+- Imports stage replacements in a separate worker so cancellation can terminate
+  synchronous parsing without destroying the committed journal. At most two journal
+  workers coexist, increasing peak replacement memory. Files decode serially and
+  send count updates every 32 files plus completion; local fetch and parse/index
+  phases are indeterminate. No financial computation moves to the UI thread.
 - File decoding, local API fetching/JSON decoding, parsing, direct balances,
   substring searching, and exact filtered totals run in that worker.
 - Full-journal direct and inclusive account arrays stay in the worker. A subtree
@@ -118,8 +123,8 @@ mounted account rows. These cases do not establish a high-account-count memory S
 ## Next improvements
 
 Incremental/streaming parsing, source byte offsets, query indexes (date, account,
-commodity), large account/commodity selector virtualization, import progress and
-cancellation, reduced duplicate memory, realistic include graphs, and explicit
+commodity), large account/commodity selector virtualization, finer parsing progress,
+reduced replacement memory, realistic include graphs, and explicit
 budgets for memory, time-to-first-result, and p95 input latency.
 
 Changes to the parser or explorer should preserve this regression and add evidence
@@ -135,3 +140,13 @@ posting dates, quantities larger than safe JavaScript integers, separate/unitles
 commodities, empty results, invalid reports and long account names at narrow widths.
 These are bounded-DOM regressions, not a guarantee for arbitrary aggregate counts;
 large month dropdowns and the original monthly chart remain future performance work.
+
+## Import cancellation regression
+
+Worker lifecycle tests cover commit/cancel/supersession, late replies, failed startup,
+failed imports and cleanup. Production-browser cases use a deliberately non-yielding
+same-origin test worker to verify cancellation without a parser yield and retain the
+old worker's exact reports, source drill-down, filters, presets and folded accounts.
+They also test initial cancellation, replacing/closing a pending import, narrow
+controls, stale progress/results and local-fetch cancellation/retry. The test worker
+proves the termination mechanism; it is not a real-journal performance guarantee.

@@ -29,6 +29,14 @@ stays in the worker. Presets are never written to URLs or browser storage. Searc
 for 100 ms; worker scans yield between chunks so newer searches cancel stale work. Files and local-server JSON are read
 in the worker, keeping large payload decoding off the UI thread.
 
+[Import cancellation](imports.md) stages replacements in a separate worker, keeping
+one committed worker and at most one pending worker. A completed load swaps ownership
+and terminates the old worker. Cancellation/supersession terminates the candidate,
+even during synchronous parsing; worker identity and request IDs reject late replies.
+Filters and local-server mode reset only on commit. Reading progress is batched by
+file count; parsing/indexing is an indeterminate phase. Keeping the old journal raises
+peak memory during replacement, and this does not make parsing incremental.
+
 [Account rollups](account-hierarchy.md) are computed from direct balances in core
 and built in the worker, together with a subtree/fold index. Summaries expose counts;
 the virtualized account list requests bounded row windows for inclusive or direct
