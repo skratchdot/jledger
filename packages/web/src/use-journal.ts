@@ -1,7 +1,8 @@
 import type { AccountAction, AccountView, AccountWindow } from './account-view';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Detail, Filters, Report, Row, Summary } from './journal-engine';
-import type { Request } from './journal.worker';
+import type { ImportProgress, Request } from './journal.worker';
+import { JournalWorkers } from './journal-workers';
 
 const emptySummary: Summary = {
   names: [],
@@ -37,7 +38,7 @@ export function useJournal(
   accountRange: { start: number; end: number },
   includeSubaccounts: boolean,
 ) {
-  const worker = useRef<Worker | null>(null),
+  const worker = useRef<JournalWorkers | null>(null),
     sequence = useRef(0),
     latestLoad = useRef(0),
     latestQuery = useRef(0),
@@ -60,6 +61,9 @@ export function useJournal(
   const [detail, setDetail] = useState<Detail | null>(null),
     [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
+  const [importProgress, setImportProgress] = useState<ImportProgress | null>(
+    null,
+  );
   const [busy, setBusy] = useState(false),
     [revision, setRevision] = useState(0),
     [reportId, setReportId] = useState(0);
@@ -68,76 +72,84 @@ export function useJournal(
     [],
   );
   useEffect(() => {
-    const instance = new Worker(
-      new URL('./journal.worker.ts', import.meta.url),
-      { type: 'module' },
+    const instance = new JournalWorkers(
+      () =>
+        new Worker(new URL('./journal.worker.ts', import.meta.url), {
+          type: 'module',
+        }),
+      ({ data }) => {
+        if (data.type === 'progress' && data.id === latestLoad.current) {
+          setImportProgress(data.progress);
+        } else if (data.type === 'loaded' && data.id === latestLoad.current) {
+          committedLoad.current = data.id;
+          setAccountSearch('');
+          setAccountView(emptyAccountView);
+          setAccountWindow({ start: 0, rows: [] });
+          setLoading(false);
+          setImportProgress(null);
+          setSummary(data.summary);
+          setReport(emptyReport);
+          setWindow({ start: 0, rows: [] });
+          setDetail(null);
+          setMessage('');
+          setRevision((r) => r + 1);
+        } else if (data.type === 'report' && data.id === latestQuery.current) {
+          setReport(data.report);
+          setReportId(data.id);
+          setWindow({ start: 0, rows: [] });
+          setBusy(false);
+        } else if (data.type === 'rows' && data.id === latestQuery.current)
+          setWindow({ start: data.start, rows: data.rows });
+        else if (
+          data.type === 'account-view' &&
+          data.id === latestAccountView.current &&
+          data.loadId === committedLoad.current
+        ) {
+          setAccountView({ ...data.view, id: data.id });
+          setAccountBusy(false);
+        } else if (
+          data.type === 'account-rows' &&
+          data.id === latestAccountRows.current &&
+          data.viewId === latestAccountView.current &&
+          data.loadId === committedLoad.current
+        )
+          setAccountWindow(data.window);
+        else if (
+          data.type === 'error' &&
+          (data.id === latestAccountView.current ||
+            data.id === latestAccountRows.current)
+        ) {
+          setAccountBusy(false);
+          setAccountWindow({ start: 0, rows: [] });
+          setMessage(data.message);
+        } else if (data.type === 'detail') setDetail(data.detail);
+        else if (
+          data.type === 'error' &&
+          (data.id === latestLoad.current || data.id === latestQuery.current)
+        ) {
+          setLoading(false);
+          setImportProgress(null);
+          if (data.id === latestLoad.current) setAccountBusy(false);
+          if (data.code !== 'date-range') setMessage(data.message);
+          setReport(emptyReport);
+          setWindow({ start: 0, rows: [] });
+          setDetail(null);
+          setBusy(false);
+        }
+      },
+      () => {
+        setMessage(
+          'The journal worker failed. Reload the application and try again.',
+        );
+        setBusy(false);
+        setAccountBusy(false);
+        setLoading(false);
+        setImportProgress(null);
+      },
     );
     worker.current = instance;
-    instance.onmessage = ({ data }) => {
-      if (data.type === 'loaded' && data.id === latestLoad.current) {
-        committedLoad.current = data.id;
-        setAccountSearch('');
-        setAccountView(emptyAccountView);
-        setAccountWindow({ start: 0, rows: [] });
-        setLoading(false);
-        setSummary(data.summary);
-        setReport(emptyReport);
-        setWindow({ start: 0, rows: [] });
-        setDetail(null);
-        setMessage('');
-        setRevision((r) => r + 1);
-      } else if (data.type === 'report' && data.id === latestQuery.current) {
-        setReport(data.report);
-        setReportId(data.id);
-        setWindow({ start: 0, rows: [] });
-        setBusy(false);
-      } else if (data.type === 'rows' && data.id === latestQuery.current)
-        setWindow({ start: data.start, rows: data.rows });
-      else if (
-        data.type === 'account-view' &&
-        data.id === latestAccountView.current &&
-        data.loadId === committedLoad.current
-      ) {
-        setAccountView({ ...data.view, id: data.id });
-        setAccountBusy(false);
-      } else if (
-        data.type === 'account-rows' &&
-        data.id === latestAccountRows.current &&
-        data.viewId === latestAccountView.current &&
-        data.loadId === committedLoad.current
-      )
-        setAccountWindow(data.window);
-      else if (
-        data.type === 'error' &&
-        (data.id === latestAccountView.current ||
-          data.id === latestAccountRows.current)
-      ) {
-        setAccountBusy(false);
-        setAccountWindow({ start: 0, rows: [] });
-        setMessage(data.message);
-      } else if (data.type === 'detail') setDetail(data.detail);
-      else if (
-        data.type === 'error' &&
-        (data.id === latestLoad.current || data.id === latestQuery.current)
-      ) {
-        setLoading(false);
-        if (data.id === latestLoad.current) setAccountBusy(false);
-        if (data.code !== 'date-range') setMessage(data.message);
-        setReport(emptyReport);
-        setWindow({ start: 0, rows: [] });
-        setDetail(null);
-        setBusy(false);
-      }
-    };
-    instance.onerror = () => {
-      setMessage(
-        'The journal worker failed. Reload the application and try again.',
-      );
-      setBusy(false);
-      setAccountBusy(false);
-    };
     return () => {
-      instance.terminate();
+      instance.dispose();
       worker.current = null;
     };
   }, []);
@@ -251,10 +263,28 @@ export function useJournal(
       setBusy(true);
       setMessage('');
       setDetail(null);
-      post({ type: 'load', id, ...input });
+      setImportProgress(
+        input.files
+          ? { phase: 'reading', completed: 0, total: input.files.length }
+          : { phase: input.localUrl ? 'fetching' : 'processing' },
+      );
+      worker.current?.load({ type: 'load', id, ...input });
     },
     [post],
   );
+  const cancelImport = useCallback(() => {
+    if (!worker.current?.cancel()) return;
+    const id = ++sequence.current;
+    latestLoad.current = id;
+    latestQuery.current = id;
+    latestAccountView.current = 0;
+    latestAccountRows.current = 0;
+    setLoading(false);
+    setImportProgress(null);
+    setBusy(false);
+    setAccountBusy(false);
+    setMessage('Import cancelled. The previous journal, if any, remains open.');
+  }, []);
   return {
     summary,
     journalRevision: revision,
@@ -268,6 +298,9 @@ export function useJournal(
     window,
     detail,
     busy,
+    importing: loading,
+    importProgress,
+    cancelImport,
     message,
     load,
     setDetail,

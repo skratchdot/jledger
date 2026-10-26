@@ -43,7 +43,9 @@ limit is 256 MiB total and 4,096 files. Literal relative includes resolve only
 among selected files; select the root and every referenced journal together.
 For nested folders, choose **Import journal folder** where supported, preserving
 relative paths. The folder picker imports every file: choose a journal-only folder.
-Missing targets, cycles, ambiguous paths, and repeated includes disable reports.
+A [progress indicator and Cancel import control](docs/imports.md) let you stop a
+pending replacement while keeping the open journal and its filters. Missing targets,
+cycles, ambiguous paths, and repeated includes disable reports.
 Globs, quoted include paths, and automatic disk/network discovery are not supported.
 See [include resolution](docs/includes.md) for the supported path subset.
 The development server listens on all interfaces for cloud development; it serves

@@ -79,7 +79,10 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    free-text search.
 6. Extend the existing worker and virtualization foundation with streaming/incremental
    parsing, indexed queries, realistic multi-file benchmarks, and memory budgets.
-   Preserve exact totals and cancellation; add progress and import cancellation.
+   Preserve exact totals and cancellation. [Staged imports](imports.md) now provide
+   batched file-read progress, indeterminate parse/index status and immediate worker
+   cancellation while retaining the open journal. Finer parsing progress, lower peak
+   replacement memory and incremental parsing remain.
 
 **Exit:** several realistic journal patterns are supported, every report explains
 its scope, and every visible total can be traced back to source postings.

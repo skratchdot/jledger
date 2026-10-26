@@ -1362,3 +1362,10 @@ footer {
 .report-data [aria-disabled='true'] {
   opacity: 0.5;
 }
+.import-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
