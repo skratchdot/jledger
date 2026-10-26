@@ -38,7 +38,7 @@ export function hasPostingDateSyntax(comment: string): boolean {
   return /\bdate2?\s*:|\[(?:\s*=|\d)/i.test(comment);
 }
 
-/** Deliberately conservative inline primary-date subset; date-shaped text never vanishes. */
+/** Deliberately conservative primary-date comment subset; date-shaped text never vanishes. */
 export function parsePostingDateComment(
   comment: string,
   transactionDate: string,
@@ -59,7 +59,7 @@ export function parsePostingDateComment(
   )
     return {
       error:
-        'Use one complete inline posting date: [YYYY-MM-DD], [M/D], or a lowercase date: tag.',
+        'Use one complete primary posting date: [YYYY-MM-DD], [M/D], or a lowercase date: tag.',
     };
   if (brackets.length + tags.length !== 1)
     return {
@@ -74,7 +74,7 @@ export function parsePostingDateComment(
   )
     return {
       error:
-        'A date: tag must start the comment or follow a comma. Use a bracket date for other inline notes.',
+        'A date: tag must start the comment or follow a comma. Use a bracket date for other comment notes.',
     };
   const value = (brackets[0] ?? tags[0])![1]!;
   // hledger resolves month/day overrides against the containing transaction,

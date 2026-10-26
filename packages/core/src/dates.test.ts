@@ -141,29 +141,6 @@ describe('primary posting dates', () => {
     expect(journal.diagnostics).toEqual([]);
   });
 
-  it('rejects date syntax on continuation comments instead of silently ignoring it', () => {
-    for (const marker of [
-      '[2026-02-01]',
-      'date:2026-02-01',
-      '[=2026-02-01]',
-      '[2/1]',
-      'date:2/1',
-    ]) {
-      const journal = parseJournal([
-        {
-          name: 'a',
-          text: `2026-01-01 Test\n  a  1 USD\n    ; ${marker}\n  b\n`,
-        },
-      ]);
-      expect(journal.diagnostics[0]).toMatchObject({
-        file: 'a',
-        line: 3,
-        code: 'posting-date',
-      });
-      expect(() => balances(journal)).toThrow('reports are disabled');
-    }
-  });
-
   it('checks assertions by effective posting date, even within one transaction', () => {
     const text =
       '2026-01-01 Split\n  assets:cash  10 USD ; [1/3]\n  assets:cash  -1 USD = -1 USD ; [1/2]\n  equity:opening  -9 USD\n';

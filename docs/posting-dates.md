@@ -9,9 +9,10 @@ This is useful when money leaves one account in one month and reaches another la
   assets:checking
 ```
 
-jledger supports one inline primary-date override per posting:
+jledger supports one primary-date override per posting, in an inline comment or
+an attached continuation comment:
 
-- A bracket date, such as `[2026-02-01]`, anywhere in the inline semicolon comment.
+- A bracket date, such as `[2026-02-01]`, anywhere in the semicolon comment.
 - A lowercase `date:2026-02-01` tag at the start of that comment or immediately
   following a comma-separated tag. Whitespace after the colon is allowed.
 
@@ -26,6 +27,38 @@ for a cross-year override. Leap days are validated against the transaction year.
 
 An inferred posting amount can still have an explicit date. Original comments,
 transaction dates, source names and line numbers remain available unchanged.
+
+## Continuation comments
+
+An indented semicolon comment directly after a posting can supply its date:
+
+```journal
+2024-03-01 Transfer
+  assets:savings  100 USD
+    ; ordinary note
+    ; [2/29]
+  assets:checking
+    ; date:3/2
+```
+
+Both full and month/day forms use the same rules as inline dates, including the
+transaction year and restricted lowercase tag placement. Other indented semicolon
+notes may precede or follow the marker. The date attaches to the immediately
+preceding posting, including a final posting with an inferred amount. Exactly one
+marker is allowed across that posting's inline and continuation comments; duplicate
+markers are errors even when their dates agree.
+
+The continuation chain ends at a blank line, another posting, an unindented or hash
+comment, a directive, a block comment or a source boundary. Date-shaped indented
+semicolon comments without an attached posting are errors, including transaction
+header comments. This deliberately excludes reference header-comment semantics.
+A child include or another selected root can never change a previous file's posting.
+
+The posting's `source` still names its original amount line. A separate optional
+`dateSource` names the continuation marker's file/line; inline dates need no extra
+location. Details show that provenance and include the marker in the source excerpt,
+even when it follows the final posting. Malformed date diagnostics point at the
+comment; failed balance assertions still point at the assertion posting.
 
 ## Explorer and accounting scope
 
@@ -54,7 +87,7 @@ optional date field; core's `effectivePostingDate` helper provides the shared fa
 ## Unsupported date forms
 
 Single-day posting dates, secondary dates (`date2:`, `[=DATE]`, or
-`[DATE=DATE2]`), multiple date markers, and dates on continuation comment lines are
+`[DATE=DATE2]`), multiple date markers, and unattached continuation markers are
 explicit errors. Secondary bracket syntax is detected instead of being silently
 ignored. Date-shaped malformed comments are conservative errors; jledger does not
 try to guess whether they are intended as inert prose. Embedded `date:` tokens that
@@ -80,7 +113,7 @@ and full direct balances against hledger 1.52 and Ledger 3.3.2.
 - hledger validates assertions in effective posting-date order. Ledger's parsing
   order causes the sampled date-shifted assertion cases to fail. Acceptance
   differences are declared and verified, not skipped silently.
-- The reference tools accept some single-day, secondary, continuation, or repeated
+- The reference tools accept some single-day, secondary, header-comment, or repeated
   date-marker forms that jledger intentionally rejects in this slice.
 
 hledger's JSON print output is returned in transaction-date order, so the capture
@@ -89,3 +122,11 @@ normalizes postings by effective date with a stable sort. Core tests separately
 check original parse order and equal-date tie behavior. Ledger's CSV already exposes
 its effective primary posting dates. Reports remain direct full-journal balances;
 no reference query-language or general filtered-report parity is implied.
+
+The continuation slice adds 12 corpus cases and promotes the original
+`posting-date-continuation` case, bringing the corpus to 206. Complete accepted
+posting/direct-balance captures cover full/partial dates, tags, ordinary comment
+chains, inferred final postings, inherited format/include scope and date-ordered
+assertions. Ledger tag/year/acceptance differences remain explicit. Unsupported
+secondary, duplicate, header, invalid and separated/orphaned cases retain acceptance
+only. Among the previous 194 captures, only the promoted case changes.

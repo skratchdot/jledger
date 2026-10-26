@@ -232,3 +232,14 @@ rank 32 near-equal large amounts, verify the true top-30 cutoff and bounded tabl
 pages, then drill into the highest category's exact posting and original source.
 Worker cases also retain stable numeric ties, zero/refund order and commodity
 separation. The existing large-journal regressions remain required.
+
+## Continuation posting-date regression
+
+Attached date comments are parsed in the existing worker scanner using one pending
+posting reference per file; no retained syntax tree or second date scan is added.
+Only affected postings carry a separate source location. On-demand details extend
+the existing source excerpt through the final date marker, without transferring
+whole journals to React. Core/worker/browser cases cover effective report dates,
+assertion order, source boundaries, malformed/duplicate/orphaned markers and final
+inferred-posting source drill-down. Existing large-journal regressions remain
+required; this does not establish a new latency or memory guarantee.

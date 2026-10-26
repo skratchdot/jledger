@@ -1164,6 +1164,13 @@ export function Explorer() {
                           : ''}
                     </small>
                     {p.date && <small> · posted {p.date}</small>}
+                    {p.dateSource && (
+                      <small>
+                        {' '}
+                        · date from continuation at {p.dateSource.file}:
+                        {p.dateSource.line}
+                      </small>
+                    )}
                     {p.balanceAssertion && (
                       <small>
                         {' '}

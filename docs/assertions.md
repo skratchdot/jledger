@@ -78,7 +78,7 @@ total inclusive assertions (`==*`), costs and expressions remain errors. `==*` n
 separate compatibility work; do not substitute a direct `==` or partial `=*` check.
 Grouped/comma quantities require a compatible [explicit amount format](amount-formats.md)
 on both sides; undeclared grouping is not guessed. These forms change semantics and are never treated
-as plain assertions or ignored. Unsupported format directives, secondary/continuation posting dates and other
+as plain assertions or ignored. Unsupported format directives, secondary or unattached continuation posting dates and other
 unsupported financial syntax remain errors too. Supported full and month/day primary
 posting dates retain their documented meaning.
 

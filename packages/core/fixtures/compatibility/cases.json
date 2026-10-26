@@ -149,7 +149,7 @@
   },
   {
     "id": "posting-date-continuation",
-    "supported": false
+    "supported": true
   },
   {
     "id": "posting-date-tie-failure",
@@ -1232,5 +1232,62 @@
       "hledger": false,
       "ledger": false
     }
+  },
+  {
+    "id": "continuation-date-partial",
+    "supported": true,
+    "ledgerPostingDatesDiffer": true
+  },
+  {
+    "id": "continuation-date-tag",
+    "supported": true,
+    "ledgerUsesTransactionDates": true
+  },
+  {
+    "id": "continuation-date-inferred",
+    "supported": true
+  },
+  {
+    "id": "continuation-date-notes",
+    "supported": true
+  },
+  {
+    "id": "continuation-date-includes",
+    "supported": true,
+    "sources": [
+      "continuation-date-includes.journal",
+      "parts/continuation-child.journal"
+    ]
+  },
+  {
+    "id": "continuation-date-assertion",
+    "supported": true,
+    "referenceAcceptance": {
+      "ledger": false
+    }
+  },
+  {
+    "id": "continuation-date-secondary",
+    "supported": false
+  },
+  {
+    "id": "continuation-date-duplicate",
+    "supported": false
+  },
+  {
+    "id": "continuation-date-header",
+    "supported": false
+  },
+  {
+    "id": "continuation-date-invalid",
+    "supported": false
+  },
+  {
+    "id": "continuation-date-orphan",
+    "supported": false
+  },
+  {
+    "id": "continuation-date-separated",
+    "supported": false
   }
 ]

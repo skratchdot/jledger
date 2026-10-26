@@ -80,6 +80,8 @@ export interface Posting {
   accountAlias?: AccountAliasInfo;
   /** Explicit primary posting date; absent means the transaction date. */
   date?: string;
+  /** Source of a date on a separate continuation line; the posting source is unchanged. */
+  dateSource?: Location;
   amount: Amount;
   inferred: boolean;
   /** The asserted commodity balance; consult scope flags and diagnostics for validity. */
@@ -184,8 +186,10 @@ export function parseJournal(sources: Source[]): Journal {
     let accountBlock: AccountDeclaration | undefined;
     let tx: PendingTransaction | null = null;
     let txErrors = 0;
+    let continuationPosting: PendingPosting | undefined;
     let blockComment = false;
     const finish = () => {
+      continuationPosting = undefined;
       if (!tx) return;
       const current = tx;
       tx = null;
@@ -244,6 +248,9 @@ export function parseJournal(sources: Source[]): Journal {
       lastLine = node.line;
       const raw = source.text.slice(node.bodyStart, node.bodyEnd);
       const location = { file: source.name, line: node.line };
+      const postingComment = node.kind === 'comment' && /^\s+;/.test(raw);
+      // Only an uninterrupted chain of indented semicolon comments belongs to a posting.
+      if (!postingComment) continuationPosting = undefined;
       if (node.kind === 'block-comment-body') continue;
       if (node.kind === 'block-comment-end') {
         blockComment = false;
@@ -258,20 +265,36 @@ export function parseJournal(sources: Source[]): Journal {
       }
       let postingDate: string | undefined;
       const semicolon = raw.indexOf(';');
-      if (tx && /^\s/.test(raw) && semicolon >= 0) {
+      if ((tx || postingComment) && /^\s/.test(raw) && semicolon >= 0) {
         const comment = raw.slice(semicolon + 1);
         if (hasPostingDateSyntax(comment)) {
-          if (node.kind === 'comment') {
+          if (
+            node.kind === 'comment' &&
+            (!postingComment || !tx || !continuationPosting)
+          ) {
             error(
               location,
               'posting-date',
-              'Posting dates on continuation comment lines are not supported. Put one full primary date inline on the posting.',
+              'A continuation posting date requires an indented semicolon comment directly after a posting or its continuation comments.',
             );
             continue;
           }
-          const parsed = parsePostingDateComment(comment, tx.date);
+          const parsed = parsePostingDateComment(comment, tx!.date);
           if (parsed.error) {
             error(location, 'posting-date', parsed.error);
+            continue;
+          }
+          if (node.kind === 'comment') {
+            if (continuationPosting!.date) {
+              error(
+                location,
+                'posting-date',
+                'Use exactly one primary posting date per posting, across inline and continuation comments.',
+              );
+            } else if (parsed.date) {
+              continuationPosting!.date = parsed.date;
+              continuationPosting!.dateSource = location;
+            }
             continue;
           }
           postingDate = parsed.date;
@@ -585,7 +608,7 @@ export function parseJournal(sources: Source[]): Journal {
           continue;
         }
         if (balanceAssertion) hasAssertions = true;
-        tx.postings.push({
+        const posting: PendingPosting = {
           ...(balanceAssertion ? { balanceAssertion } : {}),
           ...(balanceAssertionTotal ? { balanceAssertionTotal: true } : {}),
           ...(balanceAssertionInclusive
@@ -598,7 +621,9 @@ export function parseJournal(sources: Source[]): Journal {
           status,
           inferred: !amount,
           source: location,
-        });
+        };
+        tx.postings.push(posting);
+        continuationPosting = posting;
       }
     }
     finish();

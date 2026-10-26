@@ -24,7 +24,7 @@ Three separate questions are tested:
 | -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | ------------ | ------------------------------ |
 | Salary, refunds, exact quantities, currencies, simple/nested includes, common plain assertions; bracket posting dates; compatible explicit formats | Posting and direct-balance parity                         | Accepted     | Accepted                       |
 | Direct total / partial inclusive assertions; out-of-source-date or single-commodity assertion differences                                          | hledger semantics                                         | Accepted     | Rejected                       |
-| Costs, repeated includes, balance assignment; secondary/continuation/duplicate date samples                                                        | Reports disabled                                          | Accepted     | Accepted                       |
+| Costs, repeated includes, balance assignment; secondary/header/duplicate date samples                                                              | Reports disabled                                          | Accepted     | Accepted                       |
 | Month/day brackets with differing default/transaction years                                                                                        | hledger dates; exact quantities and direct balances agree | Accepted     | Accepted, different year       |
 | Hledger `date:` posting tag                                                                                                                        | hledger dates; explicit Ledger difference                 | Accepted     | Accepted, tag ignored          |
 | Some inline commodity examples and decimal-mark cases                                                                                              | hledger quantities; explicit Ledger difference            | Accepted     | Accepted, different quantities |
@@ -90,7 +90,7 @@ are evidence from the tools, never generated from jledger's own expected results
 ## Selected-source includes and remaining scope
 
 The [source-preserving syntax layer](syntax.md) and [selected-source include graph](includes.md)
-are implemented. The corpus now contains 194 cases, including posting and direct
+are implemented. The corpus now contains 206 cases, including posting and direct
 balance parity for simple and nested includes, plus acceptance-only captures for
 missing and repeated includes. Included sources are supplied explicitly in fixture
 metadata; references read the root journal and follow its real relative paths.
@@ -332,3 +332,17 @@ targets retain rejection evidence from both tools and disable jledger reports.
 All previous 188 captures remain unchanged. This slice grants no discovery, glob,
 quote-unescaping, URL, tilde or environment-expansion semantics. See [include
 resolution](includes.md) for the selected-source policy and adapter validation.
+
+## Continuation primary posting dates
+
+Twelve cases bring the corpus to **206**, alongside promotion of the original
+`posting-date-continuation` sample. Supported cases compare full and month/day
+markers, lowercase tags, ordinary comment chains, inferred final postings,
+inherited format/include scope and date-ordered assertions. The existing explicit
+Ledger tag-date, partial-bracket-year and assertion acceptance differences apply.
+Secondary, duplicate, header, malformed and separated/orphaned markers remain
+unsupported, with acceptance-only evidence. Header markers can have different
+reference meaning; jledger rejects them instead of silently interpreting them as
+posting dates. Only the promoted case changes among the original 194 captures.
+See [posting dates](posting-dates.md#continuation-comments) for attachment and source
+provenance; no secondary-date, authoring or general comment-grammar support is implied.
