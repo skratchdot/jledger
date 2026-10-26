@@ -102,8 +102,10 @@ its scope, and every visible total can be traced back to source postings.
   without accidentally embedding personal data in URLs or published artifacts.
 - Read-only file watching and reload behavior for the CLI; clear stale-data indicators.
 - Browser directory/project management and optional explicit local persistence.
-- Accessible/mobile interactions, undoable filter changes, table exports,
-  and an inspectable explanation for derived metrics.
+- [Bounded filter undo/redo](explorer-filters.md#undo-and-redo-filter-changes) now
+  restores complete scopes with grouped text edits and session-local history.
+  Broader accessible/mobile interactions, table exports and inspectable explanations
+  for derived metrics remain.
 
 A charting library should be chosen after a few concrete visualization requirements
 are known. Start with interactive native HTML/SVG and evaluate accessibility,

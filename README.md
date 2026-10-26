@@ -114,6 +114,8 @@ installation is a later milestone.
   Transaction details explain the classification source.
 - [Previous-month comparisons](docs/explorer-filters.md#previous-calendar-month-comparison)
   show exact income/spending changes under the same filters, with prior-period drill-down.
+- [Filter undo/redo](docs/explorer-filters.md#undo-and-redo-filter-changes) restores
+  recent scopes, including complete month shortcuts and preset applications.
 - [Active filter chips and named presets](docs/explorer-filters.md) make report
   scopes visible and reusable. Presets stay in memory for the open journal only.
 - [Explicit default years](docs/default-years.md) for month/day transaction headers,

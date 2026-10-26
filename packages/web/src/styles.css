@@ -1410,3 +1410,16 @@ select[aria-label='Commodity'] option {
     grid-template-columns: 1fr;
   }
 }
+.filter-history {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0;
+}
+.filter-history > span {
+  font-size: 11px;
+}
+.filter-history [aria-disabled='true'] {
+  opacity: 0.5;
+}
