@@ -1,0 +1,9 @@
+commodity 1.00 USD
+2024-01-01 Synthetic
+  assets:cash  0.0100000001 USD
+  equity:opening
+
+2024-01-01 Synthetic
+  assets:cash  -0.0100000000 USD
+  equity:opening
+

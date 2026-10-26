@@ -124,13 +124,15 @@ capture changes among the previous 131 cases.
 
 Ledger 3.3.2 rejects the sampled `==` forms even for a simple single-commodity
 account. This feature establishes the documented hledger subset, not Ledger total
-assertion interoperability. Report-zero omission remains a general corpus gap;
-supported zero-check samples have later nonzero activity for full balance capture.
+assertion interoperability. Those initial zero-check samples used later nonzero
+activity for full report capture. The [zero-report slice](conformance.md#closed-accounts-and-zero-report-rows)
+adds genuinely closed accounts and zero assertions without padding activity,
+comparing arithmetic values while retaining raw reference presentation differences.
 
 ## Inclusive assertion evidence
 
-The corpus now contains 161 cases: 16 new inclusive cases and the promoted
-`assertion-inclusive` sample. Complete accepted projections compare postings and
+The inclusive slice brought the corpus to 161 cases, adding 16 cases and promoting
+the original `assertion-inclusive` sample. Complete accepted projections compare postings and
 exact direct balances with hledger 1.52; Ledger 3.3.2 rejection is explicit for each
 supported `=*` case. The checked values are running inclusive balances, distinct
 from the corpus's final direct reports. Failure cases have acceptance-only evidence.

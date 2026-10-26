@@ -1034,5 +1034,92 @@
       "hledger": false,
       "ledger": false
     }
+  },
+  {
+    "id": "zero-closed",
+    "supported": true
+  },
+  {
+    "id": "zero-empty",
+    "supported": true,
+    "emptyBalances": true
+  },
+  {
+    "id": "zero-unitless",
+    "supported": true,
+    "emptyBalances": true
+  },
+  {
+    "id": "zero-multiple",
+    "supported": true,
+    "emptyBalances": true
+  },
+  {
+    "id": "zero-remaining",
+    "supported": true
+  },
+  {
+    "id": "zero-parent-siblings",
+    "supported": true,
+    "hierarchy": ["hledger", "ledger"]
+  },
+  {
+    "id": "zero-parent-direct",
+    "supported": true,
+    "hierarchy": ["hledger", "ledger"],
+    "emptyBalances": true
+  },
+  {
+    "id": "zero-quoted",
+    "supported": true,
+    "emptyBalances": true
+  },
+  {
+    "id": "zero-tiny-residual",
+    "supported": true,
+    "emptyBalances": true
+  },
+  {
+    "id": "zero-large",
+    "supported": true,
+    "emptyBalances": true
+  },
+  {
+    "id": "zero-includes",
+    "supported": true,
+    "sources": ["zero-includes.journal", "parts/zero-child.journal"]
+  },
+  {
+    "id": "zero-plain-assertion",
+    "supported": true
+  },
+  {
+    "id": "zero-total-assertion",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "zero-inclusive-assertion",
+    "supported": true,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    },
+    "hierarchy": ["hledger"]
+  },
+  {
+    "id": "zero-near-assertion",
+    "supported": false,
+    "referenceAcceptance": {
+      "hledger": false,
+      "ledger": false
+    }
+  },
+  {
+    "id": "zero-refund",
+    "supported": true
   }
 ]

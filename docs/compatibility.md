@@ -5,7 +5,11 @@ with explicitly documented [Ledger](https://ledger-cli.org/docs.html) interopera
 Those formats overlap but are not identical. **This prototype is not fully compatible
 with either tool**. A small [versioned corpus](conformance.md) is differentially
 tested against hledger 1.52 and Ledger 3.3.2; only its sampled posting semantics
-and explicitly captured direct/inclusive balances have parity evidence.
+and explicitly captured direct/inclusive balance arithmetic have parity evidence.
+[Zero report rows](conformance.md#closed-accounts-and-zero-report-rows) may be omitted
+or lose commodity labels in reference output. Only exact zero rows are excluded
+from arithmetic comparison; jledger retains them in its complete product reports.
+Reference quantity-output precision and presentation are documented separately.
 
 | Feature                                                    | Current behavior                                                                                                                                                           |
 | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

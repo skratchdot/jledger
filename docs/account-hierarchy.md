@@ -4,6 +4,10 @@ The Accounts view now starts with **Include subaccounts** enabled. It shows an
 indented hierarchy of posted accounts and any parent paths needed to connect them.
 A parent row includes its own direct postings and all descendants, separately for
 each commodity. Turning the option off restores the flat direct-posting view.
+Closed accounts and zero commodity balances remain visible and searchable. Zero
+parent subtotals retain their descendants and original direct postings; a zero
+balance does not remove the transactions that produced it.
+
 Separate disclosure buttons expand/collapse branches without filtering the register.
 Account names and amounts remain drill-down buttons.
 
@@ -153,8 +157,10 @@ of explicitly posted accounts via `total`, with its flat projection; implicit-pa
 presentation and mixed-commodity Ledger hierarchy serialization are outside that
 comparison. Direct captures still use `amount`, preventing accidental scope mixing.
 Reference projections are sorted for value comparison, not a text-layout parity
-claim. Existing zero-omission differences remain outside the corpus; core tests
-independently protect zero commodity identity.
+claim. The [zero-report corpus](conformance.md#closed-accounts-and-zero-report-rows)
+compares arithmetic values after excluding only exact zero report rows, while
+retaining raw omission/label differences. Product reports still preserve zero
+commodity identities and closed accounts.
 
 Unit tests cover direct parent postings, deep nesting, prefix boundaries, case,
 multiple commodities, large exact amounts, zero totals, diagnostics and limits.

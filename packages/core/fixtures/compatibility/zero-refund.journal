@@ -1,0 +1,7 @@
+2024-01-01 Purchase
+  expenses:food  12.34 USD
+  assets:bank
+
+2024-02-01 Refund
+  expenses:food  -12.34 USD
+  assets:bank
