@@ -1,0 +1,12 @@
+2024-01-01 One space
+  expenses:one  0.10 "US Dollar"
+  assets:one
+
+2024-01-01 Two spaces
+  expenses:two  0.20 "US  Dollar"
+  assets:two
+
+2024-01-01 Outer spaces
+  expenses:outer  0.30 " US Dollar "
+  assets:outer
+

@@ -42,7 +42,6 @@ describe('explicit amount formats', () => {
       '1,234 USD',
       '1.234,56 EUR',
       '1 234,56 EUR',
-      '"EUR" 1.23',
     ])
       expect(parseAmount(text)).toBeNull();
     expect(parseAmount('1.234 EUR')).toEqual({
@@ -165,7 +164,7 @@ describe('explicit amount formats', () => {
       'commodity-format',
     );
     rejected('decimal-mark :\n' + tx('1.23 USD'), 'decimal-mark');
-    rejected('commodity "quoted name"\n' + tx('1.23 USD'), 'commodity-format');
+    rejected('commodity "quoted;name"\n' + tx('1.23 USD'), 'commodity-format');
     rejected('commodity EUR\n  format 1.000,00 USD\n', 'commodity-format');
     rejected('commodity EUR\n  price 1 USD\n', 'posting');
     rejected('D 1.00 USD\n' + tx('1.23 USD'), 'unsupported');

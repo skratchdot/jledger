@@ -1,4 +1,5 @@
 import { add, isZero, negate } from './decimal.js';
+import { formatCommodityName } from './amounts.js';
 import { effectivePostingDate } from './dates.js';
 import type { Diagnostic, Transaction } from './index.js';
 
@@ -34,7 +35,7 @@ export function checkBalanceAssertions(
     const actual = amounts.get(assertion.commodity) ?? '0';
     if (!isZero(add(actual, negate(assertion.quantity)))) {
       const commodity = assertion.commodity
-        ? ` ${assertion.commodity}`
+        ? ` ${formatCommodityName(assertion.commodity)}`
         : ' (no commodity)';
       diagnostics.push({
         ...posting.source,

@@ -1,0 +1,8 @@
+2024-01-01 First
+  expenses:food  0.10 "Meal Credits" = 0.10 "Meal Credits"
+  assets:food
+
+2024-01-01 Second
+  expenses:food  0.20 "Meal Credits" = 0.30 "Meal Credits"
+  assets:food
+

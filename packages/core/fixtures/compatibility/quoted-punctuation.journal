@@ -1,0 +1,12 @@
+2024-01-01 Comma
+  expenses:comma  0.10 "US, Dollar"
+  assets:comma
+
+2024-01-01 Unicode
+  expenses:unicode  0.20 "Crédits repas"
+  assets:unicode
+
+2024-01-01 Literal at sign
+  expenses:literal  0.30 "A@B"
+  assets:literal
+

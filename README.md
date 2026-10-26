@@ -101,6 +101,8 @@ installation is a later milestone.
 - Exact decimal balances, separated by commodity; no floating-point money arithmetic.
 - [Explicit amount formats](docs/amount-formats.md): decimal marks, commodity format
   examples/blocks, and three-digit grouping, with canonical exact report amounts.
+  [Quoted commodity names](docs/quoted-commodities.md) support literal spaces/digits
+  in amounts, declarations, formats and plain assertions.
 - [Plain balance assertions](docs/assertions.md) with expected/calculated diagnostics;
   a failed assertion disables every report. Assignments and total/inclusive forms
   remain unsupported.

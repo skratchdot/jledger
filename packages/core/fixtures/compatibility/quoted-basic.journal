@@ -1,0 +1,16 @@
+2024-01-01 Spaced suffix
+  expenses:food  0.10 "US Dollar"
+  assets:food
+
+2024-01-01 Adjacent prefix
+  expenses:food  "US Dollar"0.20
+  assets:food
+
+2024-01-01 Refund
+  expenses:food  -"US Dollar"0.03
+  assets:food
+
+2024-01-01 Adjacent suffix
+  expenses:food  0.04"US Dollar"
+  assets:food
+

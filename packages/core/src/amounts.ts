@@ -12,11 +12,43 @@ export interface AmountContext {
 const commodity = '[\\p{L}][\\p{L}\\p{N}._-]*|[$€£]';
 const symbol = new RegExp(`^(?:${commodity})$`, 'u');
 const number = '[+-]?\\d(?:[\\d.,]*\\d)?';
+// No escaping or parser delimiters in this read-only quoted-name subset.
+const quotedCommodity = '"[^"\\\\;=\\p{C}]+"';
+const quotedSymbol = new RegExp(`^${quotedCommodity}$`, 'u');
+const quotedPrefix = new RegExp(
+  `^([+-]?)\\s*(${quotedCommodity})\\s*(${number})$`,
+  'u',
+);
+const quotedSuffix = new RegExp(`^(${number})\\s*(${quotedCommodity})$`, 'u');
+function quotedName(text: string): string | null {
+  return quotedSymbol.test(text) && text.slice(1, -1).trim()
+    ? text.slice(1, -1)
+    : null;
+}
+
+/** Canonical display distinguishes literal names from amounts and syntax. */
+export function formatCommodityName(text: string): string {
+  return !text || symbol.test(text) ? text : JSON.stringify(text);
+}
+
 const symbolPrefix = new RegExp(`^([+-]?)\\s*([$€£])\\s*(${number})$`);
 const namedPrefix = new RegExp(`^(${commodity})\\s+(${number})$`, 'u');
 const suffix = new RegExp(`^(${number})(?:\\s+(${commodity}))?$`, 'u');
 
 function tokens(text: string): { quantity: string; commodity: string } | null {
+  const quoted = text.match(quotedPrefix);
+  if (quoted) {
+    if (quoted[1] && /^[+-]/.test(quoted[3]!)) return null;
+    const name = quotedName(quoted[2]!);
+    return name === null
+      ? null
+      : { commodity: name, quantity: `${quoted[1]}${quoted[3]}` };
+  }
+  const quotedEnd = text.match(quotedSuffix);
+  if (quotedEnd) {
+    const name = quotedName(quotedEnd[2]!);
+    return name === null ? null : { commodity: name, quantity: quotedEnd[1]! };
+  }
   const prefix = text.match(symbolPrefix);
   if (prefix) {
     if (prefix[1] && /^[+-]/.test(prefix[3]!)) return null;
@@ -70,6 +102,8 @@ export function parseCommodityFormat(
   decimalMark?: DecimalMark,
 ): { commodity: string; format?: CommodityFormat } | null {
   if (symbol.test(text)) return { commodity: text };
+  const name = quotedName(text);
+  if (name !== null) return { commodity: name };
   const sample = tokens(text);
   if (!sample?.commodity || /^[+-]/.test(sample.quantity)) return null;
   const dot = sample.quantity.lastIndexOf('.'),

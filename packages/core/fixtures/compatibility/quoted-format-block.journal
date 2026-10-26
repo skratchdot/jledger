@@ -1,0 +1,7 @@
+commodity "US Dollar"
+  format 1.000,00 "US Dollar"
+
+2024-01-01 Synthetic
+  expenses:food  1.234,56 "US Dollar"
+  assets:food
+

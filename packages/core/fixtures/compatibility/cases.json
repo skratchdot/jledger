@@ -638,5 +638,96 @@
       "parts/partial-dates.journal"
     ],
     "ledgerPostingDatesDiffer": true
+  },
+  {
+    "id": "quoted-basic",
+    "supported": true
+  },
+  {
+    "id": "quoted-numeric",
+    "supported": true
+  },
+  {
+    "id": "quoted-punctuation",
+    "supported": true
+  },
+  {
+    "id": "quoted-whitespace",
+    "supported": true
+  },
+  {
+    "id": "quoted-alias",
+    "supported": true
+  },
+  {
+    "id": "quoted-format-block",
+    "supported": true
+  },
+  {
+    "id": "quoted-inline-format",
+    "supported": true,
+    "ledgerParity": false
+  },
+  {
+    "id": "quoted-assertion",
+    "supported": true
+  },
+  {
+    "id": "quoted-includes",
+    "supported": true,
+    "sources": ["quoted-includes.journal", "parts/quoted-child.journal"],
+    "ledgerParity": false
+  },
+  {
+    "id": "quoted-cost",
+    "supported": false
+  },
+  {
+    "id": "quoted-malformed",
+    "supported": false
+  },
+  {
+    "id": "quoted-escape",
+    "supported": false,
+    "referenceAcceptance": {
+      "hledger": false,
+      "ledger": true
+    }
+  },
+  {
+    "id": "quoted-semicolon",
+    "supported": false,
+    "referenceAcceptance": {
+      "hledger": false,
+      "ledger": true
+    }
+  },
+  {
+    "id": "quoted-empty",
+    "supported": false,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": false
+    }
+  },
+  {
+    "id": "quoted-equals",
+    "supported": false,
+    "referenceAcceptance": {
+      "hledger": true,
+      "ledger": true
+    }
+  },
+  {
+    "id": "quoted-whitespace-only",
+    "supported": false
+  },
+  {
+    "id": "quoted-backslash",
+    "supported": false
+  },
+  {
+    "id": "quoted-assertion-failure",
+    "supported": false
   }
 ]
