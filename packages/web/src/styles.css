@@ -1380,3 +1380,33 @@ footer {
 select[aria-label='Commodity'] option {
   white-space: pre-wrap;
 }
+.comparison-panel {
+  margin-bottom: 20px;
+  padding: 20px;
+}
+.comparison-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 16px 0;
+}
+.comparison-summary dt {
+  color: #6d7962;
+  font-size: 11px;
+}
+.comparison-summary dd {
+  margin: 6px 0 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+.comparison-summary dd span {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+}
+@media (max-width: 600px) {
+  .comparison-summary {
+    grid-template-columns: 1fr;
+  }
+}

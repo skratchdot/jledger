@@ -5,6 +5,7 @@ import {
 } from './account-view';
 import {
   add,
+  negate,
   effectivePostingDate,
   accountHierarchy,
   createAccountTypeResolver,
@@ -21,6 +22,7 @@ import {
   dateRangeError,
   InvalidDateRangeError,
   matchesPosting,
+  previousMonthFilters,
   type Filters,
 } from './report-filters';
 export type { Filters } from './report-filters';
@@ -34,7 +36,18 @@ export interface Summary {
   commodities: string[];
   months: string[];
 }
+export interface MonthComparison {
+  month: string;
+  previousMonth: string;
+  income: string;
+  spending: string;
+  count: number;
+  incomeChange: string;
+  spendingChange: string;
+  countChange: number;
+}
 export interface Report {
+  comparison?: MonthComparison;
   count: number;
   income: string;
   spending: string;
@@ -142,6 +155,10 @@ export class JournalEngine {
       monthly = new Map<string, string>();
     let income = '0',
       spending = '0';
+    const previous = previousMonthFilters(filters);
+    let previousIncome = '0',
+      previousSpending = '0',
+      previousCount = 0;
     const query = filters.query.toLowerCase();
     for (let i = 0; i < this.index.length; i++) {
       if (i % 8192 === 0) {
@@ -155,11 +172,27 @@ export class JournalEngine {
         !entry.text.includes(query)
       )
         continue;
-      if (!t.postings.some((p) => matchesPosting(p, t.date, filters))) continue;
-      matches.push(entry.id);
+      const currentMatches = t.postings.some((p) =>
+        matchesPosting(p, t.date, filters),
+      );
+      const previousMatches =
+        previous && t.postings.some((p) => matchesPosting(p, t.date, previous));
+      if (!currentMatches && !previousMatches) continue;
+      if (currentMatches) matches.push(entry.id);
+      if (previousMatches) previousCount++;
       for (const p of t.postings) {
-        if (!matchesPosting(p, t.date, filters)) continue;
+        const inCurrent = currentMatches && matchesPosting(p, t.date, filters);
+        const inPrevious =
+          previousMatches && matchesPosting(p, t.date, previous!);
+        if (!inCurrent && !inPrevious) continue;
         const type = this.classify!(p.account).type;
+        if (inPrevious) {
+          if (type === 'X')
+            previousSpending = add(previousSpending, p.amount.quantity);
+          if (matchesAccountType(type, 'R'))
+            previousIncome = add(previousIncome, p.amount.quantity);
+        }
+        if (!inCurrent) continue;
         if (type === 'X') {
           spending = add(spending, p.amount.quantity);
           categories.set(
@@ -175,9 +208,25 @@ export class JournalEngine {
     }
     if (cancelled()) return null;
     this.matches = matches;
+    const shownIncome = negate(income);
+    const shownPreviousIncome = negate(previousIncome);
     return {
+      ...(previous
+        ? {
+            comparison: {
+              month: filters.month,
+              previousMonth: previous.month,
+              income: shownPreviousIncome,
+              spending: previousSpending,
+              count: previousCount,
+              incomeChange: add(shownIncome, negate(shownPreviousIncome)),
+              spendingChange: add(spending, negate(previousSpending)),
+              countChange: matches.length - previousCount,
+            },
+          }
+        : {}),
       count: matches.length,
-      income: add('0', income.startsWith('-') ? income.slice(1) : `-${income}`),
+      income: shownIncome,
       spending,
       categories: [...categories].sort((a, b) => Number(b[1]) - Number(a[1])),
       monthly: this.summary.months

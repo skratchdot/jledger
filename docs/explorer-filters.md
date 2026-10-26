@@ -29,6 +29,45 @@ with totals calculated only from matching postings in those months. They do not
 generate missing calendar months or imply that an entire boundary month is selected.
 A custom range may therefore show a partial month's total.
 
+## Previous calendar month comparison
+
+Select a full month with the dropdown, a chart/table month button, or a saved month
+scope to compare income, net spending and matching transaction counts against the
+immediately preceding calendar month. The comparison uses the same search, account
+(and descendants), commodity and transaction status. Its date scope alone changes
+to the full prior month; it never compares a partial month with a full one.
+
+The main metric cards, charts, tables and register remain scoped to the selected
+month. The comparison panel shows previous values and signed **current minus
+previous** changes. Income uses the existing positive-credit convention. A positive
+spending change means more net expense postings; a negative change means less.
+Refunds, exact precision and separate commodities are retained. There is no price
+conversion, percentage change, budget or claim of financial-statement parity.
+
+Comparisons use effective primary posting dates. A transaction with postings in
+both months can count once in each period, with each period summing only its own
+matching postings. Account types and canonical alias names follow the same worker
+resolver used by ordinary income/spending reports.
+
+**Explore YYYY-MM** opens the previous month under the same non-date filters and
+returns keyboard focus to the month dropdown. A month with no journal postings
+gets an explicit temporary dropdown option so the selected scope stays visible.
+Zero matching transactions produce zero prior totals and an explanation; this
+does not establish whether the imported journals cover the period completely.
+
+Manual From/Through edits clear the month shortcut and hide the comparison.
+Worker requests combining a month with narrower bounds also omit it. All-dates
+scopes and the earliest supported month (`0001-01`) have no comparison. Months
+before year 0001 are outside the comparison feature. Invalid date ranges and
+journal diagnostics hide reports; changing scope cannot bypass validation.
+
+Comparison state is derived from the current filter scope, not a separate saved
+setting. Restoring a saved full-month scope recreates it. It is hidden while a new
+report is pending, and stale replies cannot replace the current comparison.
+Calculations share one cancellable worker scan and exact decimal arithmetic; React
+receives only a small set of totals/deltas. No comparison data is persisted,
+exported in URLs, uploaded or added to offline caches.
+
 ## Charts and data tables
 
 Choose **Tables** above the spending panels for native tables with captions,

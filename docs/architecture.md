@@ -20,6 +20,10 @@ details, and only the visible transaction window. TanStack Virtual bounds the
 register and account DOM. [Date ranges](explorer-filters.md) are inclusive and
 match the same posting as account and commodity filters. The worker and visible rows share that matcher;
 range errors are validated independently of journal diagnostics.
+Full-month scopes optionally aggregate the prior calendar month in that same worker
+scan, keeping non-date filters fixed. Exact income/spending deltas and transaction
+counts cross as bounded report metadata. Only current-period IDs become register
+matches, and the existing query generation guard rejects stale comparisons.
 Active filter chips and bounded named presets copy only the seven-field report
 configuration on the UI thread. Presets are scoped to the worker's successful-load
 revision, so replacing/reloading a journal resets them even with identical names.
