@@ -114,6 +114,9 @@ installation is a later milestone.
 - [Primary posting dates](docs/posting-dates.md), including month/day overrides in
   the transaction year, for month filters, monthly charts,
   and assertion checks; transaction and posting dates remain visible in drill-down.
+- [Spending data tables](docs/explorer-filters.md#charts-and-data-tables) with exact
+  signed amounts, all matching categories, bounded pages and keyboard account/month
+  drill-down alongside the charts.
 - A transaction register with posting amounts and source references, transaction
   details, inferred amounts, and original source snippets.
 - An [account hierarchy](docs/account-hierarchy.md) with exact inclusive parent

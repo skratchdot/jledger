@@ -53,7 +53,12 @@ parsing or aggregation acceptable.
 - Search debounces for 100 ms. Queries yield every 8,192 records to allow newer
   requests to cancel stale scans; request IDs discard stale UI responses.
 - Details and original source snippets are retrieved on demand.
-- Charts show the top 30 expense categories; the account view exposes the others.
+- Charts show the top 30 expense categories. Spending tables expose all worker
+  category aggregates and existing journal months in pages of at most 25 data rows
+  each. React slices only the visible page and formats exact strings; it does not
+  recompute financial totals. Aggregate arrays already cross the worker boundary,
+  so pagination bounds mounted rows, not report-transfer size or worker memory.
+  The account view separately exposes full-journal balances.
 - A register row previews up to three matching postings. Details show all postings.
 
 The current input guard is 256 MiB total, not a promise that every 256 MiB journal
@@ -120,3 +125,13 @@ budgets for memory, time-to-first-result, and p95 input latency.
 Changes to the parser or explorer should preserve this regression and add evidence
 for any stronger performance claim. Never move heavy work back onto the UI thread
 just because a demo journal is small.
+
+## Spending table regression
+
+Production-browser cases page through 62 expense categories and 61 journal months,
+reach the final result with at most 25 data rows per table, and use keyboard
+account/month filtering. They cover focus retention and fallback, refund signs,
+posting dates, quantities larger than safe JavaScript integers, separate/unitless
+commodities, empty results, invalid reports and long account names at narrow widths.
+These are bounded-DOM regressions, not a guarantee for arbitrary aggregate counts;
+large month dropdowns and the original monthly chart remain future performance work.

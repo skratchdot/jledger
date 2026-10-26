@@ -51,7 +51,7 @@ export function VirtualRegister({
       aria-label="Scrollable transaction register"
       tabIndex={0}
     >
-      <table aria-rowcount={count + 1}>
+      <table aria-label="Transaction register" aria-rowcount={count + 1}>
         <thead>
           <tr>
             <th>Transaction date</th>

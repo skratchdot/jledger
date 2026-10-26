@@ -28,6 +28,37 @@ with totals calculated only from matching postings in those months. They do not
 generate missing calendar months or imply that an entire boundary month is selected.
 A custom range may therefore show a partial month's total.
 
+## Charts and data tables
+
+Choose **Tables** above the spending panels for native tables with captions,
+column headers, row headers, exact signed net amounts, and the selected commodity.
+**Charts** returns to the visual presentation without changing report filters.
+Refunds keep their negative sign in either display; no currency conversion is used.
+
+The expense table exposes every matching expense account, including accounts beyond
+those displayed in the top-30 chart. Its order follows the same worker report as the
+chart. It shows direct account postings, not inclusive hierarchy rollups. Choose
+an account with Enter, Space, or a click to filter that account and its descendants,
+just as in the chart. Full account names remain available and wrap on narrow screens.
+
+The monthly table shows the same existing journal months and filtered values as the
+monthly chart. Choose a month to replace the date range; choose that selected month
+again to clear the date scope. Posting overrides and partial boundary months follow
+the same matcher as all other reports. A zero month is a filtered result, not proof
+that the journal contains all activity for that month.
+
+Each table mounts at most 25 data rows with labelled Previous/Next controls and an
+announced result range. Every result can be reached. A new worker report resets
+pagination to the first page. Row controls retain keyboard focus during a pending
+drill-down; if the new report removes the focused row, focus returns to the table
+caption. It does not move focus away from another control used while waiting.
+Tables are hidden with the other reports for invalid date ranges or journal errors.
+
+Display choice and page state stay in memory, are not saved in filter presets, and
+reset on refresh. Switching between charts/tables or leaving Overview resets table
+pages. Tables format existing exact worker aggregates; they do not rescan journals,
+perform money arithmetic, export data, or persist financial information.
+
 ## Visible scope and saved filters
 
 Active filter chips show search text, an account and its descendants, dates/month,
