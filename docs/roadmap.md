@@ -97,9 +97,11 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    completed commodity labels across metrics, charts and tables, with accessible
    updating state. [Posting status](posting-status.md)
    now uses explicit markers with transaction inheritance across reports, previews
-   and comparison periods, with hledger membership evidence and source explanations. Broader keyboard
-   navigation remains. Specify hledger query compatibility separately from simple
-   free-text search.
+   and comparison periods, with hledger membership evidence and source explanations.
+   End-of-register navigation now keeps the final row visible and actionable
+   across measurement corrections, with pointer/keyboard source drill-down evidence.
+   Broader keyboard navigation remains. Specify hledger query compatibility separately
+   from simple free-text search.
 6. Extend the existing worker and virtualization foundation with streaming/incremental
    parsing, indexed queries, realistic multi-file benchmarks, and memory budgets.
    Preserve exact totals and cancellation. [Staged imports](imports.md) now provide

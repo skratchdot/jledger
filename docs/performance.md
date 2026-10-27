@@ -377,3 +377,20 @@ Unit cases cover newline/EOF boundaries, blank lines, BOM/Unicode/CRLF, long sou
 includes, continuation dates and replacement. The production 200,000-transaction
 regression now opens the final transaction at source line 799997, checks its exact
 excerpt and records `finalSourceDetailMs` without a new device-wide latency claim.
+
+## End-of-register navigation
+
+The register now positions visible table rows inside a virtual body whose height
+comes from TanStack Virtual, rather than allowing loaded rows plus table spacers
+to independently change the browser's scroll extent. Measured height corrections
+use end anchoring, and browser scroll anchoring is disabled for this container.
+This addresses final rows being mounted below the visible scroll area after a
+one-result/empty/full filter cycle and a jump to the end.
+
+A separate 200,000-transaction production-browser case reproduces that cycle and
+checks the final button inside the scrollport, pointer source drill-down, another
+middle/end jump at narrow width, keyboard source drill-down, filter reset and fewer
+than 50 mounted rows. It runs at root and static subpath. The native table elements,
+logical row counts/indices, posting previews and exact financial values remain.
+The existing import/responsiveness scenario also remains required. These synthetic
+checks establish no new arbitrary-journal, cross-browser or device-wide guarantee.

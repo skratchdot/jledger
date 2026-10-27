@@ -1220,23 +1220,30 @@ footer {
 }
 
 .virtual-register {
+  overflow-anchor: none;
   max-height: 600px;
   overflow: auto;
   contain: strict;
   height: 530px;
 }
 .virtual-register table {
-  table-layout: fixed;
+  display: grid;
   min-width: 680px;
 }
-.virtual-register th:first-child {
-  width: 115px;
+.virtual-register thead,
+.virtual-register tbody {
+  display: grid;
 }
-.virtual-register th:nth-child(2) {
-  width: 36%;
+.virtual-register tr {
+  display: grid;
+  grid-template-columns: 115px 36% 25% minmax(0, 1fr);
+  width: 100%;
 }
-.virtual-register th:nth-child(3) {
-  width: 25%;
+.virtual-register td {
+  min-width: 0;
+}
+.virtual-register tr:last-child td {
+  border-bottom: 1px solid #eff1eb;
 }
 .virtual-register thead {
   position: sticky;
