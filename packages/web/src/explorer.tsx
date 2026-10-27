@@ -6,6 +6,7 @@ import {
   type Source,
 } from '@jledger/core';
 import demo from '@jledger/examples/demo.journal?raw';
+import { chartPercentages } from './chart-scale';
 import { useJournal } from './use-journal';
 import { useFilterHistory } from './filter-history';
 import { dateRangeError, monthBounds, type Filters } from './report-filters';
@@ -101,9 +102,12 @@ export function Explorer() {
       : '');
   const signedAmount = (value: string) =>
     `${value.startsWith('-') ? '' : '+'}${metric(value, reportCurrency)}`;
-  const biggest = Math.max(
+  const categoryWidths = chartPercentages(
+    categories.map(([, value]) => value),
     1,
-    ...categories.map(([, value]) => Math.abs(Number(value))),
+  );
+  const monthlyHeights = chartPercentages(
+    report.monthly.map((row) => row.value),
   );
   const accountSearchInput = useRef<HTMLInputElement>(null);
   const searchInput = useRef<HTMLInputElement>(null);
@@ -847,7 +851,7 @@ export function Explorer() {
                                       <div className="bar-track">
                                         <div
                                           style={{
-                                            width: `${Math.max(1, (Math.abs(Number(value)) / biggest) * 100)}%`,
+                                            width: `${categoryWidths[i]}%`,
                                             background:
                                               palette[i % palette.length],
                                           }}
@@ -892,13 +896,7 @@ export function Explorer() {
                                 <div className="monthly-chart">
                                   {(() => {
                                     const data = report.monthly;
-                                    const max = Math.max(
-                                      1,
-                                      ...data.map((d) =>
-                                        Math.abs(Number(d.value)),
-                                      ),
-                                    );
-                                    return data.map((d) => (
+                                    return data.map((d, i) => (
                                       <Button
                                         key={d.month}
                                         className={`month-column ${month === d.month ? 'chosen' : ''}`}
@@ -916,7 +914,7 @@ export function Explorer() {
                                         <div className="column-track">
                                           <div
                                             style={{
-                                              height: `${(Math.abs(Number(d.value)) / max) * 100}%`,
+                                              height: `${monthlyHeights[i]}%`,
                                             }}
                                           />
                                         </div>

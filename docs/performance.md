@@ -289,3 +289,20 @@ a newer result to protect request-ID rejection. The fix reads existing bounded
 report metadata and adds accessibility busy state; it adds no scan, financial
 arithmetic, persisted data or journal transfer on the UI thread. Existing root,
 subpath and large-journal checks remain required.
+
+## Extreme chart scales
+
+Visual percentages normalize decimal strings to a bounded approximate significand
+and exponent before conversion to floating point. This avoids overflowing huge
+quantities or losing an entire tiny-valued series. The maximum is found with a
+loop instead of spreading all months into a function call. Values below one scale
+to the actual series maximum; zero bars remain empty. Category bars retain a 1%
+minimum for nonzero amounts, while monthly bars have no minimum and ratios below
+floating-point resolution may be visually zero. Exact labels, totals, signs and
+worker ranking remain independent of this approximate geometry.
+
+Unit cases cover 400-place amounts, signed/zero values and a 150,000-value series;
+production-browser cases verify category/month proportions and source drill-down
+for huge and tiny journals. This adds no journal scan or financial arithmetic on
+the UI thread. Monthly charts and selectors still mount all months; this is not
+virtualization or a new memory/latency guarantee.
