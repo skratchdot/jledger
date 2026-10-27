@@ -9,6 +9,7 @@ export function ReportDataTable<T>({
   rows,
   caption,
   column,
+  valueColumn = 'Net spending',
   commodity,
   label,
   value,
@@ -20,6 +21,7 @@ export function ReportDataTable<T>({
   rows: readonly T[];
   caption: string;
   column: string;
+  valueColumn?: string;
   commodity: string;
   label: (row: T) => string;
   value: (row: T) => string;
@@ -56,7 +58,7 @@ export function ReportDataTable<T>({
         <thead>
           <tr>
             <th scope="col">{column}</th>
-            <th scope="col">Net spending</th>
+            <th scope="col">{valueColumn}</th>
           </tr>
         </thead>
         <tbody>

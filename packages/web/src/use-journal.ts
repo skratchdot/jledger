@@ -15,10 +15,12 @@ const emptySummary: Summary = {
   months: [],
 };
 const emptyReport: Report = {
+  commodity: '',
   count: 0,
   income: '0',
   spending: '0',
   categories: [],
+  incomeAccounts: [],
   monthly: [],
 };
 const emptyAccountView: AccountView & { id: number } = {

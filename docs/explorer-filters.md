@@ -261,3 +261,33 @@ month/date recovery, duplicate/blank names, bounded storage, keyboard controls,
 narrow layouts, session replacement, local reload, failed reads, and an offline
 refresh with no persisted presets. These scenarios are regressions, not device-wide
 guarantees.
+
+## Income by account
+
+Open **Income by account** in the overview to inspect every matching income account
+in pages of at most 25 rows. Credits appear positive and reversals reduce income,
+using the same exact quantities and account-type classification as the Income card
+(including declared gain accounts). Declared/inherited types, child overrides and English-name defaults follow the
+existing Income metric.
+
+Rows show direct posting totals by canonical account, ordered by exact signed net
+income descending. Each posting contributes once at its own account; hierarchy
+rollups remain in the Accounts view. Zero and negative
+net accounts remain visible; equal numeric totals retain encounter order. Separate
+commodities never mix. Search, account/subaccount, effective status and primary
+posting-date filters match the same posting as ordinary reports. Prior-period
+comparison totals do not enter this current-period breakdown.
+
+Choose an account to apply the shared account filter and inspect its register and
+original source. That filter includes descendants as usual and participates in
+undo/redo and saved filters. The disclosure and its current table page are view
+state, not additional saved filter fields. Successful journal replacement/reload
+closes the disclosure and resets pagination. Invalid journals and date ranges hide
+it with the other reports.
+
+The worker owns aggregation, credit-sign normalization and exact ranking. React
+receives account aggregates and the committed report's commodity label, so pending
+currency changes do not relabel an old income result. The native keyboard disclosure
+mounts no table rows when closed; an open table mounts at most 25 data rows. Paging
+bounds the DOM, not aggregate payload size or worker memory. No journal or view
+state is persisted or embedded in URLs.

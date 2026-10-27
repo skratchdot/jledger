@@ -264,3 +264,18 @@ commodities. Core/worker/browser cases cover exact values, repeated/overlapping
 scopes, offsets, prefix boundaries, source drill-down and child-only extra failures.
 This is not a new journal-depth, memory or latency guarantee. Existing large-journal
 regressions remain required and computation stays in the worker.
+
+## Income account breakdown regression
+
+The existing cancellable query scan accumulates current-period income by canonical
+account, then normalizes credit signs and sorts exact quantities in the worker.
+An extra map and aggregate payload grow with the number of matching income accounts,
+even while the disclosure is closed. No new journal scan or full-journal transfer
+to React is added. The closed disclosure mounts no table; an open page mounts at
+most 25 data rows. This bounds DOM size, not aggregate memory or transfer size.
+
+Worker/browser cases cover close large quantities, exact small reversals, zero and
+negative income, declared/inherited types, aliases, split posting dates, currencies,
+status/search/account scopes, cancellation, both table pages, keyboard drill-down,
+history, replacement reset and invalid reports. Existing large-journal regressions
+remain required; this is not a new latency or memory guarantee.
