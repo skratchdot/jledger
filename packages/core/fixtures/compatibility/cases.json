@@ -896,7 +896,10 @@
   },
   {
     "id": "total-inclusive",
-    "supported": false
+    "supported": true,
+    "referenceAcceptance": {
+      "ledger": false
+    }
   },
   {
     "id": "total-extra-unitless",
@@ -1399,6 +1402,95 @@
     "sources": [
       "default-commodity-include-formats.journal",
       "parts/default-commodity-formats-child.journal"
+    ]
+  },
+  {
+    "id": "inclusive-total-nested",
+    "supported": true,
+    "referenceAcceptance": {
+      "ledger": false
+    }
+  },
+  {
+    "id": "inclusive-total-offset",
+    "supported": true,
+    "referenceAcceptance": {
+      "ledger": false
+    }
+  },
+  {
+    "id": "inclusive-total-closed",
+    "supported": true,
+    "referenceAcceptance": {
+      "ledger": false
+    }
+  },
+  {
+    "id": "inclusive-total-boundary",
+    "supported": true,
+    "referenceAcceptance": {
+      "ledger": false
+    }
+  },
+  {
+    "id": "inclusive-total-unitless",
+    "supported": true,
+    "referenceAcceptance": {
+      "ledger": false
+    }
+  },
+  {
+    "id": "inclusive-total-absent",
+    "supported": true,
+    "referenceAcceptance": {
+      "ledger": false
+    }
+  },
+  {
+    "id": "inclusive-total-direct-extra",
+    "supported": false,
+    "referenceAcceptance": {
+      "ledger": false
+    }
+  },
+  {
+    "id": "inclusive-total-child-extra",
+    "supported": false,
+    "referenceAcceptance": {
+      "ledger": false,
+      "hledger": true
+    }
+  },
+  {
+    "id": "inclusive-total-failure",
+    "supported": false,
+    "referenceAcceptance": {
+      "ledger": false
+    }
+  },
+  {
+    "id": "inclusive-total-assignment",
+    "supported": false,
+    "referenceAcceptance": {
+      "ledger": false
+    }
+  },
+  {
+    "id": "inclusive-total-dates",
+    "supported": true,
+    "referenceAcceptance": {
+      "ledger": false
+    }
+  },
+  {
+    "id": "inclusive-total-includes",
+    "supported": true,
+    "referenceAcceptance": {
+      "ledger": false
+    },
+    "sources": [
+      "inclusive-total-includes.journal",
+      "parts/inclusive-total-child.journal"
     ]
   }
 ]

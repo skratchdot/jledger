@@ -98,7 +98,11 @@ for source drill-down; ordinary/plain postings omit that optional flag.
 Single-commodity inclusive `=*` checks index only asserted accounts/commodities and
 cache each distinct posting account's matching checked ancestors. Running updates
 use those exact colon-boundary matches, avoiding a complete account scan per check.
-Inclusive scope also crosses to transaction details as optional posting metadata.
+Strict total inclusive `==*` scopes retain every descendant commodity and maintain
+separate lazy nonzero sets for repeated checks. They reject child-only extra
+commodities even in the sampled hledger acceptance gap. The ancestor index updates
+each checked scope once per posting; partial-only scopes stay commodity-targeted.
+Inclusive/total flags cross to details together to explain the full check scope.
 [Explicit default years](default-years.md) resolve month/day transaction headers
 from file/include context without consulting the clock. Includes inherit the year
 and restore their parent on return; independent roots start unset. Canonical dates

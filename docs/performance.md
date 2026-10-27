@@ -253,3 +253,14 @@ location; explicit and balancing-inferred amounts carry no new provenance. Parse
 worker and browser cases cover exact totals, include restoration, separate
 commodities, comparisons and directive drill-down. Existing large-journal tests
 remain required; this is not an incremental parser or a new latency/memory guarantee.
+
+## Total inclusive assertion regression
+
+Scopes using `==*` retain every inclusive commodity in the existing checked-ancestor
+index; partial-only scopes retain requested commodities. Lazy nonzero sets support
+repeated checks with bounded diagnostic samples while checking every balance.
+Overlapping total scopes add work and memory proportional to their descendant
+commodities. Core/worker/browser cases cover exact values, repeated/overlapping
+scopes, offsets, prefix boundaries, source drill-down and child-only extra failures.
+This is not a new journal-depth, memory or latency guarantee. Existing large-journal
+regressions remain required and computation stays in the worker.

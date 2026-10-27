@@ -60,7 +60,7 @@ test('total assertions validate included aliased accounts and explain their scop
   await expect(page.getByRole('dialog')).not.toContainText('all commodities');
 });
 
-test('total assertions keep assignments and inclusive forms fail-closed and recover after correction', async ({
+test('total assertions keep assignments and malformed forms fail-closed and recover after correction', async ({
   page,
 }) => {
   await page.goto('./');
@@ -77,7 +77,7 @@ test('total assertions keep assignments and inclusive forms fail-closed and reco
   await upload(valid.replace('1 USD ==', '=='));
   await expect(page.getByRole('alert')).toContainText('balance-assignment');
   await expect(page.getByLabel('Filtered totals')).toHaveCount(0);
-  await upload(valid.replace('==', '==*'));
+  await upload(valid.replace('==', '==**'));
   await expect(page.getByRole('alert')).toContainText(
     'balance-assertion-syntax',
   );

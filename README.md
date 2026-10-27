@@ -114,8 +114,9 @@ installation is a later milestone.
 - [Balance assertions](docs/assertions.md) with expected/calculated diagnostics;
   a failed assertion disables every report. Total `==` checks also require zero
   balances in all other direct-account commodities. Inclusive `=*` checks one
-  commodity across an account and its descendants. Assignments and total inclusive
-  `==*` remain unsupported.
+  commodity across an account and its descendants. Strict `==*` checks every
+  inclusive commodity, with a documented hledger acceptance difference. Assignments
+  remain unsupported.
 - Interactive expense categories and monthly charts, plus inclusive [date ranges](docs/explorer-filters.md), status, commodity,
   account, and text filters. [Posting status](docs/posting-status.md) overrides
   transaction status, with inheritance explained in details. Income/spending follows [journal account types](docs/account-types.md),

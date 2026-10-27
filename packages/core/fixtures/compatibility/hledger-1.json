@@ -4942,7 +4942,35 @@
     "accepted": true
   },
   "total-inclusive": {
-    "accepted": true
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Synthetic",
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-1"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:cash",
+        "commodity": "USD",
+        "quantity": "1"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "USD",
+        "quantity": "-1"
+      }
+    ]
   },
   "total-extra-unitless": {
     "accepted": false
@@ -8316,6 +8344,437 @@
         "account": "expenses:parent",
         "commodity": "EUR",
         "quantity": "1.234"
+      }
+    ]
+  },
+  "inclusive-total-nested": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Opening",
+        "account": "assets:bank:checking:daily",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Opening",
+        "account": "equity:usd",
+        "commodity": "USD",
+        "quantity": "-10"
+      },
+      {
+        "date": "2024-01-03",
+        "description": "Check",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "0"
+      },
+      {
+        "date": "2024-01-03",
+        "description": "Check",
+        "account": "equity:usd",
+        "commodity": "USD",
+        "quantity": "0"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank:checking:daily",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "account": "equity:usd",
+        "commodity": "USD",
+        "quantity": "-10"
+      }
+    ]
+  },
+  "inclusive-total-offset": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Opening",
+        "account": "assets:bank:checking",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Opening",
+        "account": "equity:usd",
+        "commodity": "USD",
+        "quantity": "-10"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Extra",
+        "account": "assets:bank",
+        "commodity": "EUR",
+        "quantity": "2"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Extra",
+        "account": "assets:bank:checking",
+        "commodity": "EUR",
+        "quantity": "-2"
+      },
+      {
+        "date": "2024-01-03",
+        "description": "Check",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "0"
+      },
+      {
+        "date": "2024-01-03",
+        "description": "Check",
+        "account": "equity:usd",
+        "commodity": "USD",
+        "quantity": "0"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank",
+        "commodity": "EUR",
+        "quantity": "2"
+      },
+      {
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "0"
+      },
+      {
+        "account": "assets:bank:checking",
+        "commodity": "EUR",
+        "quantity": "-2"
+      },
+      {
+        "account": "assets:bank:checking",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "account": "equity:usd",
+        "commodity": "USD",
+        "quantity": "-10"
+      }
+    ]
+  },
+  "inclusive-total-closed": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Opening",
+        "account": "assets:bank:checking",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Opening",
+        "account": "equity:usd",
+        "commodity": "USD",
+        "quantity": "-10"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Extra",
+        "account": "assets:bank:checking",
+        "commodity": "EUR",
+        "quantity": "2"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Extra",
+        "account": "assets:bank:savings",
+        "commodity": "EUR",
+        "quantity": "-2"
+      },
+      {
+        "date": "2024-01-03",
+        "description": "Check",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "0"
+      },
+      {
+        "date": "2024-01-03",
+        "description": "Check",
+        "account": "equity:usd",
+        "commodity": "USD",
+        "quantity": "0"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank:checking",
+        "commodity": "EUR",
+        "quantity": "2"
+      },
+      {
+        "account": "assets:bank:checking",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "account": "assets:bank:savings",
+        "commodity": "EUR",
+        "quantity": "-2"
+      },
+      {
+        "account": "equity:usd",
+        "commodity": "USD",
+        "quantity": "-10"
+      }
+    ]
+  },
+  "inclusive-total-boundary": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Opening",
+        "account": "assets:bank:checking",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Opening",
+        "account": "equity:usd",
+        "commodity": "USD",
+        "quantity": "-10"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Unrelated",
+        "account": "assets:bankruptcy",
+        "commodity": "EUR",
+        "quantity": "2"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Unrelated",
+        "account": "equity:eur",
+        "commodity": "EUR",
+        "quantity": "-2"
+      },
+      {
+        "date": "2024-01-03",
+        "description": "Check",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "0"
+      },
+      {
+        "date": "2024-01-03",
+        "description": "Check",
+        "account": "equity:usd",
+        "commodity": "USD",
+        "quantity": "0"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank:checking",
+        "commodity": "USD",
+        "quantity": "10"
+      },
+      {
+        "account": "assets:bankruptcy",
+        "commodity": "EUR",
+        "quantity": "2"
+      },
+      {
+        "account": "equity:eur",
+        "commodity": "EUR",
+        "quantity": "-2"
+      },
+      {
+        "account": "equity:usd",
+        "commodity": "USD",
+        "quantity": "-10"
+      }
+    ]
+  },
+  "inclusive-total-unitless": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Opening",
+        "account": "assets:bank:checking",
+        "commodity": "",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Opening",
+        "account": "equity:opening",
+        "commodity": "",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Check",
+        "account": "assets:bank",
+        "commodity": "",
+        "quantity": "0"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Check",
+        "account": "equity:opening",
+        "commodity": "",
+        "quantity": "0"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank:checking",
+        "commodity": "",
+        "quantity": "0.1"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "",
+        "quantity": "-0.1"
+      }
+    ]
+  },
+  "inclusive-total-absent": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Zero",
+        "account": "assets:bank",
+        "commodity": "EUR",
+        "quantity": "0"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Zero",
+        "account": "equity:opening",
+        "commodity": "EUR",
+        "quantity": "0"
+      }
+    ],
+    "balances": []
+  },
+  "inclusive-total-direct-extra": {
+    "accepted": false
+  },
+  "inclusive-total-child-extra": {
+    "accepted": true
+  },
+  "inclusive-total-failure": {
+    "accepted": false
+  },
+  "inclusive-total-assignment": {
+    "accepted": true
+  },
+  "inclusive-total-dates": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Split",
+        "account": "equity:usd",
+        "commodity": "USD",
+        "quantity": "-9"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Split",
+        "account": "assets:bank:checking",
+        "commodity": "USD",
+        "quantity": "-1"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Check",
+        "account": "assets:bank",
+        "commodity": "USD",
+        "quantity": "0"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Check",
+        "account": "equity:usd",
+        "commodity": "USD",
+        "quantity": "0"
+      },
+      {
+        "date": "2024-01-03",
+        "description": "Split",
+        "account": "assets:bank:checking",
+        "commodity": "USD",
+        "quantity": "10"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank:checking",
+        "commodity": "USD",
+        "quantity": "9"
+      },
+      {
+        "account": "equity:usd",
+        "commodity": "USD",
+        "quantity": "-9"
+      }
+    ]
+  },
+  "inclusive-total-includes": {
+    "accepted": true,
+    "postings": [
+      {
+        "date": "2024-01-01",
+        "description": "Included",
+        "account": "assets:bank:checking",
+        "commodity": "Bank Credits",
+        "quantity": "0.1"
+      },
+      {
+        "date": "2024-01-01",
+        "description": "Included",
+        "account": "equity:opening",
+        "commodity": "Bank Credits",
+        "quantity": "-0.1"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Check",
+        "account": "assets:bank",
+        "commodity": "Bank Credits",
+        "quantity": "0"
+      },
+      {
+        "date": "2024-01-02",
+        "description": "Check",
+        "account": "equity:opening",
+        "commodity": "Bank Credits",
+        "quantity": "0"
+      }
+    ],
+    "balances": [
+      {
+        "account": "assets:bank:checking",
+        "commodity": "Bank Credits",
+        "quantity": "0.1"
+      },
+      {
+        "account": "equity:opening",
+        "commodity": "Bank Credits",
+        "quantity": "-0.1"
       }
     ]
   }

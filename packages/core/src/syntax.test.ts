@@ -128,7 +128,7 @@ describe('source-preserving journal syntax', () => {
     }
   });
 
-  it('does not treat recognized source shapes as supported financial syntax', () => {
+  it('does not treat recognized source shapes as valid accounting', () => {
     for (const text of [
       'include child.journal\n',
       'commodity "unterminated\n',

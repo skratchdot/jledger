@@ -1,0 +1,10 @@
+2024-01-01 Split
+  assets:bank:checking  10 USD
+    ; [2024-01-03]
+  assets:bank:checking  -1 USD
+    ; [2024-01-02]
+  equity:usd  -9 USD
+
+2024-01-02 Check
+  assets:bank  0 USD ==* -1 USD
+  equity:usd
