@@ -103,6 +103,15 @@ test('metrics, charts and tables retain committed currency while a real worker r
   });
   await page.getByLabel('Commodity', { exact: true }).selectOption('EUR');
   await waitForHeld(page, 'EUR');
+  await page.locator('.monthly-surplus > summary').click();
+  const surplus = page.getByRole('table', {
+    name: 'Monthly income less spending · USD',
+    exact: true,
+  });
+  await expect(surplus).toContainText('9.90 USD');
+  await expect(
+    surplus.getByRole('button', { name: 'Filter month 2024-01', exact: true }),
+  ).toBeDisabled();
   await expect(totals).toHaveAttribute('aria-busy', 'true');
   await expect(
     page.getByRole('button', { name: 'First transaction', exact: true }),

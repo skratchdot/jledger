@@ -402,3 +402,18 @@ It adds no journal scan, aggregate or persisted state. The 200,000-transaction
 browser regression checks keyboard activation and retained focus at narrow width,
 final-row visibility, fewer than 50 mounted rows, one-result/empty/full scopes and
 repeated boundary navigation. This is not a new latency or cross-browser guarantee.
+
+## Monthly income less spending regression
+
+The worker derives exact differences from its existing monthly aggregates, adding
+an array proportional to scoped journal months even with the disclosure closed.
+No additional journal scan or main-thread financial arithmetic is introduced.
+Open tables mount at most 25 data rows; aggregate memory and transfer size remain
+proportional to months. This establishes no new memory or latency guarantee.
+
+Worker cases cover tiny residuals between huge totals, signed refunds/reversals,
+aliases/types, effective dates, combined scopes, separate/unitless commodities,
+current/prior separation, cancellation and replacement. Browser cases cover 61-month
+pagination, keyboard month drill-down, source details, history, narrow layout,
+empty/invalid scopes, replacement and pending currency labels. Existing large-journal
+responsiveness, exact totals, bounded rows and final source browsing remain required.
