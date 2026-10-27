@@ -83,6 +83,7 @@ export function Explorer() {
   const currency = commodities.includes(commodity)
     ? commodity
     : (commodities[0] ?? '');
+  const reportCurrency = report.commodity;
   const accountMatches = engine.accountView.matchCount;
   const accountAncestors = engine.accountView.count - accountMatches;
   const categories = report.categories.slice(0, 30);
@@ -99,7 +100,7 @@ export function Explorer() {
       ? `${comparison.previousDateFrom} through ${comparison.previousDateTo}`
       : '');
   const signedAmount = (value: string) =>
-    `${value.startsWith('-') ? '' : '+'}${metric(value, currency)}`;
+    `${value.startsWith('-') ? '' : '+'}${metric(value, reportCurrency)}`;
   const biggest = Math.max(
     1,
     ...categories.map(([, value]) => Math.abs(Number(value))),
@@ -648,29 +649,36 @@ export function Explorer() {
                           <section
                             className="metrics"
                             aria-label="Filtered totals"
+                            aria-busy={busy}
                           >
                             <div className="metric panel">
                               <span>INCOME</span>
-                              <strong>{metric(report.income, currency)}</strong>
+                              <strong>
+                                {metric(report.income, reportCurrency)}
+                              </strong>
                               <small>Credits shown as positive</small>
                             </div>
                             <div className="metric panel">
                               <span>SPENDING</span>
                               <strong>
-                                {metric(report.spending, currency)}
+                                {metric(report.spending, reportCurrency)}
                               </strong>
                               <small>Net expense postings</small>
                             </div>
                             <div className="metric panel">
                               <span>TRANSACTIONS</span>
                               <strong>{report.count.toLocaleString()}</strong>
-                              <small>Matching your filters</small>
+                              <small>
+                                {busy
+                                  ? 'Report updating'
+                                  : 'Matching your filters'}
+                              </small>
                             </div>
                           </section>
                           <IncomeAccounts
                             key={journalRevision}
                             rows={report.incomeAccounts}
-                            commodity={report.commodity}
+                            commodity={reportCurrency}
                             account={account}
                             busy={busy}
                             onSelect={(next) => {
@@ -700,7 +708,7 @@ export function Explorer() {
                                 <div>
                                   <dt>Previous income</dt>
                                   <dd>
-                                    {metric(comparison.income, currency)}
+                                    {metric(comparison.income, reportCurrency)}
                                     <span>
                                       Change:{' '}
                                       {signedAmount(comparison.incomeChange)}
@@ -710,7 +718,10 @@ export function Explorer() {
                                 <div>
                                   <dt>Previous spending</dt>
                                   <dd>
-                                    {metric(comparison.spending, currency)}
+                                    {metric(
+                                      comparison.spending,
+                                      reportCurrency,
+                                    )}
                                     <span>
                                       Change:{' '}
                                       {signedAmount(comparison.spendingChange)}
@@ -783,7 +794,11 @@ export function Explorer() {
                               Tables
                             </Button>
                           </div>
-                          <section className="chart-grid" id="spending-panels">
+                          <section
+                            className="chart-grid"
+                            id="spending-panels"
+                            aria-busy={busy}
+                          >
                             <div className="panel chart-panel">
                               <div className="section-title">
                                 <h2>Where it goes</h2>
@@ -794,7 +809,7 @@ export function Explorer() {
                                   rows={report.categories}
                                   caption="Expense categories"
                                   column="Account"
-                                  commodity={currency}
+                                  commodity={reportCurrency}
                                   label={(row) => row[0]}
                                   value={(row) => row[1]}
                                   selected={account}
@@ -826,7 +841,7 @@ export function Explorer() {
                                             .replaceAll(':', ' / ')}
                                         </span>
                                         <strong>
-                                          {metric(value, currency)}
+                                          {metric(value, reportCurrency)}
                                         </strong>
                                       </div>
                                       <div className="bar-track">
@@ -863,7 +878,7 @@ export function Explorer() {
                                   rows={report.monthly}
                                   caption="Monthly spending"
                                   column="Month"
-                                  commodity={currency}
+                                  commodity={reportCurrency}
                                   label={(row) => row.month}
                                   value={(row) => row.value}
                                   selected={month}
@@ -896,7 +911,7 @@ export function Explorer() {
                                         aria-pressed={month === d.month}
                                       >
                                         <span className="month-value">
-                                          {metric(d.value, currency)}
+                                          {metric(d.value, reportCurrency)}
                                         </span>
                                         <div className="column-track">
                                           <div

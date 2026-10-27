@@ -88,7 +88,9 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    category ranking now preserves close amounts beyond floating-point precision
    through top-30 chart selection and table pagination. [Income by account](explorer-filters.md#income-by-account)
    now adds exact, paginated income-account exploration with shared filters,
-   classification, reversals and source drill-down. [Posting status](posting-status.md)
+   classification, reversals and source drill-down. Pending reports retain their
+   completed commodity labels across metrics, charts and tables, with accessible
+   updating state. [Posting status](posting-status.md)
    now uses explicit markers with transaction inheritance across reports, previews
    and comparison periods, with hledger membership evidence and source explanations. Broader keyboard
    navigation remains. Specify hledger query compatibility separately from simple
