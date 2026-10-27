@@ -153,8 +153,10 @@ and page state remain in component memory and are excluded from filter presets.
 The overview's income-account disclosure consumes a separate current-period worker
 aggregate from the same posting-filter scan. Credit signs and exact ranking are
 computed there using the existing type resolver; React performs no financial sums.
-The report includes its committed commodity so pending input changes cannot relabel
-old income rows. The disclosure mounts a 25-row table page only while open, sharing
+The report includes its committed commodity; metrics, chart values and all report
+tables use it so pending input changes cannot relabel completed financial values.
+The requested commodity stays in the controls and posting-filter inputs. Updating
+metric/chart regions expose busy state, while existing request IDs reject stale replies. The disclosure mounts a 25-row table page only while open, sharing
 the report table's pagination/focus behavior and the existing account/history filter
 path. Successful journal revisions remount it; no new filter or persisted state is added.
 

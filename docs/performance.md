@@ -279,3 +279,13 @@ negative income, declared/inherited types, aliases, split posting dates, currenc
 status/search/account scopes, cancellation, both table pages, keyboard drill-down,
 history, replacement reset and invalid reports. Existing large-journal regressions
 remain required; this is not a new latency or memory guarantee.
+
+## Pending report currency regression
+
+Browser tests hold and release actual worker report messages without delaying query
+delivery or replacing the financial engine. They verify metric/chart/table currency
+labels across USD, EUR and unitless changes, then deliver a superseded reply after
+a newer result to protect request-ID rejection. The fix reads existing bounded
+report metadata and adds accessibility busy state; it adds no scan, financial
+arithmetic, persisted data or journal transfer on the UI thread. Existing root,
+subpath and large-journal checks remain required.

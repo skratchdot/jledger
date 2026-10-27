@@ -291,3 +291,18 @@ currency changes do not relabel an old income result. The native keyboard disclo
 mounts no table rows when closed; an open table mounts at most 25 data rows. Paging
 bounds the DOM, not aggregate payload size or worker memory. No journal or view
 state is persisted or embedded in URLs.
+
+## Currency labels while reports update
+
+Changing filters starts a worker query while the previous completed figures may
+remain visible. Commodity controls show the requested scope; metric cards, chart
+values and table captions keep the commodity stored with their completed report
+until the next result arrives. For example, 10 USD income remains labeled USD
+while an EUR query is pending, then updates to that query's EUR value and label
+together. Selecting No commodity follows the same rule; no conversion is implied.
+
+The existing background-update status remains visible. Metric/chart regions expose
+`aria-busy`, and the transaction metric says **Report updating** during the query.
+Comparisons remain hidden while pending. Superseded replies cannot replace a newer
+report's values or labels, and invalid date ranges or journals still hide reports.
+These are display-state rules; financial calculations and saved filters are unchanged.
