@@ -598,7 +598,6 @@ h3 {
   width: 100%;
   background: #a9ba97;
   border-radius: 4px 4px 0 0;
-  min-height: 2px;
 }
 .month-column.chosen .column-track > div {
   background: #6d8758;
