@@ -321,3 +321,21 @@ verify page-independent proportions and empty zero bars, keyboard month toggling
 focus retention/fallback, scroll reset, source drill-down, empty/invalid reports and
 same-name replacement. Existing root/subpath and large-journal regressions remain
 required; these cases do not establish a device-wide latency or memory guarantee.
+
+## Monthly income regression
+
+A monthly map accumulates matching income in the existing cancellable worker scan;
+credit signs are normalized before transfer. Income and spending reuse one scoped
+journal-month list. This adds a map and report array proportional to journal months,
+even with the income timeline closed. It adds no journal scan or financial arithmetic
+on the UI thread. Closed disclosures mount no table; open pages mount at most 25
+data rows. Aggregate memory/transfer size and month dropdowns remain unbounded by
+this pagination; no new memory or latency guarantee is established.
+
+Worker tests cover exact large/tiny quantities, signed reversals, zero months,
+classification/aliases, effective dates, shared filters, current/prior separation,
+commodities, cancellation and replacement. Browser cases browse 61 months through
+the final negative-income result, keyboard drill-down and source details, history,
+focus, narrow layout, invalid/empty scopes and replacement. Held real worker replies
+protect completed currency labels and disabled controls. Existing root/subpath and
+200,000-transaction regressions remain required.

@@ -91,7 +91,9 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    exact labels and zero-length zero bars. Monthly chart pages now bound mounted
    bars to 12 while preserving a shared scale, keyboard drill-down and focus. [Income by account](explorer-filters.md#income-by-account)
    now adds exact, paginated income-account exploration with shared filters,
-   classification, reversals and source drill-down. Pending reports retain their
+   classification, reversals and source drill-down. [Monthly income](explorer-filters.md#monthly-income)
+   now adds exact chronological income exploration in bounded pages with linked
+   month filters, effective posting dates and zero/reversal visibility. Pending reports retain their
    completed commodity labels across metrics, charts and tables, with accessible
    updating state. [Posting status](posting-status.md)
    now uses explicit markers with transaction inheritance across reports, previews

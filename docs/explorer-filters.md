@@ -333,3 +333,24 @@ that month, focus returns to the chart region unless the user has moved elsewher
 Page changes reset horizontal scrolling. Successful journal replacement resets page
 state; failed/cancelled replacements retain the committed chart. Page state is
 in-memory view state, excluded from filter history and saved presets.
+
+## Monthly income
+
+Open **Income over time** for exact monthly net income in chronological order,
+with at most 25 data rows per page. Values use the same classified income postings
+as the income metric: credits are positive, reversals reduce income, and negative
+months remain negative. Declared/inherited revenue and gain types, aliases, effective
+posting dates and every shared posting filter apply. No currencies are combined.
+
+The series includes journal months inside the date scope, including zero-income
+months where the journal has postings. It does not invent absent calendar months;
+months containing only other commodities or account types may show zero. Boundary
+months reflect only matching days/postings. Select a month to apply the shared
+month shortcut, or select it again to clear that date scope; other filters remain.
+Undo/redo, comparisons, presets and register/source drill-down use existing paths.
+
+The disclosure starts closed and mounts no table until opened. Successful imports
+reset it, while failed/cancelled replacements retain the open journal. Pagination
+and disclosure state stay in memory and are excluded from history/presets. Pending
+queries keep completed amounts and commodity labels with disabled table controls;
+new reports reset pagination with the shared table's focus recovery.

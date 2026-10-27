@@ -94,6 +94,7 @@ test('metrics, charts and tables retain committed currency while a real worker r
   await expect(totals).toContainText('10.00 USD');
   await expect(totals).toContainText('0.10 USD');
   await page.locator('.income-accounts > summary').click();
+  await page.locator('.monthly-income > summary').click();
   await expect(
     page.getByRole('table', { name: 'Income accounts · USD', exact: true }),
   ).toContainText('10.00 USD');
@@ -112,11 +113,25 @@ test('metrics, charts and tables retain committed currency while a real worker r
     exact: true,
   });
   await expect(chart).toContainText('0.10 USD');
-  const monthly = page.getByRole('button', {
-    name: 'Filter month 2024-01',
+  const monthly = page
+    .getByRole('region', { name: 'Monthly spending chart', exact: true })
+    .getByRole('button', {
+      name: 'Filter month 2024-01',
+      exact: true,
+    });
+  await expect(monthly).toContainText('0.10 USD');
+  const monthlyIncome = page.getByRole('table', {
+    name: 'Monthly income · USD',
     exact: true,
   });
-  await expect(monthly).toContainText('0.10 USD');
+  await expect(monthlyIncome).toContainText('10.00 USD');
+  await expect(
+    monthlyIncome.getByRole('button', {
+      name: 'Filter month 2024-01',
+      exact: true,
+    }),
+  ).toBeDisabled();
+
   await expect(monthly).toBeDisabled();
   const monthlyChart = page.getByRole('region', {
     name: 'Monthly spending chart',
@@ -147,6 +162,9 @@ test('metrics, charts and tables retain committed currency while a real worker r
   await page.evaluate(() => window.currencyProbe.release('EUR'));
   await expect(totals).toHaveAttribute('aria-busy', 'false');
   await expect(totals).toContainText('20.00 EUR');
+  await expect(
+    page.getByRole('table', { name: 'Monthly income · EUR', exact: true }),
+  ).toContainText('20.00 EUR');
   await expect(totals).toContainText('0.20 EUR');
   await expect(
     page.getByRole('table', { name: 'Expense categories · EUR', exact: true }),

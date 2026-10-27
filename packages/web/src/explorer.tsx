@@ -13,6 +13,7 @@ import { dateRangeError, monthBounds, type Filters } from './report-filters';
 import { ActiveFilters, type FilterChip } from './components/active-filters';
 import { SavedFilters } from './components/saved-filters';
 import { MonthlySpendingChart } from './components/monthly-spending-chart';
+import { MonthlyIncome } from './components/monthly-income';
 import { IncomeAccounts } from './components/income-accounts';
 import { ReportDataTable } from './components/report-data-table';
 import { VirtualRegister } from './components/virtual-register';
@@ -687,6 +688,16 @@ export function Explorer() {
                               setAccount(next);
                               setSelected(null);
                             }}
+                          />
+                          <MonthlyIncome
+                            key={`monthly-income-${journalRevision}`}
+                            rows={report.monthlyIncome}
+                            commodity={reportCurrency}
+                            month={month}
+                            busy={busy}
+                            onSelect={(next) =>
+                              selectMonth(month === next ? '' : next)
+                            }
                           />
                           {comparison && (
                             <section
