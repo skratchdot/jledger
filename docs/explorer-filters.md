@@ -306,3 +306,13 @@ The existing background-update status remains visible. Metric/chart regions expo
 Comparisons remain hidden while pending. Superseded replies cannot replace a newer
 report's values or labels, and invalid date ranges or journals still hide reports.
 These are display-state rules; financial calculations and saved filters are unchanged.
+
+## Chart scales
+
+Category lengths and monthly heights show absolute magnitudes relative to the
+largest value in that chart, including when all values are smaller than one.
+Refunds keep their signed exact labels. Category bars give nonzero values a 1%
+minimum for visibility; zero amounts have empty bars. Geometry is approximate,
+including for quantities beyond floating-point range; exact labels and tables
+remain the source for close comparisons. Very small monthly ratios may be
+visually zero. No currency conversion is applied.

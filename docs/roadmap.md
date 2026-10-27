@@ -86,7 +86,9 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    paginated spending tables now provide keyboard-accessible chart equivalents,
    all expense categories and shared account/month drill-down. Exact signed
    category ranking now preserves close amounts beyond floating-point precision
-   through top-30 chart selection and table pagination. [Income by account](explorer-filters.md#income-by-account)
+   through top-30 chart selection and table pagination. Chart geometry now scales
+   extreme decimal magnitudes without floating-point overflow/underflow, keeping
+   exact labels and zero-length zero bars. [Income by account](explorer-filters.md#income-by-account)
    now adds exact, paginated income-account exploration with shared filters,
    classification, reversals and source drill-down. Pending reports retain their
    completed commodity labels across metrics, charts and tables, with accessible
