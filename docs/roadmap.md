@@ -109,8 +109,10 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    batched file-read progress, indeterminate parse/index status and immediate worker
    cancellation while retaining the open journal. On-demand source excerpts now avoid
    full-file split arrays, with a synthetic allocation/timing comparison and final
-   large-journal source drill-down. Finer parsing progress, lower peak replacement
-   memory, indexed source lookup and incremental parsing remain.
+   large-journal source drill-down. Lazy sparse source checkpoints now avoid
+   rescanning known prefixes on repeated drill-down, with one worker-owned offset
+   per 256 lines and reset on successful replacement. Finer parsing progress,
+   lower peak replacement memory and incremental parsing remain.
 
 **Exit:** several realistic journal patterns are supported, every report explains
 its scope, and every visible total can be traced back to source postings.

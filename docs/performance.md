@@ -349,10 +349,16 @@ BOM, Unicode, indentation and lone carriage returns remain source body text.
 The existing transaction/posting locations and final continuation-date location
 determine the inclusive range. Source selection and report semantics are unchanged.
 
-This stays in the worker and retains no extra line index. Near-end requests still
-scan the source prefix on every request: this is not constant-time source lookup,
-streaming parsing or incremental indexing. Very large transactions can still have
-large excerpts and detail payloads; this change does not impose a snippet limit.
+The worker now lazily retains a sparse index for each inspected source: one UTF-16
+string offset every 256 lines encountered, starting with offset zero. Requests start
+at the nearest known checkpoint and extend only through their requested range.
+Within the indexed prefix, a lookup scans at most 255 preceding lines plus the
+excerpt. First requests beyond that prefix still scan forward to discover it.
+Long lines and large excerpts can still be expensive; this is not constant-time
+lookup, streaming parsing or a snippet-size limit. Index memory grows with lines
+visited, not transactions rendered, and is not a fixed byte budget. Successful
+journal replacement clears indexes; failed loads retain the committed source state.
+Nothing is persisted or transferred to React.
 
 Run the standalone synthetic comparison after installing dependencies:
 
@@ -361,8 +367,8 @@ pnpm benchmark:excerpts
 ```
 
 It generates the existing 200,000-transaction / 14,888,890-byte journal shape and
-checks identical first, middle and final excerpts against the former split-based
-algorithm. It reads no journals from disk. JSON output records Node version,
+checks identical first, middle and final excerpts, then repeated/backward lookups,
+across the split-based, stateless range-scan and sparse-index algorithms. It reads no journals from disk. JSON output records Node version,
 elapsed times and the immediate uncollected heap delta for each sample, with GC
 before each sample. These are single-run observations, not peak or retained heap
 measurements, isolated process comparisons, a memory budget or latency assertions.
@@ -371,7 +377,8 @@ One Node 26.12.1 run in the development environment observed about 36–45 MB of
 uncollected heap growth for splitting, versus about 5–17 KB for range scanning;
 range scans took about 0.2/5.5/9.9 ms for the first/middle/final transaction. Runtime,
 GC and warmup affect these numbers; rerun locally rather than extrapolating them
-to devices or whole-journal memory. The benchmark does not measure parser memory.
+to devices or whole-journal memory. The benchmark does not measure parser memory. Those figures predate sparse indexing;
+the command now also reports checkpoint count and cold/warm indexed samples.
 
 Unit cases cover newline/EOF boundaries, blank lines, BOM/Unicode/CRLF, long sources,
 includes, continuation dates and replacement. The production 200,000-transaction
@@ -417,3 +424,18 @@ current/prior separation, cancellation and replacement. Browser cases cover 61-m
 pagination, keyboard month drill-down, source details, history, narrow layout,
 empty/invalid scopes, replacement and pending currency labels. Existing large-journal
 responsiveness, exact totals, bounded rows and final source browsing remain required.
+
+## Sparse source lookup regression
+
+Unit cases compare mixed LF/CRLF, Unicode, empty lines, EOF and long excerpts across
+checkpoint boundaries and nonsequential requests. They check sparse checkpoint growth,
+bounded warm newline searches and source isolation/same-name replacement. The
+200,000-transaction browser case reopens the final source, verifies identical text
+and records `repeatedSourceDetailMs` without a latency assertion. Existing includes,
+continuation-date, exact-total, responsiveness and bounded-DOM cases remain required.
+
+A Node 26.12.1 synthetic run retained 3,125 checkpoints for the 200,000-transaction
+fixture. After visiting the final transaction once, reopening it took about
+0.13 ms with the sparse index versus 10.16 ms with a stateless range scan.
+This sequential single-run observation is affected by warmup, GC and hardware;
+it is not an isolated-process benchmark, retained-heap measurement or latency SLA.
