@@ -150,6 +150,12 @@ worker continues to own scanning, exact totals and filter matching. Pagination d
 not reduce the existing aggregate payload or establish a new memory limit. Display
 and page state remain in component memory and are excluded from filter presets.
 
+The monthly chart also consumes those aggregates through pages of at most 12 bars.
+Memoized approximate geometry uses the full report scale across pages; exact sums
+and month matching remain in the worker. Completed reports reset page state with
+keyboard focus recovery, while pending reports retain their mounted page and expose
+busy/disabled controls. Pagination bounds DOM without shrinking aggregate transfers.
+
 The overview's income-account disclosure consumes a separate current-period worker
 aggregate from the same posting-filter scan. Credit signs and exact ranking are
 computed there using the existing type resolver; React performs no financial sums.

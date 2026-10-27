@@ -182,7 +182,8 @@ account/month filtering. They cover focus retention and fallback, refund signs,
 posting dates, quantities larger than safe JavaScript integers, separate/unitless
 commodities, empty results, invalid reports and long account names at narrow widths.
 These are bounded-DOM regressions, not a guarantee for arbitrary aggregate counts;
-large month dropdowns and the original monthly chart remain future performance work.
+large month dropdowns remain future performance work. The monthly chart now uses
+pages of at most 12 bars.
 
 ## Import cancellation regression
 
@@ -304,5 +305,19 @@ worker ranking remain independent of this approximate geometry.
 Unit cases cover 400-place amounts, signed/zero values and a 150,000-value series;
 production-browser cases verify category/month proportions and source drill-down
 for huge and tiny journals. This adds no journal scan or financial arithmetic on
-the UI thread. Monthly charts and selectors still mount all months; this is not
-virtualization or a new memory/latency guarantee.
+the UI thread. The monthly chart now mounts at most 12 bars per page; selectors still mount all
+months. This establishes no new memory/latency guarantee.
+
+## Monthly chart pagination regression
+
+The monthly chart consumes existing worker aggregates in pages of at most 12 bars.
+Approximate scale percentages are memoized per completed monthly series and shared
+across pages; React does not compute financial totals or scan journal postings.
+The full monthly aggregate payload remains in memory, so this bounds chart DOM,
+not report-transfer size. Month selector virtualization remains future work.
+
+Production-browser cases browse 121 months through the final result at narrow width,
+verify page-independent proportions and empty zero bars, keyboard month toggling,
+focus retention/fallback, scroll reset, source drill-down, empty/invalid reports and
+same-name replacement. Existing root/subpath and large-journal regressions remain
+required; these cases do not establish a device-wide latency or memory guarantee.

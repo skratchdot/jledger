@@ -117,6 +117,19 @@ test('metrics, charts and tables retain committed currency while a real worker r
     exact: true,
   });
   await expect(monthly).toContainText('0.10 USD');
+  await expect(monthly).toBeDisabled();
+  const monthlyChart = page.getByRole('region', {
+    name: 'Monthly spending chart',
+    exact: true,
+  });
+  await expect(monthlyChart).toHaveAttribute('aria-busy', 'true');
+  await expect(
+    monthlyChart.getByRole('button', { name: 'Next monthly chart page' }),
+  ).toBeDisabled();
+  await expect(
+    monthlyChart.getByRole('button', { name: 'Previous monthly chart page' }),
+  ).toBeDisabled();
+
   await expect(page.locator('#spending-panels')).toHaveAttribute(
     'aria-busy',
     'true',

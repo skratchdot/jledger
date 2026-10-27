@@ -316,3 +316,20 @@ minimum for visibility; zero amounts have empty bars. Geometry is approximate,
 including for quantities beyond floating-point range; exact labels and tables
 remain the source for close comparisons. Very small monthly ratios may be
 visually zero. No currency conversion is applied.
+
+## Monthly chart pages
+
+The monthly spending chart shows up to 12 months per page in chronological order.
+Previous/Next buttons and a month-count indicator make every report month reachable
+without mounting the complete series. Heights use the full report's maximum,
+so moving between pages does not rescale equal values. Zero months have empty bars.
+Use the exact labels or Tables view to compare close values.
+
+Selecting a month applies the shared date scope; selecting it again clears that
+scope. A completed report resets the chart to its first page. The current page
+stays mounted while a query is pending, with chart controls disabled and busy state
+exposed. Keyboard focus stays on a surviving selected month; if the result removes
+that month, focus returns to the chart region unless the user has moved elsewhere.
+Page changes reset horizontal scrolling. Successful journal replacement resets page
+state; failed/cancelled replacements retain the committed chart. Page state is
+in-memory view state, excluded from filter history and saved presets.

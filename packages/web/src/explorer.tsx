@@ -12,6 +12,7 @@ import { useFilterHistory } from './filter-history';
 import { dateRangeError, monthBounds, type Filters } from './report-filters';
 import { ActiveFilters, type FilterChip } from './components/active-filters';
 import { SavedFilters } from './components/saved-filters';
+import { MonthlySpendingChart } from './components/monthly-spending-chart';
 import { IncomeAccounts } from './components/income-accounts';
 import { ReportDataTable } from './components/report-data-table';
 import { VirtualRegister } from './components/virtual-register';
@@ -105,9 +106,6 @@ export function Explorer() {
   const categoryWidths = chartPercentages(
     categories.map(([, value]) => value),
     1,
-  );
-  const monthlyHeights = chartPercentages(
-    report.monthly.map((row) => row.value),
   );
   const accountSearchInput = useRef<HTMLInputElement>(null);
   const searchInput = useRef<HTMLInputElement>(null);
@@ -893,42 +891,23 @@ export function Explorer() {
                                   busy={busy}
                                 />
                               ) : (
-                                <div className="monthly-chart">
-                                  {(() => {
-                                    const data = report.monthly;
-                                    return data.map((d, i) => (
-                                      <Button
-                                        key={d.month}
-                                        className={`month-column ${month === d.month ? 'chosen' : ''}`}
-                                        onClick={() =>
-                                          selectMonth(
-                                            month === d.month ? '' : d.month,
-                                          )
-                                        }
-                                        aria-label={`Filter month ${d.month}`}
-                                        aria-pressed={month === d.month}
-                                      >
-                                        <span className="month-value">
-                                          {metric(d.value, reportCurrency)}
-                                        </span>
-                                        <div className="column-track">
-                                          <div
-                                            style={{
-                                              height: `${monthlyHeights[i]}%`,
-                                            }}
-                                          />
-                                        </div>
-                                        <span>{d.month}</span>
-                                      </Button>
-                                    ));
-                                  })()}
-                                </div>
+                                <MonthlySpendingChart
+                                  key={journalRevision}
+                                  rows={report.monthly}
+                                  commodity={reportCurrency}
+                                  selected={month}
+                                  busy={busy}
+                                  onSelect={(next) =>
+                                    selectMonth(month === next ? '' : next)
+                                  }
+                                />
                               )}
                               <p className="chart-hint">
-                                Select a month to focus the explorer. No
-                                currency conversion is applied. Values follow
-                                the current filters; boundary months may be
-                                partial.
+                                Charts show up to 12 months per page; bar
+                                heights share the full report scale. Select a
+                                month to focus the explorer. No currency
+                                conversion is applied. Values follow the current
+                                filters; boundary months may be partial.
                               </p>
                             </div>
                           </section>
