@@ -60,6 +60,7 @@ export interface Report {
   categories: [string, string][];
   incomeAccounts: [string, string][];
   monthly: { month: string; value: string }[];
+  monthlyIncome: { month: string; value: string }[];
 }
 export interface Row extends Transaction {
   id: number;
@@ -160,7 +161,8 @@ export class JournalEngine {
     const matches: number[] = [],
       categories = new Map<string, string>(),
       incomeAccounts = new Map<string, string>(),
-      monthly = new Map<string, string>();
+      monthly = new Map<string, string>(),
+      monthlyIncome = new Map<string, string>();
     let income = '0',
       spending = '0';
     const previous = previousPeriodFilters(filters);
@@ -210,6 +212,11 @@ export class JournalEngine {
         }
         if (matchesAccountType(type, 'R')) {
           income = add(income, p.amount.quantity);
+          const month = effectivePostingDate(p, t.date).slice(0, 7);
+          monthlyIncome.set(
+            month,
+            add(monthlyIncome.get(month) ?? '0', p.amount.quantity),
+          );
           incomeAccounts.set(
             p.account,
             add(incomeAccounts.get(p.account) ?? '0', p.amount.quantity),
@@ -221,6 +228,12 @@ export class JournalEngine {
     this.matches = matches;
     const shownIncome = negate(income);
     const shownPreviousIncome = negate(previousIncome);
+    const scopedMonths = this.summary.months.filter(
+      (month) =>
+        (!filters.month || month === filters.month) &&
+        (!filters.dateFrom || month >= filters.dateFrom.slice(0, 7)) &&
+        (!filters.dateTo || month <= filters.dateTo.slice(0, 7)),
+    );
     return {
       commodity: filters.commodity,
       ...(previous
@@ -251,14 +264,14 @@ export class JournalEngine {
           negate(quantity),
         ])
         .sort((a, b) => compare(b[1], a[1])),
-      monthly: this.summary.months
-        .filter(
-          (month) =>
-            (!filters.month || month === filters.month) &&
-            (!filters.dateFrom || month >= filters.dateFrom.slice(0, 7)) &&
-            (!filters.dateTo || month <= filters.dateTo.slice(0, 7)),
-        )
-        .map((month) => ({ month, value: monthly.get(month) ?? '0' })),
+      monthly: scopedMonths.map((month) => ({
+        month,
+        value: monthly.get(month) ?? '0',
+      })),
+      monthlyIncome: scopedMonths.map((month) => ({
+        month,
+        value: negate(monthlyIncome.get(month) ?? '0'),
+      })),
     };
   }
 

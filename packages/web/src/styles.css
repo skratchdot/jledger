@@ -1422,14 +1422,17 @@ select[aria-label='Commodity'] option {
 .filter-history [aria-disabled='true'] {
   opacity: 0.5;
 }
-.income-accounts {
+.income-accounts,
+.monthly-income {
   padding: 20px;
   margin-bottom: 20px;
 }
-.income-accounts > summary {
+.income-accounts > summary,
+.monthly-income > summary {
   cursor: pointer;
   font-weight: 600;
 }
-.income-accounts[open] > summary {
+.income-accounts[open] > summary,
+.monthly-income[open] > summary {
   margin-bottom: 12px;
 }

@@ -22,6 +22,7 @@ const emptyReport: Report = {
   categories: [],
   incomeAccounts: [],
   monthly: [],
+  monthlyIncome: [],
 };
 const emptyAccountView: AccountView & { id: number } = {
   id: 0,

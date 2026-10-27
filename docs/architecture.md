@@ -156,6 +156,13 @@ and month matching remain in the worker. Completed reports reset page state with
 keyboard focus recovery, while pending reports retain their mounted page and expose
 busy/disabled controls. Pagination bounds DOM without shrinking aggregate transfers.
 
+Monthly income is accumulated alongside income-account totals during the same
+cancellable worker scan, normalized to positive credits there, and mapped to the
+same scoped journal-month sequence as spending. The UI's closed-by-default income
+timeline consumes these exact aggregates through the shared 25-row table; it does
+no financial arithmetic. Both income views use the committed report commodity,
+existing month/account filter paths, and journal-revision resets.
+
 The overview's income-account disclosure consumes a separate current-period worker
 aggregate from the same posting-filter scan. Credit signs and exact ranking are
 computed there using the existing type resolver; React performs no financial sums.
