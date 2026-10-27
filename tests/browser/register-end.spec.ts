@@ -73,10 +73,44 @@ test('the final full-register transaction remains visible and actionable after l
     '2024-01-01 * Transaction 199999\n  expenses:coffee  0.01 USD\n  assets:cash',
   );
   await page.getByRole('button', { name: 'Close', exact: true }).click();
+  const firstControl = page.getByRole('button', {
+    name: 'First transaction',
+    exact: true,
+  });
+  const lastControl = page.getByRole('button', {
+    name: 'Last transaction',
+    exact: true,
+  });
+  await firstControl.focus();
+  await page.keyboard.press('Enter');
+  await expect(firstControl).toBeFocused();
+  await expect.poll(() => scroll.evaluate((el) => el.scrollTop)).toBe(0);
+  await expect(
+    register.getByRole('button', { name: '* Transaction 0', exact: true }),
+  ).toBeVisible();
+  await page.keyboard.press('Tab');
+  await expect(lastControl).toBeFocused();
+  await page.keyboard.press('Space');
+  await expect.poll(isInsideScrollport).toBe(true);
+  await expect(lastControl).toBeFocused();
+  expect(await register.locator('tbody tr').count()).toBeLessThan(50);
   await page.getByLabel('Search transactions').fill('Transaction 0');
   await expect(register).toHaveAttribute('aria-rowcount', '2');
   await expect(
     register.getByRole('button', { name: '* Transaction 0', exact: true }),
   ).toBeAttached();
   await expect.poll(() => scroll.evaluate((el) => el.scrollTop)).toBe(0);
+  await lastControl.click();
+  await expect(
+    register.getByRole('button', { name: '* Transaction 0', exact: true }),
+  ).toBeVisible();
+  await page.getByLabel('Search transactions').fill('no matching transaction');
+  await expect(register).toHaveAttribute('aria-rowcount', '1');
+  await expect(firstControl).toBeDisabled();
+  await expect(lastControl).toBeDisabled();
+  await page.getByLabel('Search transactions').fill('');
+  await expect(register).toHaveAttribute('aria-rowcount', String(count + 1));
+  await expect(lastControl).toBeEnabled();
+  await lastControl.click();
+  await expect.poll(isInsideScrollport).toBe(true);
 });

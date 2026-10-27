@@ -1064,6 +1064,7 @@ export function Explorer() {
                           <span>Newest first · select to inspect</span>
                         </div>
                         <VirtualRegister
+                          busy={busy}
                           status={status}
                           count={report.count}
                           window={engine.window}

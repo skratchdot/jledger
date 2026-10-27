@@ -1443,3 +1443,10 @@ select[aria-label='Commodity'] option {
 .monthly-income[open] > summary {
   margin-bottom: 12px;
 }
+
+.register-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 23px 16px;
+}
