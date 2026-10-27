@@ -1,4 +1,4 @@
-import { sourceExcerpt } from './source-excerpt';
+import { SourceExcerptIndex } from './source-excerpt';
 import {
   AccountExplorer,
   type AccountAction,
@@ -85,6 +85,7 @@ export class JournalEngine {
   private classify: ((account: string) => AccountClassification) | undefined;
   private index: { id: number; text: string }[] = [];
   private matches: number[] = [];
+  private excerpts = new Map<string, SourceExcerptIndex>();
   summary: Summary = {
     names: [],
     diagnostics: [],
@@ -136,6 +137,7 @@ export class JournalEngine {
       months: [...months].sort(),
     };
     this.journal = journal;
+    this.excerpts.clear();
     this.accounts = accounts;
     this.classify = classify;
     this.index = index;
@@ -291,16 +293,22 @@ export class JournalEngine {
   detail(id: number): Detail | null {
     const t = this.journal.transactions[id];
     if (!t || !this.classify) return null;
-    const source = this.journal.sources.find((s) => s.name === t.source.file);
+    let excerptIndex = this.excerpts.get(t.source.file);
+    if (!excerptIndex) {
+      const source = this.journal.sources.find((s) => s.name === t.source.file);
+      if (source) {
+        excerptIndex = new SourceExcerptIndex(source.text);
+        this.excerpts.set(t.source.file, excerptIndex);
+      }
+    }
     return {
       ...t,
       id,
       postingTypes: t.postings.map((posting) =>
         this.classify!(posting.account),
       ),
-      excerpt: source
-        ? sourceExcerpt(
-            source.text,
+      excerpt: excerptIndex
+        ? excerptIndex.excerpt(
             t.source.line,
             t.postings.reduce(
               (end, posting) =>

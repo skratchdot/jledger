@@ -1,5 +1,8 @@
 import { performance } from 'node:perf_hooks';
-import { sourceExcerpt } from '../packages/web/src/source-excerpt.ts';
+import {
+  SourceExcerptIndex,
+  sourceExcerpt,
+} from '../packages/web/src/source-excerpt.ts';
 
 // Synthetic only: no journal files or network requests. Run with --expose-gc so
 // each sample starts after collection. Heap deltas are observations, not peaks.
@@ -10,16 +13,25 @@ const text = Array.from(
   (_, i) =>
     `2024-01-01 * transaction ${i}\n  expenses:coffee  0.01 USD\n  assets:cash\n\n`,
 ).join('');
+const indexed = new SourceExcerptIndex(text);
 const methods = {
   'legacy-split': (first, last) =>
     text
       .split(/\r?\n/)
       .slice(first - 1, last)
       .join('\n'),
+  'sparse-index': (first, last) => indexed.excerpt(first, last),
   'range-scan': (first, last) => sourceExcerpt(text, first, last),
 };
 const samples = [];
-for (const index of [0, Math.floor(transactions / 2), transactions - 1]) {
+for (const index of [
+  0,
+  Math.floor(transactions / 2),
+  transactions - 1,
+  transactions - 1,
+  Math.floor(transactions / 2),
+  0,
+]) {
   const first = index * 4 + 1;
   const expected = `2024-01-01 * transaction ${index}\n  expenses:coffee  0.01 USD\n  assets:cash`;
   for (const [method, extract] of Object.entries(methods)) {
@@ -45,6 +57,8 @@ console.log(
       node: process.version,
       transactions,
       sourceBytes: Buffer.byteLength(text),
+      checkpointCount: indexed.checkpointCount,
+      checkpointStrideLines: 256,
       samples,
     },
     null,

@@ -260,9 +260,14 @@ to retain keyboard focus and are disabled during report updates or empty results
 On-demand transaction details scan newline boundaries through the requested source
 range and slice only that excerpt. They preserve the existing line-based scope,
 including final posting-date continuations, and normalize LF/CRLF for display.
-No full-file split-line array or retained source-line index is created. The worker
-still owns source strings and extraction; repeated near-end details still scan the
-prefix. This is not a random-access syntax-span API or an authoring change.
+No full-file split-line array is created. The worker lazily creates an index for
+an inspected source, retaining one UTF-16 string offset every 256 lines encountered.
+A lookup starts at the nearest known checkpoint and extends the index only through
+the requested range. Warm lookups scan at most 255 prefix lines plus the excerpt;
+a first lookup beyond the indexed prefix still scans that prefix. Sources remain
+in the worker, and successful journal commits clear the per-source indexes. Failed
+loads preserve the committed journal and indexes. No index enters React or storage.
+These are decoded-string offsets, not file byte offsets or an authoring API.
 
 ## Monthly income less spending
 
