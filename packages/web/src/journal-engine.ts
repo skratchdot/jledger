@@ -1,3 +1,4 @@
+import { sourceExcerpt } from './source-excerpt';
 import {
   AccountExplorer,
   type AccountAction,
@@ -290,11 +291,10 @@ export class JournalEngine {
       postingTypes: t.postings.map((posting) =>
         this.classify!(posting.account),
       ),
-      excerpt:
-        source?.text
-          .split(/\r?\n/)
-          .slice(
-            t.source.line - 1,
+      excerpt: source
+        ? sourceExcerpt(
+            source.text,
+            t.source.line,
             t.postings.reduce(
               (end, posting) =>
                 Math.max(
@@ -305,7 +305,7 @@ export class JournalEngine {
               t.source.line,
             ),
           )
-          .join('\n') ?? '',
+        : '',
     };
   }
 }

@@ -339,3 +339,41 @@ the final negative-income result, keyboard drill-down and source details, histor
 focus, narrow layout, invalid/empty scopes and replacement. Held real worker replies
 protect completed currency labels and disabled controls. Existing root/subpath and
 200,000-transaction regressions remain required.
+
+## Source excerpt extraction
+
+Opening a transaction now scans newline boundaries only through the requested
+source lines and slices that range once, instead of splitting the entire file
+into a line array. LF/CRLF display normalization applies only to the excerpt;
+BOM, Unicode, indentation and lone carriage returns remain source body text.
+The existing transaction/posting locations and final continuation-date location
+determine the inclusive range. Source selection and report semantics are unchanged.
+
+This stays in the worker and retains no extra line index. Near-end requests still
+scan the source prefix on every request: this is not constant-time source lookup,
+streaming parsing or incremental indexing. Very large transactions can still have
+large excerpts and detail payloads; this change does not impose a snippet limit.
+
+Run the standalone synthetic comparison after installing dependencies:
+
+```sh
+pnpm benchmark:excerpts
+```
+
+It generates the existing 200,000-transaction / 14,888,890-byte journal shape and
+checks identical first, middle and final excerpts against the former split-based
+algorithm. It reads no journals from disk. JSON output records Node version,
+elapsed times and the immediate uncollected heap delta for each sample, with GC
+before each sample. These are single-run observations, not peak or retained heap
+measurements, isolated process comparisons, a memory budget or latency assertions.
+
+One Node 26.12.1 run in the development environment observed about 36–45 MB of
+uncollected heap growth for splitting, versus about 5–17 KB for range scanning;
+range scans took about 0.2/5.5/9.9 ms for the first/middle/final transaction. Runtime,
+GC and warmup affect these numbers; rerun locally rather than extrapolating them
+to devices or whole-journal memory. The benchmark does not measure parser memory.
+
+Unit cases cover newline/EOF boundaries, blank lines, BOM/Unicode/CRLF, long sources,
+includes, continuation dates and replacement. The production 200,000-transaction
+regression now opens the final transaction at source line 799997, checks its exact
+excerpt and records `finalSourceDetailMs` without a new device-wide latency claim.
