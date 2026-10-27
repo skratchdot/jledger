@@ -44,6 +44,8 @@ export function VirtualRegister({
     count,
     getScrollElement: () => scroll.current,
     estimateSize: () => 100,
+    // Keep the end visible as estimated row sizes become measured sizes.
+    anchorTo: 'end',
     overscan: 6,
   });
   const items = virtualizer.getVirtualItems();
@@ -60,31 +62,49 @@ export function VirtualRegister({
       aria-label="Scrollable transaction register"
       tabIndex={0}
     >
-      <table aria-label="Transaction register" aria-rowcount={count + 1}>
-        <thead>
-          <tr>
-            <th>Transaction date</th>
-            <th>Description</th>
-            <th>Accounts</th>
-            <th className="align-right">Posting amounts</th>
+      <table
+        role="table"
+        aria-colcount={4}
+        aria-label="Transaction register"
+        aria-rowcount={count + 1}
+      >
+        <thead role="rowgroup">
+          <tr role="row">
+            <th role="columnheader">Transaction date</th>
+            <th role="columnheader">Description</th>
+            <th role="columnheader">Accounts</th>
+            <th role="columnheader" className="align-right">
+              Posting amounts
+            </th>
           </tr>
         </thead>
-        <tbody>
-          {items.length > 0 && (
-            <tr aria-hidden="true">
-              <td colSpan={4} style={{ height: items[0]!.start, padding: 0 }} />
-            </tr>
-          )}
+        <tbody
+          role="rowgroup"
+          style={{ height: virtualizer.getTotalSize(), position: 'relative' }}
+        >
           {items.map((item) => {
             const tx = window.rows[item.index - window.start];
             if (!tx)
               return (
                 <tr
+                  role="row"
                   key={item.key}
                   aria-rowindex={item.index + 2}
                   data-index={item.index}
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    transform: `translateY(${item.start}px)`,
+                    height: item.size,
+                  }}
                 >
-                  <td colSpan={4} style={{ height: 100 }} className="muted">
+                  <td
+                    role="cell"
+                    colSpan={4}
+                    style={{ gridColumn: '1 / -1' }}
+                    className="muted"
+                  >
                     Loading…
                   </td>
                 </tr>
@@ -94,13 +114,22 @@ export function VirtualRegister({
             );
             return (
               <tr
+                role="row"
                 key={item.key}
                 data-index={item.index}
                 ref={virtualizer.measureElement}
                 aria-rowindex={item.index + 2}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  transform: `translateY(${item.start}px)`,
+                }}
               >
-                <td className="date-cell">{tx.date}</td>
-                <td>
+                <td role="cell" className="date-cell">
+                  {tx.date}
+                </td>
+                <td role="cell">
                   <button
                     className="transaction-link"
                     onClick={() => onInspect(tx.id)}
@@ -123,7 +152,7 @@ export function VirtualRegister({
                     {tx.source.file}:{tx.source.line}
                   </small>
                 </td>
-                <td>
+                <td role="cell">
                   {postings.slice(0, 3).map((p, i) => (
                     <button
                       key={i}
@@ -139,7 +168,7 @@ export function VirtualRegister({
                     </small>
                   )}
                 </td>
-                <td className="posting-amounts">
+                <td role="cell" className="posting-amounts">
                   {postings.slice(0, 3).map((p, i) => (
                     <div key={i}>
                       {formatAmount(p.amount)}
@@ -150,20 +179,6 @@ export function VirtualRegister({
               </tr>
             );
           })}
-          {items.length > 0 && (
-            <tr aria-hidden="true">
-              <td
-                colSpan={4}
-                style={{
-                  height: Math.max(
-                    0,
-                    virtualizer.getTotalSize() - items.at(-1)!.end,
-                  ),
-                  padding: 0,
-                }}
-              />
-            </tr>
-          )}
         </tbody>
       </table>
     </div>

@@ -239,6 +239,18 @@ file extension nor a passing demo constitutes full compatibility.
 
 Large-journal checks and current limits are documented in [performance](performance.md).
 
+## Register layout
+
+The virtual register keeps native table elements, explicit row/column roles and logical
+row indices, with CSS grid columns and a virtual body sized by TanStack Virtual.
+Visible rows are positioned at measured offsets instead of changing the height of
+a table between top/bottom spacer rows. This prevents loaded row heights from
+changing the scroll extent before the virtualizer has measured them. TanStack's
+end anchoring keeps the end visible during measurement corrections; browser scroll
+anchoring is disabled on this scroll container so it cannot also adjust the offset.
+Filters still reset the register to the start. Only visible worker windows cross
+to React, and financial computation stays in the worker.
+
 ## Source snippets
 
 On-demand transaction details scan newline boundaries through the requested source
