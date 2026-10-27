@@ -11,6 +11,7 @@ import { useFilterHistory } from './filter-history';
 import { dateRangeError, monthBounds, type Filters } from './report-filters';
 import { ActiveFilters, type FilterChip } from './components/active-filters';
 import { SavedFilters } from './components/saved-filters';
+import { IncomeAccounts } from './components/income-accounts';
 import { ReportDataTable } from './components/report-data-table';
 import { VirtualRegister } from './components/virtual-register';
 import { VirtualAccounts } from './components/virtual-accounts';
@@ -666,6 +667,17 @@ export function Explorer() {
                               <small>Matching your filters</small>
                             </div>
                           </section>
+                          <IncomeAccounts
+                            key={journalRevision}
+                            rows={report.incomeAccounts}
+                            commodity={report.commodity}
+                            account={account}
+                            busy={busy}
+                            onSelect={(next) => {
+                              setAccount(next);
+                              setSelected(null);
+                            }}
+                          />
                           {comparison && (
                             <section
                               className="panel comparison-panel"

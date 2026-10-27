@@ -138,6 +138,8 @@ installation is a later milestone.
 - [Primary posting dates](docs/posting-dates.md), including month/day overrides in
   the transaction year and attached continuation comments, for month filters, monthly charts,
   and assertion checks; transaction and posting dates remain visible in drill-down.
+- [Income by account](docs/explorer-filters.md#income-by-account) shows exact net
+  income, reversals and account drill-down in bounded, keyboard-accessible pages.
 - [Spending data tables](docs/explorer-filters.md#charts-and-data-tables) with exact
   signed amounts, all matching categories, bounded pages and keyboard account/month
   drill-down alongside the charts.

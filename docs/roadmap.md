@@ -86,7 +86,9 @@ compatibility, investment valuation, npm distribution, or production-grade perfo
    paginated spending tables now provide keyboard-accessible chart equivalents,
    all expense categories and shared account/month drill-down. Exact signed
    category ranking now preserves close amounts beyond floating-point precision
-   through top-30 chart selection and table pagination. [Posting status](posting-status.md)
+   through top-30 chart selection and table pagination. [Income by account](explorer-filters.md#income-by-account)
+   now adds exact, paginated income-account exploration with shared filters,
+   classification, reversals and source drill-down. [Posting status](posting-status.md)
    now uses explicit markers with transaction inheritance across reports, previews
    and comparison periods, with hledger membership evidence and source explanations. Broader keyboard
    navigation remains. Specify hledger query compatibility separately from simple

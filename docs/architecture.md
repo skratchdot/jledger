@@ -150,6 +150,14 @@ worker continues to own scanning, exact totals and filter matching. Pagination d
 not reduce the existing aggregate payload or establish a new memory limit. Display
 and page state remain in component memory and are excluded from filter presets.
 
+The overview's income-account disclosure consumes a separate current-period worker
+aggregate from the same posting-filter scan. Credit signs and exact ranking are
+computed there using the existing type resolver; React performs no financial sums.
+The report includes its committed commodity so pending input changes cannot relabel
+old income rows. The disclosure mounts a 25-row table page only while open, sharing
+the report table's pagination/focus behavior and the existing account/history filter
+path. Successful journal revisions remount it; no new filter or persisted state is added.
+
 ## Read-only local adapter
 
 `jledger server` resolves file-selection precedence once, binds only to IPv4

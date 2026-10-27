@@ -52,11 +52,13 @@ export interface PeriodComparison {
   countChange: number;
 }
 export interface Report {
+  commodity: string;
   comparison?: PeriodComparison;
   count: number;
   income: string;
   spending: string;
   categories: [string, string][];
+  incomeAccounts: [string, string][];
   monthly: { month: string; value: string }[];
 }
 export interface Row extends Transaction {
@@ -157,6 +159,7 @@ export class JournalEngine {
     }
     const matches: number[] = [],
       categories = new Map<string, string>(),
+      incomeAccounts = new Map<string, string>(),
       monthly = new Map<string, string>();
     let income = '0',
       spending = '0';
@@ -205,8 +208,13 @@ export class JournalEngine {
           const month = effectivePostingDate(p, t.date).slice(0, 7);
           monthly.set(month, add(monthly.get(month) ?? '0', p.amount.quantity));
         }
-        if (matchesAccountType(type, 'R'))
+        if (matchesAccountType(type, 'R')) {
           income = add(income, p.amount.quantity);
+          incomeAccounts.set(
+            p.account,
+            add(incomeAccounts.get(p.account) ?? '0', p.amount.quantity),
+          );
+        }
       }
     }
     if (cancelled()) return null;
@@ -214,6 +222,7 @@ export class JournalEngine {
     const shownIncome = negate(income);
     const shownPreviousIncome = negate(previousIncome);
     return {
+      commodity: filters.commodity,
       ...(previous
         ? {
             comparison: {
@@ -236,6 +245,12 @@ export class JournalEngine {
       income: shownIncome,
       spending,
       categories: [...categories].sort((a, b) => compare(b[1], a[1])),
+      incomeAccounts: [...incomeAccounts]
+        .map(([account, quantity]): [string, string] => [
+          account,
+          negate(quantity),
+        ])
+        .sort((a, b) => compare(b[1], a[1])),
       monthly: this.summary.months
         .filter(
           (month) =>
