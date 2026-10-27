@@ -104,6 +104,12 @@ test('metrics, charts and tables retain committed currency while a real worker r
   await page.getByLabel('Commodity', { exact: true }).selectOption('EUR');
   await waitForHeld(page, 'EUR');
   await expect(totals).toHaveAttribute('aria-busy', 'true');
+  await expect(
+    page.getByRole('button', { name: 'First transaction', exact: true }),
+  ).toBeDisabled();
+  await expect(
+    page.getByRole('button', { name: 'Last transaction', exact: true }),
+  ).toBeDisabled();
   await expect(totals).toContainText('10.00 USD');
   await expect(totals).toContainText('0.10 USD');
   await expect(totals).not.toContainText('EUR');

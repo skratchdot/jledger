@@ -394,3 +394,11 @@ than 50 mounted rows. It runs at root and static subpath. The native table eleme
 logical row counts/indices, posting previews and exact financial values remain.
 The existing import/responsiveness scenario also remains required. These synthetic
 checks establish no new arbitrary-journal, cross-browser or device-wide guarantee.
+
+## Register boundary controls
+
+First/Last navigation uses the existing virtualizer and bounded worker windows.
+It adds no journal scan, aggregate or persisted state. The 200,000-transaction
+browser regression checks keyboard activation and retained focus at narrow width,
+final-row visibility, fewer than 50 mounted rows, one-result/empty/full scopes and
+repeated boundary navigation. This is not a new latency or cross-browser guarantee.

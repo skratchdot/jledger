@@ -251,6 +251,10 @@ anchoring is disabled on this scroll container so it cannot also adjust the offs
 Filters still reset the register to the start. Only visible worker windows cross
 to React, and financial computation stays in the worker.
 
+Register First/Last controls scroll the existing virtualizer without changing query
+scope or requesting a whole result set. They remain mounted outside the scrollport
+to retain keyboard focus and are disabled during report updates or empty results.
+
 ## Source snippets
 
 On-demand transaction details scan newline boundaries through the requested source

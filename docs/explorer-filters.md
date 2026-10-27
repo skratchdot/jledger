@@ -354,3 +354,12 @@ reset it, while failed/cancelled replacements retain the open journal. Paginatio
 and disclosure state stay in memory and are excluded from history/presets. Pending
 queries keep completed amounts and commodity labels with disabled table controls;
 new reports reset pagination with the shared table's focus recovery.
+
+## Register boundary navigation
+
+**First transaction** and **Last transaction** scroll to the boundaries of the
+current matching register, in its existing newest-first order. They do not change
+filters, totals or the selected transaction. Keyboard users can Tab to either
+button and activate it with Enter or Space; focus stays on the navigation control.
+The controls are unavailable while a report is updating or has no matches.
+Changing filters still resets the register to the beginning.
