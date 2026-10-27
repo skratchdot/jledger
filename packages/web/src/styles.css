@@ -1430,17 +1430,20 @@ select[aria-label='Commodity'] option {
   opacity: 0.5;
 }
 .income-accounts,
-.monthly-income {
+.monthly-income,
+.monthly-surplus {
   padding: 20px;
   margin-bottom: 20px;
 }
 .income-accounts > summary,
-.monthly-income > summary {
+.monthly-income > summary,
+.monthly-surplus > summary {
   cursor: pointer;
   font-weight: 600;
 }
 .income-accounts[open] > summary,
-.monthly-income[open] > summary {
+.monthly-income[open] > summary,
+.monthly-surplus[open] > summary {
   margin-bottom: 12px;
 }
 

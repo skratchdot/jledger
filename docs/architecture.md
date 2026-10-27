@@ -263,3 +263,12 @@ including final posting-date continuations, and normalize LF/CRLF for display.
 No full-file split-line array or retained source-line index is created. The worker
 still owns source strings and extraction; repeated near-end details still scan the
 prefix. This is not a random-access syntax-span API or an authoring change.
+
+## Monthly income less spending
+
+The worker derives each month's difference with exact decimal addition/negation
+from the existing income and spending maps after the cancellable query scan. It
+adds no posting scan or accumulation map. The report adds one array proportional
+to scoped journal months. A closed-by-default disclosure uses the shared paginated
+table, completed report commodity and month-filter path. React computes no money
+values; successful journal revisions reset disclosure state.

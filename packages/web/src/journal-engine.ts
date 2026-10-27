@@ -62,6 +62,7 @@ export interface Report {
   incomeAccounts: [string, string][];
   monthly: { month: string; value: string }[];
   monthlyIncome: { month: string; value: string }[];
+  monthlySurplus: { month: string; value: string }[];
 }
 export interface Row extends Transaction {
   id: number;
@@ -268,6 +269,12 @@ export class JournalEngine {
       monthly: scopedMonths.map((month) => ({
         month,
         value: monthly.get(month) ?? '0',
+      })),
+      monthlySurplus: scopedMonths.map((month) => ({
+        month,
+        value: negate(
+          add(monthlyIncome.get(month) ?? '0', monthly.get(month) ?? '0'),
+        ),
       })),
       monthlyIncome: scopedMonths.map((month) => ({
         month,

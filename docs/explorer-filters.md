@@ -363,3 +363,24 @@ filters, totals or the selected transaction. Keyboard users can Tab to either
 button and activate it with Enter or Space; focus stays on the navigation control.
 The controls are unavailable while a report is updating or has no matches.
 Changing filters still resets the register to the beginning.
+
+## Monthly income less spending
+
+Open **Income less spending** for exact monthly income minus spending under the
+current filters. Positive values mean income exceeded spending; negative values
+mean spending exceeded income. Income reversals reduce income and expense refunds
+reduce spending. The same journal account-type resolver, aliases, effective posting
+dates and same-posting filters used by the overview apply here.
+
+This is not a cash-flow statement, account balance, savings rate or net worth.
+Transfers and unclassified accounts do not contribute. An account filter can exclude
+income or spending, so read the active scope before interpreting the difference.
+Journal months without matching income/expenses remain zero; missing calendar months
+are not generated and boundary months may be partial.
+
+The disclosure starts closed and mounts at most 25 data rows when open. Month
+buttons use the existing shared filter, undo/redo and preset behavior; selecting
+an active month again clears its date scope. Follow matching register transactions
+to their original source. Pending queries retain completed values and commodity
+labels while disabling drill-down. Successful imports/reloads reset the disclosure;
+failed or cancelled replacements retain it. No report state is persisted.

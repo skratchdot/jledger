@@ -123,7 +123,10 @@ its scope, and every visible total can be traced back to source postings.
   now compare the immediately preceding equal-length date range with atomic
   drill-down, history and preset restoration. Longer trends, configurable comparison
   periods and merchant/category drill-down remain.
-- Cash-flow timelines, recurring-payment exploration, and reconciliation views.
+- [Monthly income less spending](explorer-filters.md#monthly-income-less-spending)
+  now shows exact scoped differences with bounded pages and month/source drill-down.
+  This is account-type-based income minus expenses, not cash movement or net worth.
+  Cash-flow statements, recurring-payment exploration, and reconciliation views remain.
 - Budgets using explicit supported semantics, with actual-vs-plan comparisons.
 - Dashboard filters shared across charts and register; share/export _configuration_
   without accidentally embedding personal data in URLs or published artifacts.
