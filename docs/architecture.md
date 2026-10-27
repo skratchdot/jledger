@@ -238,3 +238,12 @@ coverage alongside each parser change. Neither a shared
 file extension nor a passing demo constitutes full compatibility.
 
 Large-journal checks and current limits are documented in [performance](performance.md).
+
+## Source snippets
+
+On-demand transaction details scan newline boundaries through the requested source
+range and slice only that excerpt. They preserve the existing line-based scope,
+including final posting-date continuations, and normalize LF/CRLF for display.
+No full-file split-line array or retained source-line index is created. The worker
+still owns source strings and extraction; repeated near-end details still scan the
+prefix. This is not a random-access syntax-span API or an authoring change.

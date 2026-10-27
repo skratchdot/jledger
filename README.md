@@ -182,6 +182,7 @@ pnpm check                   # lint, typecheck, unit/integration cases, producti
 pnpm exec playwright install chromium  # once, if a browser is not installed
 pnpm test:browser            # production imports, filters, details, privacy, offline, server
 pnpm format:check            # oxfmt; pnpm format applies formatting
+pnpm benchmark:excerpts      # optional synthetic snippet timing/heap comparison
 ```
 
 The [compatibility corpus](docs/conformance.md) runs offline in `pnpm test`.

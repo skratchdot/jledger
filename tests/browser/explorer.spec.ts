@@ -205,6 +205,15 @@ test('200,000 transactions import off-thread, search stays responsive, and every
     return state.frames;
   });
   expect(frames).toBeGreaterThan(5);
+  const detailStart = Date.now();
+  await page.getByRole('button', { name: /transaction 199999$/ }).click();
+  const dialog = page.getByRole('dialog');
+  await expect(dialog.locator('pre')).toHaveText(
+    '2024-01-01 * transaction 199999\n  expenses:coffee  0.01 USD\n  assets:cash',
+  );
+  await expect(dialog).toContainText('large.journal:799997');
+  const finalSourceDetailMs = Date.now() - detailStart;
+  await page.getByRole('button', { name: 'Close', exact: true }).click();
   await page
     .getByRole('button', { name: 'Clear filters', exact: true })
     .click();
@@ -241,6 +250,7 @@ test('200,000 transactions import off-thread, search stays responsive, and every
         inputLatencyMs: inputLatency,
         importAndSearchMs,
         animationFramesDuringImport: frames,
+        finalSourceDetailMs,
       },
       null,
       2,
@@ -253,6 +263,7 @@ test('200,000 transactions import off-thread, search stays responsive, and every
       inputLatencyMs: inputLatency,
       importAndSearchMs,
       animationFramesDuringImport: frames,
+      finalSourceDetailMs,
     }),
     contentType: 'application/json',
   });
